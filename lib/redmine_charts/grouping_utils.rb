@@ -1,7 +1,12 @@
 module RedmineCharts
   module GroupingUtils
 
-    include GLoc
+    if defined? Redmine::I18n 
+      include Redmine::I18n
+    else
+      include GLoc
+    
+    end
 
     @@types = [ :users, :issues, :activities, :categories ]
 

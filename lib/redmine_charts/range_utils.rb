@@ -1,7 +1,11 @@
 module RedmineCharts
   module RangeUtils
 
-    include GLoc
+    if defined? Redmine::I18n 
+      include Redmine::I18n
+    else
+      include GLoc
+    end
 
     @@in_types = [ :days, :weeks, :months ]
 

@@ -11,7 +11,7 @@ require_dependency 'redmine_charts/conditions_utils'
 require_dependency 'redmine_charts/grouping_utils'
 require_dependency 'redmine_charts/range_utils'
 
-Redmine::Plugin.register :charts_plugin do
+Redmine::Plugin.register :redmine_charts do
   name 'Charts Plugin'
   author 'Maciej Szczytowski'
   description 'Plugin for Redmine to show Your projects\' charts.'

@@ -1,7 +1,11 @@
 module RedmineCharts
   module ConditionsUtils
 
-    include GLoc
+    if defined? Redmine::I18n 
+      include Redmine::I18n
+    else
+      include GLoc
+    end
 
     @@default_types = [ :user_id, :issue_id, :activity_id, "issues.category_id".to_sym ]
 
