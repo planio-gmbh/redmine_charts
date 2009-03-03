@@ -198,13 +198,13 @@ class ChartsDeviationController < ChartsController
 
   def get_remaining_hint(logged_ratio, remaining_ratio, done_ratio, logged_hours, remaining_hours, estimated_hours, row = nil)
     if logged_ratio + remaining_ratio > 100 # Issue is delayed.
-      hint = l(:charts_deviation_hint_remaining_over_estimation, remaining_hours, logged_hours.to_i+remaining_hours.to_i-estimated_hours.to_i, logged_ratio + remaining_ratio - 100)
+      hint = l(:charts_deviation_hint_remaining_over_estimation, [remaining_hours, logged_hours.to_i+remaining_hours.to_i-estimated_hours.to_i, logged_ratio + remaining_ratio - 100])
     else
       hint = l(:charts_deviation_hint_remaining, remaining_hours)
     end
-    hint << l(:charts_deviation_hint_issue, estimated_hours, done_ratio)
+    hint << l(:charts_deviation_hint_issue, [estimated_hours, done_ratio])
     if row
-      hint << l(:charts_deviation_hint_label, row.id, row.subject)
+      hint << l(:charts_deviation_hint_label, [row.id, row.subject])
     else
       hint << l(:charts_deviation_hint_project_label)
     end
@@ -213,13 +213,13 @@ class ChartsDeviationController < ChartsController
 
   def get_logged_hint(logged_ratio, remaining_ratio, done_ratio, logged_hours, estimated_hours, row = nil)
     if logged_ratio > 100 and remaining_ratio == 0 # Issue is finished.
-      hint = l(:charts_deviation_hint_logged_over_estimation, logged_hours.to_i, logged_hours.to_i-estimated_hours.to_i, logged_ratio - 100)
+      hint = l(:charts_deviation_hint_logged_over_estimation, [logged_hours.to_i, logged_hours.to_i-estimated_hours.to_i, logged_ratio - 100])
     else
       hint = l(:charts_deviation_hint_logged, logged_hours.to_i)
     end
-    hint << l(:charts_deviation_hint_issue, estimated_hours, done_ratio)
+    hint << l(:charts_deviation_hint_issue, [estimated_hours, done_ratio])
     if row
-      hint << l(:charts_deviation_hint_label, row.id, row.subject)
+      hint << l(:charts_deviation_hint_label, [row.id, row.subject])
     else
       hint << l(:charts_deviation_hint_project_label)
     end

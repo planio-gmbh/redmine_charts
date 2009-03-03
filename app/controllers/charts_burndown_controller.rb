@@ -39,13 +39,13 @@ class ChartsBurndownController < ChartsController
         hours -= issue.estimated_hours.to_f * ratio.to_f / 100 if issue.estimated_hours
       end
       done[i] = issues.size > 0 ? Integer(total_ratio/issues.size) : 0
-      remaining[i] = [hours, l(:charts_burndown_hint_remaining, hours, done[i])]
+      remaining[i] = [hours, l(:charts_burndown_hint_remaining, [hours, done[i]])]
     end
 
     prepare_ranged[:dates].each_with_index do |date,i|
       hours = logged[i][0] + remaining[i][0]
       if hours > estimated[i][0]
-        predicted[i] = [hours, l(:charts_burndown_hint_predicted_over_estimation, hours, hours - estimated[i][0], prepare_ranged[:labels][i]), true]
+        predicted[i] = [hours, l(:charts_burndown_hint_predicted_over_estimation, [hours, hours - estimated[i][0], prepare_ranged[:labels][i]]), true]
       else
         predicted[i] = [hours, l(:charts_burndown_hint_predicted, hours)]
       end

@@ -1,6 +1,7 @@
 module RedmineCharts
   module GroupingUtils
 
+    # Changes in Redmine 0.8.2 
     if defined? Redmine::I18n 
       include Redmine::I18n
     else

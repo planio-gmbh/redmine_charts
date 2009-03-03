@@ -57,7 +57,7 @@ class ChartsRatioController < ChartsController
 
       rows.each do |row|
         labels << l(:charts_ratio_label, RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)))
-        hint = l(:charts_ratio_hint, RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), row.value_y.to_i, get_percent(row.value_y, total_hours), total_hours)
+        hint = l(:charts_ratio_hint, [RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), row.value_y.to_i, get_percent(row.value_y, total_hours), total_hours])
         set << [row.value_y.to_i, hint]
       end
     end

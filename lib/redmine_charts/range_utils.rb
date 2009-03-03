@@ -1,6 +1,7 @@
 module RedmineCharts
   module RangeUtils
 
+    # Changes in Redmine 0.8.2 
     if defined? Redmine::I18n 
       include Redmine::I18n
     else
@@ -42,7 +43,7 @@ module RedmineCharts
         labels[i] = get_label(dates[i][0], dates[i][1], range[:in])
       end
 
-      sql = ActiveRecord::Base.format_date(range[:in], column)
+      sql = ActiveRecord::Base.sql_format_date(range[:in], column)
 
       {
         :date_from => dates[0][0].to_date,

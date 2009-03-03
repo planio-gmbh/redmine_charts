@@ -18,7 +18,8 @@ module ChartsHelper
   # Shows chart flash setting path to data.
   def show_graph
     url_for_data = url_for(controller.params.merge(:action => :data)).gsub('&amp;', '&')
-    controller.open_flash_chart_object('100%', '400', url_for_data)
+    relative_url_path = ActionController::Base.respond_to?(:relative_url_root) ? ActionController::Base.relative_url_root : ActionController::AbstractRequest.relative_url_root
+    controller.open_flash_chart_object('100%', '400', url_for_data, true, "#{relative_url_path}/")
   end
 
   # Shows date condition.

@@ -2,6 +2,7 @@ require 'redmine'
 
 RAILS_DEFAULT_LOGGER.info 'Starting Charts Plugin for RedMine'
 
+require_dependency 'redmine_charts/i18n_patch'
 require_dependency 'redmine_charts/date_format'
 require_dependency 'redmine_charts/line_data_converter'
 require_dependency 'redmine_charts/pie_data_converter'
