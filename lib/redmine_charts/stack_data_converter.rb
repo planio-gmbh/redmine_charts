@@ -1,12 +1,7 @@
 module RedmineCharts
   module StackDataConverter
 
-    # Changes in Redmine 0.8.2 
-    if defined? Redmine::I18n 
-      include Redmine::I18n
-    else
-      include GLoc
-    end
+    include Redmine::I18n
 
     def self.convert(chart, data)
       tooltip = OpenFlashChart::Tooltip.new

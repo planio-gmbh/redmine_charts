@@ -51,13 +51,13 @@ class ChartsRatioController < ChartsController
     set = []
 
     if rows.empty?
-      labels << l(:charts_ratio_label, l(:charts_ratio_none))
-      set << [1, l(:charts_ratio_hint, l(:charts_ratio_none), 0, 0, 0)]
+      labels << l(:charts_ratio_label, { :label => l(:charts_ratio_none) })
+      set << [1, l(:charts_ratio_hint, { :label => l(:charts_ratio_none), :hours => 0, :percent => 0, :total_hours => 0 })]
     else
 
       rows.each do |row|
-        labels << l(:charts_ratio_label, RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)))
-        hint = l(:charts_ratio_hint, [RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), row.value_y.to_i, get_percent(row.value_y, total_hours), total_hours])
+        labels << l(:charts_ratio_label, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)) })
+        hint = l(:charts_ratio_hint, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), :hours => row.value_y.to_i, :percent => get_percent(row.value_y, total_hours), :total_hours => total_hours })
         set << [row.value_y.to_i, hint]
       end
     end

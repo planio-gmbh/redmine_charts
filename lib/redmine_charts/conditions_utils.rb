@@ -1,12 +1,7 @@
 module RedmineCharts
   module ConditionsUtils
 
-    # Changes in Redmine 0.8.2 
-    if defined? Redmine::I18n 
-      include Redmine::I18n
-    else
-      include GLoc
-    end
+    include Redmine::I18n
 
     @@default_types = [ :user_id, :issue_id, :activity_id, "issues.category_id".to_sym ]
 
@@ -28,13 +23,7 @@ module RedmineCharts
         case i
         when :user_id then [:user_id, Project.find(project_id).assignable_users.collect { |u| [u.login, u.id] }.unshift([l(:charts_condition_all), 0])]
         when :issue_id then [:issue_id, nil]
-        when :activity_id then 
-          # Changes in Redmine 0.8.2
-          if Enumeration.respond_to?(:get_values)
-            [:activity_id, Enumeration.get_values("ACTI").collect { |a| [a.name.downcase, a.id] }.unshift([l(:charts_condition_all), 0])]
-          else
-            [:activity_id, Enumeration.values("ACTI").collect { |a| [a.name.downcase, a.id] }.unshift([l(:charts_condition_all), 0])]
-          end
+        when :activity_id then [:activity_id, Enumeration.values("ACTI").collect { |a| [a.name.downcase, a.id] }.unshift([l(:charts_condition_all), 0])]
         when "issues.category_id".to_sym then ["issues.category_id".to_sym, IssueCategory.find_all_by_project_id(Project.find(project_id).id).collect { |c| [c.name.downcase, c.id] }.unshift([l(:charts_condition_all), 0])]
         end
       end

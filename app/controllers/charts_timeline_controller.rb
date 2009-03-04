@@ -63,7 +63,7 @@ class ChartsTimelineController < ChartsController
 
   def get_hints(record = nil, grouping = nil)
     unless record.nil?
-      l(:charts_timeline_hint, [record.value_y.to_i, record.count_y.to_i])
+      l(:charts_timeline_hint, { :hours => record.value_y.to_i, :entries => record.count_y.to_i })
     else
       l(:charts_timeline_hint_empty)
     end

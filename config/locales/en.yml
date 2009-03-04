@@ -1,68 +1,69 @@
 en:
-  charts_menu_label: Charts
-  charts_link_ratio: Logged hours ratio
-  charts_link_timeline: Logged hours timeline
-  charts_link_burndown: Burndown
-  charts_link_deviation: Logged hours deviations
-  charts_show_last: Show
-  charts_show_last_days: days
-  charts_show_last_weeks: weeks
-  charts_show_last_months: months
-  charts_group_by: Group by
-  charts_group_by_none: ---
-  charts_group_by_users: users
-  charts_group_by_activities: activities
-  charts_group_by_issues: issues
-  charts_group_by_categories: categories
+  charts_menu_label: "Charts"
+  charts_link_ratio: "Logged hours ratio"
+  charts_link_timeline: "Logged hours timeline"
+  charts_link_burndown: "Burndown"
+  charts_link_deviation: "Logged hours deviations"
+  charts_show_last: "Show"
+  charts_show_last_days: "days"
+  charts_show_last_weeks: "weeks"
+  charts_show_last_months: "months"
+  charts_group_by: "Group by"
+  charts_group_by_none: "---"
+  charts_group_by_users: "users"
+  charts_group_by_activities: "activities"
+  charts_group_by_issues: "issues"
+  charts_group_by_categories: "categories"
   charts_condition_issue_id: "Issue #"
-  charts_condition_user_id: User
-  charts_condition_activity_id: Activity
-  charts_condition_issues.category_id: Category
-  charts_condition_all: ---
-  charts_button: Show
-  charts_group_all: all
+  charts_condition_user_id: "User"
+  charts_condition_activity_id: "Activity"
+  charts_condition_issues:
+    category_id: "Category"
+  charts_condition_all: "---"
+  charts_button: "Show"
+  charts_group_all: "all"
 
-  charts_ratio_global_hint: "#val# from #total# hours<br>#percent# from 100%%"
-  charts_ratio_label: %s
-  charts_ratio_hint: "%s<br>%d (%d%%) of total %d hours"
-  charts_ratio_others: Others
-  charts_ratio_none: None
+  charts_ratio_global_hint: "#val# from #total# hours<br>#percent# from 100%"
+  charts_ratio_label: "{{label}}"
+  charts_ratio_hint: "{{label}}<br>{{hours}} ({{percent}}%) of total {{total_hours}} hours"
+  charts_ratio_others: "Others"
+  charts_ratio_none: "None"
   charts_ratio_help: "Number of hours were logged proportional to total total, grouped and filtered by users, issues, activities or categories."
 
-  charts_timeline_x:
-  charts_timeline_y: hours
-  charts_timeline_hint: %d hours, %d entries
-  charts_timeline_hint_empty: 0 hours
+  charts_timeline_x: ""
+  charts_timeline_y: "hours"
+  charts_timeline_hint: "{{hours}} hours, {{entries}} entries"
+  charts_timeline_hint_empty: "0 hours"
   charts_timeline_help: "Timeline with logged hours, grouped and filtered by users, issues, activities or categories."
 
-  charts_burndown_x: 
-  charts_burndown_y: hours
-  charts_burndown_hint_estimated: %d hours estimated
-  charts_burndown_hint_logged: %d hours logged
-  charts_burndown_hint_remaining: %d hours to finish (%d%% work done)
-  charts_burndown_hint_predicted: total %d hours to finish
-  charts_burndown_hint_predicted_over_estimation: total %d hours to finish, %d over estimation
-  charts_burndown_group_estimated: estimated hours
-  charts_burndown_group_logged: logged hours
-  charts_burndown_group_remaining: remaining hours
-  charts_burndown_group_predicted: predicted (remaining + logged) hours
+  charts_burndown_x: ""
+  charts_burndown_y: "hours"
+  charts_burndown_hint_estimated: "{{estimated_hours}} hours estimated"
+  charts_burndown_hint_logged: "{{logged_hours}} hours logged"
+  charts_burndown_hint_remaining: "{{remaining_hours}} hours to finish ({{work_done}}% work done)"
+  charts_burndown_hint_predicted: "total {{remaining_hours}} hours to finish"
+  charts_burndown_hint_predicted_over_estimation: "total {{remaining_hours}} hours to finish, {{hours_over_estimation}} over estimation"
+  charts_burndown_group_estimated: "estimated hours"
+  charts_burndown_group_logged: "logged hours"
+  charts_burndown_group_remaining: "remaining hours"
+  charts_burndown_group_predicted: "predicted (remaining + logged) hours"
   charts_burndown_help: "Timeline with estimated, logged and remaining hours."
 
-  charts_deviation_x: issues
-  charts_deviation_y: %% ratio to estimated hours
-  charts_deviation_hint_logged_over_estimation: %d hours logged, %d over estimation (%d%%)
-  charts_deviation_hint_logged: %d hours logged
-  charts_deviation_hint_remaining_over_estimation: %d hours to finish, %d over estimation (%d%%)
-  charts_deviation_hint_remaining: %d hours to finish
-  charts_deviation_hint_issue: <br>%d hours estimated, %d%% work done
-  charts_deviation_hint_label: "<br>issue #%d, %s"
+  charts_deviation_x: "issues"
+  charts_deviation_y: "% ratio to estimated hours"
+  charts_deviation_hint_logged_over_estimation: "{{logged_hours}} hours logged, {{hours_over_estimation}} over estimation ({{over_estimation}}%)"
+  charts_deviation_hint_logged: "{{logged_hours}} hours logged"
+  charts_deviation_hint_remaining_over_estimation: "{{remaining_hours}} hours to finish, {{hours_over_estimation}} over estimation ({{over_estimation}}%)"
+  charts_deviation_hint_remaining: "{{remaining_hours}} hours to finish"
+  charts_deviation_hint_issue: "<br>{{estimated_hours}} hours estimated, {{work_done}}% work done"
+  charts_deviation_hint_label: "<br>issue #{{issue_id}}, {{issue_name}}"
   charts_deviation_hint_project_label: "<br>average for project"
-  charts_deviation_label: "#%d"
+  charts_deviation_label: "#{{issue_id}}"
   charts_deviation_project_label: "project"
-  charts_deviation_group_logged: logged hours
-  charts_deviation_group_remaining: remaining hours
-  charts_deviation_group_estimated: estimated hours
-  charts_deviation_help: "Ratio of logged and remaining hours to estimated hours for each estimated issue. This ratio should be less than or equal to 100%%. Only estimated issues are displayed. The first bar represents average data for the project."
+  charts_deviation_group_logged: "logged hours"
+  charts_deviation_group_remaining: "remaining hours"
+  charts_deviation_group_estimated: "estimated hours"
+  charts_deviation_help: "Ratio of logged and remaining hours to estimated hours for each estimated issue. This ratio should be less than or equal to 100%. Only estimated issues are displayed. The first bar represents average data for the project."
 
   charts_earlier: "&laquo; Earlier"
   charts_later: "Later &raquo;"

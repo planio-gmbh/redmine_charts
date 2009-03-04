@@ -2,7 +2,6 @@ require 'redmine'
 
 RAILS_DEFAULT_LOGGER.info 'Starting Charts Plugin for RedMine'
 
-require_dependency 'redmine_charts/i18n_patch'
 require_dependency 'redmine_charts/date_format'
 require_dependency 'redmine_charts/line_data_converter'
 require_dependency 'redmine_charts/pie_data_converter'
@@ -21,10 +20,7 @@ Redmine::Plugin.register :redmine_charts do
 
   # Minimum version of Redmine.
 
-  requires_redmine :version_or_higher => '0.8.0'
-
-  # Default settings for plugin.
-  # settings :default => {'list_size' => '5', 'precision' => '2'}, :partial => 'settings/timesheet_settings'
+  requires_redmine :version_or_higher => '0.8.2'
 
   # Configuring permissions for plugin's controllers.
 
