@@ -20,6 +20,7 @@ pl:
   charts_condition_issues:
     category_id: "Kategoria"
   charts_condition_all: "---"
+  charts_condition_include_subprojects: "pobieraj dane z podprojektów"
   charts_button: "Pokaż"
   charts_group_all: "wszystkie"
 

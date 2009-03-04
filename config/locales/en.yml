@@ -20,6 +20,7 @@ en:
   charts_condition_issues:
     category_id: "Category"
   charts_condition_all: "---"
+  charts_condition_include_subprojects: "include subprojects in chart data"
   charts_button: "Show"
   charts_group_all: "all"
 

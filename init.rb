@@ -20,7 +20,7 @@ Redmine::Plugin.register :redmine_charts do
 
   # Minimum version of Redmine.
 
-  requires_redmine :version_or_higher => '0.8.2'
+  requires_redmine :version_or_higher => '0.8.0'
 
   # Configuring permissions for plugin's controllers.
 

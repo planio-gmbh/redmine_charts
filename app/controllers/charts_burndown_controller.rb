@@ -14,7 +14,7 @@ class ChartsBurndownController < ChartsController
     done = []
     max = 0
 
-    conditions_sql = "project_id = ? and (start_date <= ? or (start_date is null and created_on <= ?))"
+    conditions_sql = "project_id in (?) and (start_date <= ? or (start_date is null and created_on <= ?))"
 
     prepare_ranged[:dates].each_with_index do |date,i|
       hours = Issue.sum(:estimated_hours, :conditions => [conditions_sql, conditions[:project_id], date[1], date[1]])
@@ -23,7 +23,7 @@ class ChartsBurndownController < ChartsController
     end
 
     prepare_ranged[:dates].each_with_index do |date,i|
-      hours = TimeEntry.sum(:hours, :conditions => ["project_id = ? and spent_on <= ?", conditions[:project_id], date[1]])
+      hours = TimeEntry.sum(:hours, :conditions => ["project_id in (?) and spent_on <= ?", conditions[:project_id], date[1]])
       logged[i] = [hours, l(:charts_burndown_hint_logged, { :logged_hours => hours })]
       max = hours if max < hours
     end
