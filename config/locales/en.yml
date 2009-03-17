@@ -29,7 +29,7 @@ en:
   charts_ratio_hint: "{{label}}<br>{{hours}} ({{percent}}%) of total {{total_hours}} hours"
   charts_ratio_others: "Others"
   charts_ratio_none: "None"
-  charts_ratio_help: "Number of hours were logged proportional to total total, grouped and filtered by users, issues, activities or categories."
+  charts_ratio_help: "Hours were logged proportional to total hours, grouped and filtered by users, issues, activities or categories."
 
   charts_timeline_x: ""
   charts_timeline_y: "hours"
