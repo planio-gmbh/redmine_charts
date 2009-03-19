@@ -33,7 +33,7 @@ class ChartsBurndownController < ChartsController
       issues = Issue.find(:all, :conditions => [conditions_sql, conditions[:project_id], date[1], date[1]])
       total_ratio = 0
       issues.each do |issue|
-        journal = issue.journals.find(:first, :conditions => ["created_on <= ?", date[1]], :order => "created_on desc", :select => "journal_details.value", :joins => "left join journal_details on journal_details.journal_id = journals.id and journal_details.prop_key = 'done_ratio'")
+        journal = issue.journals.find(:first, :conditions => ["created_on <= ? and journal_details.prop_key = 'done_ratio'", date[1]], :order => "created_on desc", :select => "journal_details.value", :joins => "left join journal_details on journal_details.journal_id = journals.id")
         ratio = journal ? journal.value.to_i : 0
         total_ratio += ratio
         hours -= issue.estimated_hours.to_f * ratio.to_f / 100 if issue.estimated_hours
