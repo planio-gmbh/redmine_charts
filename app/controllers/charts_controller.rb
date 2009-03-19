@@ -34,6 +34,13 @@ class ChartsController < ApplicationController
     else
       @conditions_options = []
     end
+    
+    if show_sub_project_condition
+      @show_conditions = true
+      @sub_project_condition = true
+    else
+      @sub_project_condition = false
+    end
 
     @show_left_column = @show_conditions
 
@@ -169,6 +176,11 @@ class ChartsController < ApplicationController
   # Returns true if date condition should be displayed
   def show_date_condition
     false
+  end
+  
+  # Returns true if checkbox "include subprojects in chart data"
+  def show_sub_project_condition
+    true
   end
 
   # Returns values for grouping options

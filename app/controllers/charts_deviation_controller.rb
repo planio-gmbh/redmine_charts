@@ -6,7 +6,7 @@ class ChartsDeviationController < ChartsController
 
   def get_data(conditions, grouping, range)
 
-    conditions = ["issues.estimated_hours > 0"]
+    conditions = ["issues.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]]
 
     joins = "left join time_entries on issues.id = time_entries.issue_id"
     group = "issues.id, issues.subject, issues.done_ratio, issues.estimated_hours"

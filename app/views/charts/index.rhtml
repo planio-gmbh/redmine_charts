@@ -18,9 +18,11 @@
 
       <% if @show_conditions %>
         <% form_tag '#', :method => :get do %>
-          <div class="box" style="text-align:center">
-            <p><%= check_box_tag :include_subprojects, "1", !params[:include_subprojects].blank? %> <%= l(:charts_condition_include_subprojects) %></p>          
-          </div>
+          <% if @sub_project_condition %>
+            <div class="box" style="text-align:center">
+              <p><%= check_box_tag :include_subprojects, "1", !params[:include_subprojects].blank? %> <%= l(:charts_condition_include_subprojects) %></p>          
+            </div>
+          <% end %>
           <% if @date_condition %>
             <div class="box" style="text-align:center">
               <p><%= show_date_condition(params[:range_steps], params[:range_in], params[:range_offset]) %></p>
