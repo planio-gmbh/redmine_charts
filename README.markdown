@@ -41,7 +41,3 @@ Timeline with logged hours, grouped and filtered by users, issues, activities or
 Ratio of logged and remaining hours to estimated hours for each estimated issue.
 
 ![Screenshot of deviations chart](http://farm4.static.flickr.com/3441/3219872389_4f1d105c1d_o.jpg)
-
-## Issues and feature requerts
-
-See [Redmine Chart LightHouse page](http://mszczytowski.lighthouseapp.com/projects/20445-redmine-chart/overview).
