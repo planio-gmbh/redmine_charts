@@ -1,7 +1,11 @@
 module RedmineCharts
   module StackDataConverter
 
-    include Redmine::I18n
+    if defined?(Redmine::I18n)
+      include Redmine::I18n
+    else
+      extend ChartsI18nPatch
+    end
 
     def self.convert(chart, data)
       tooltip = OpenFlashChart::Tooltip.new
@@ -29,7 +33,7 @@ module RedmineCharts
         keys << {:colour => RedmineCharts::Utils.color(i), :text => set[0], :"font-size" => 10}
       end
 
-      keys << {:colour => RedmineCharts::Utils.color(values.size), :text => l(:charts_deviation_group_estimated), :"font-size" => 10}
+      keys << {:colour => '#000000', :text => l(:charts_deviation_group_estimated), :"font-size" => 10}
 
       bar.values = values
       bar.set_keys(keys)
@@ -37,7 +41,7 @@ module RedmineCharts
       chart.add_element(bar)
 
       if data[:horizontal_line]
-        shape = OpenFlashChart::Shape.new(RedmineCharts::Utils.color(values.size))
+        shape = OpenFlashChart::Shape.new('#000000')
         shape.values = [
           OpenFlashChart::ShapePoint.new(-0.45, data[:horizontal_line]),
           OpenFlashChart::ShapePoint.new(-0.55 + values.size, data[:horizontal_line]),

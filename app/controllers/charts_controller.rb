@@ -2,12 +2,20 @@ class ChartsController < ApplicationController
 
   unloadable
 
+  unless defined?(Redmine::I18n)
+    include ChartsI18nPatch
+  end
+
   menu_item :charts
 
   before_filter :check_params
 
-  before_filter :find_project, :authorize, :only => [:index]
-  
+  before_filter :find_project, :authorize, :only => [:index]  
+
+  def controller_name
+    "charts"
+  end
+
   # Show main page with conditions form and chart
   def index
     @title = get_title
@@ -19,6 +27,10 @@ class ChartsController < ApplicationController
       @show_conditions = true
     else
       @date_condition = false
+    end
+
+    if show_pages
+      @show_pages = true
     end
 
     unless get_grouping_options.empty?
@@ -50,7 +62,14 @@ class ChartsController < ApplicationController
     else
       @help = nil
     end
-    
+
+    range = RedmineCharts::RangeUtils.from_params(params)
+    pagination = RedmineCharts::PaginationUtils.from_params(params)
+    grouping = RedmineCharts::GroupingUtils.from_params(params)
+    conditions = RedmineCharts::ConditionsUtils.from_params(params, get_conditions_options)
+
+    prepare_view(conditions, grouping, range, pagination)
+
     render :template => "charts/index"
   end
 
@@ -59,16 +78,17 @@ class ChartsController < ApplicationController
     chart =OpenFlashChart.new
 
     range = RedmineCharts::RangeUtils.from_params(params)
+    pagination = RedmineCharts::PaginationUtils.from_params(params)
     grouping = RedmineCharts::GroupingUtils.from_params(params)
     conditions = RedmineCharts::ConditionsUtils.from_params(params, get_conditions_options)
 
-    data = get_data(conditions, grouping, range)
+    data = get_data(conditions, grouping, range, pagination)
 
     get_converter.convert(chart, data)
    
     if show_y_axis
       y = YAxis.new
-      y.set_range(0,data[:max]*1.2,data[:max]/get_y_axis_labels) if data[:max]
+      y.set_range(0,(data[:max]*1.2).round,(data[:max]/get_y_axis_labels).round) if data[:max]
       chart.y_axis = y
     end
 
@@ -133,8 +153,13 @@ class ChartsController < ApplicationController
     nil
   end
 
+  # Prepares data for view
+  def prepare_view(conditions, grouping, range, pagination)
+    nil
+  end
+
   # Returns data for chart
-  def get_data(conditions, grouping, range)
+  def get_data(conditions, grouping, range, pagination)
     raise "overwrite it"
   end
 
@@ -175,6 +200,11 @@ class ChartsController < ApplicationController
 
   # Returns true if date condition should be displayed
   def show_date_condition
+    false
+  end
+
+  # Returns true if pagination should be displayed
+  def show_pages
     false
   end
   

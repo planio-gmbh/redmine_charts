@@ -16,8 +16,10 @@
           <div class="box"><%= @help %></div>
       <% end %>
 
-      <% if @show_conditions %>
-        <% form_tag '#', :method => :get do %>
+      <% form_tag '#', :method => :get do %>
+        <%= hidden_field_tag :page, @page %>
+          
+        <% if @show_conditions %>
           <% if @sub_project_condition %>
             <div class="box" style="text-align:center">
               <p><%= check_box_tag :include_subprojects, "1", !params[:include_subprojects].blank? %> <%= l(:charts_condition_include_subprojects) %></p>          
@@ -35,9 +37,9 @@
               <% end %>
               <% @conditions_options.each do |condition| %>
                 <% if condition[1].nil? %>
-                  <p><%= l("charts_condition_#{condition[0]}".to_sym) %> <%= text_field_tag "conditions_#{condition[0]}".to_sym, params["conditions_#{condition[0]}".to_sym].blank? ? nil : Integer(params["conditions_#{condition[0]}".to_sym]) %></p>
+                  <p><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %> <%= text_field_tag "conditions_#{condition[0]}".to_sym, params["conditions_#{condition[0]}".to_sym].blank? ? nil : Integer(params["conditions_#{condition[0]}".to_sym]) %></p>
                 <% else %>
-                  <p><%= l("charts_condition_#{condition[0]}".to_sym) %> <%= select_tag "conditions_#{condition[0]}".to_sym, options_for_select(condition[1], params["conditions_#{condition[0]}".to_sym] ? Integer(params["conditions_#{condition[0]}".to_sym]) : nil) %></p>
+                  <p><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %> <%= select_tag "conditions_#{condition[0]}".to_sym, options_for_select(condition[1], params["conditions_#{condition[0]}".to_sym] ? Integer(params["conditions_#{condition[0]}".to_sym]) : nil) %></p>
                 <% end %>
               <% end %>              
             </div>
@@ -47,9 +49,17 @@
           </div>
         <% end %>
       <% end %>
+      <br/>
     </div>
 <% end %>
 
 <div class="splitcontentright" style="width:<%= @show_left_column ? "68%" : "100%" %>">
     <%= show_graph %>
+
+    <% if @show_pages %>
+      <div style="text-align:center;padding-top:20px">
+        <%= show_pages(@page, @pages) %>
+      </div>
+    <% end %>
+
 </div>

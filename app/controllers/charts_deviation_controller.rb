@@ -4,15 +4,18 @@ class ChartsDeviationController < ChartsController
   
   protected
 
-  def get_data(conditions, grouping, range)
+  def prepare_view(conditions, grouping, range, pagination)
+    @page = pagination[:page]
+    @pages = (Issue.count(:conditions => ["issues.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]]).to_f / pagination[:per_page]).ceil
+  end
 
-    conditions = ["issues.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]]
+  def get_data(conditions, grouping, range, pagination)
 
-    joins = "left join time_entries on issues.id = time_entries.issue_id"
-    group = "issues.id, issues.subject, issues.done_ratio, issues.estimated_hours"
+    joins = "left join issues on time_entries.issue_id = issues.id"
+    group = "issues.id, issues.subject, issues.status_id, issues.done_ratio, issues.estimated_hours"
     select = "#{group}, sum(time_entries.hours) as logged_hours"
     
-    rows = Issue.find(:all, :conditions => conditions, :joins => joins, :select => select, :readonly => true, :group => group)
+    rows = TimeEntry.find(:all, :conditions => ["time_entries.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]], :joins => joins, :select => select, :readonly => true, :group => group, :order => "issues.id asc")
 
     labels = []
     max = 0
@@ -34,6 +37,11 @@ class ChartsDeviationController < ChartsController
       labels << l(:charts_deviation_label, { :issue_id => row.id })
 
       logged_ratio = get_logged_ratio(row.logged_hours, row.estimated_hours)
+
+      # Closed issues has done ratio equals to 100%.
+      if IssueStatus.find(row.status_id).is_closed?
+        row.done_ratio = 100
+      end
 
       # Ratio of remaining hours.
       if row.done_ratio == 100
@@ -62,12 +70,12 @@ class ChartsDeviationController < ChartsController
       if remaining_value or logged_value
         logged_values << logged_value
         remaining_values << remaining_value
-        total_logged_hours += row.logged_hours.to_i
-        total_estimated_hours += row.estimated_hours.to_i
+        total_logged_hours += row.logged_hours.to_f
+        total_estimated_hours += row.estimated_hours.to_f
         total_logged_ratio += logged_ratio
         total_remaining_hours += remaining_hours
         total_remaining_ratio += remaining_ratio
-        total_done_ratio += row.done_ratio.to_i       
+        total_done_ratio += row.done_ratio.to_f
         max = remaining_ratio + logged_ratio if max < remaining_ratio + logged_ratio
       else
         labels.delete_at(index)
@@ -91,19 +99,48 @@ class ChartsDeviationController < ChartsController
     hint = get_remaining_hint(project_logged_ratio, project_remaining_ratio, project_done_ratio, total_logged_hours, total_remaining_hours, total_estimated_hours)
     project_remaining_value = [project_remaining_ratio, hint]
 
-    labels.unshift(l(:charts_deviation_project_label))
-    logged_values.unshift(project_logged_value)
-    remaining_values.unshift(project_remaining_value)
+    offset = pagination[:per_page] * (pagination[:page] - 1)
+    limit = offset + pagination[:per_page] - 1
+
+    labels = labels[offset..limit]
+    logged_values = logged_values[offset..limit]
+    remaining_values = remaining_values[offset..limit]
+
+    if labels == nil
+      labels = [l(:charts_deviation_project_label)]
+      logged_values = [project_logged_value]
+      remaining_values = [project_remaining_value]
+    else
+      labels.unshift(l(:charts_deviation_project_label))
+      logged_values.unshift(project_logged_value)
+      remaining_values.unshift(project_remaining_value)
+    end
 
     sets = [
       [l(:charts_deviation_group_logged), logged_values],
       [l(:charts_deviation_group_remaining), remaining_values]
     ]
 
+    # Hours logged for not estimated issues.
+
+    logged_hours_for_not_estimated_issues = TimeEntry.sum(:hours, :conditions => ["issues.project_id in (?) and (issues.estimated_hours = 0 or issues.estimated_hours is null)", conditions[:project_id]], :joins => "left join issues on time_entries.issue_id = issues.id")
+
+    # Hours logged for project, not issues.
+
+    logged_hours_for_not_estimated_issues += TimeEntry.sum(:hours, :conditions => ["time_entries.project_id in (?) and time_entries.issue_id is null", conditions[:project_id]])
+
+    if logged_hours_for_not_estimated_issues > 0
+      value = logged_hours_for_not_estimated_issues.to_f / (total_logged_hours.to_f + total_remaining_hours.to_f) * 100
+      values = []
+      values << [value, l(:charts_deviation_hint_logged_not_estimated, { :logged_hours => RedmineCharts::Utils.round(logged_hours_for_not_estimated_issues) })]
+      (labels.size - 1).times { values << nil }
+      sets << [l(:charts_deviation_group_logged_not_estimated), values]
+    end
+
     {
       :labels => labels,
       :count => labels.size,
-      :max => max,
+      :max => max > 100 ? max : 100,
       :sets => sets,
       :horizontal_line => 100
     }
@@ -151,7 +188,11 @@ class ChartsDeviationController < ChartsController
 
   def get_conditions_options
     []
-  end  
+  end
+
+  def show_pages
+    true
+  end
 
   private
 
@@ -162,7 +203,11 @@ class ChartsDeviationController < ChartsController
   # Logged ratio: 4/10*100 = 40
   #
   def get_logged_ratio(logged_hours, estimated_hours)
-    Integer(logged_hours.to_f/estimated_hours.to_f*100)
+    if estimated_hours
+      logged_hours.to_f/estimated_hours.to_f*100
+    else
+      0
+    end
   end
 
   # Ratio of remaining hours depending on logged hours.
@@ -172,11 +217,7 @@ class ChartsDeviationController < ChartsController
   # Remaining ratio: 20/40*(100-40) = 120 = 60
   #
   def get_remaining_ratio(logged_ratio, done_ratio)
-    if logged_ratio > 0
-      Integer(logged_ratio.to_f/done_ratio.to_f*(100-done_ratio))
-    else
-      Integer(100-done_ratio)
-    end
+    logged_ratio.to_f/done_ratio.to_f*(100-done_ratio.to_f)
   end
 
   # Number of remaining hours depending on logged hours.
@@ -188,21 +229,21 @@ class ChartsDeviationController < ChartsController
   #
   def get_remaining_hours(logged_hours, estimated_hours, logged_ratio, remaining_ratio)
     if logged_ratio > 0
-      remaining_hours = Integer(logged_hours.to_f/logged_ratio.to_f*remaining_ratio)
+      remaining_hours = logged_hours.to_f/logged_ratio.to_f*remaining_ratio.to_f
     else
-      remaining_hours = Integer(estimated_hours.to_f*remaining_ratio/100)
+      remaining_hours = estimated_hours.to_f*remaining_ratio.to_f/100
     end
-    remaining_hours += 1 if remaining_hours == 0
+    remaining_hours += 1 if remaining_hours < 0.5
     remaining_hours
   end
 
   def get_remaining_hint(logged_ratio, remaining_ratio, done_ratio, logged_hours, remaining_hours, estimated_hours, row = nil)
     if logged_ratio + remaining_ratio > 100 # Issue is delayed.
-      hint = l(:charts_deviation_hint_remaining_over_estimation, { :remaining_hours => remaining_hours, :hours_over_estimation => logged_hours.to_i+remaining_hours.to_i-estimated_hours.to_i, :over_estimation => logged_ratio + remaining_ratio - 100 })
+      hint = l(:charts_deviation_hint_remaining_over_estimation, { :remaining_hours => RedmineCharts::Utils.round(remaining_hours), :hours_over_estimation => RedmineCharts::Utils.round(logged_hours.to_f + remaining_hours.to_f - estimated_hours.to_f), :over_estimation => (logged_ratio.to_f + remaining_ratio.to_f - 100).round })
     else
-      hint = l(:charts_deviation_hint_remaining, { :remaining_hours => remaining_hours })
+      hint = l(:charts_deviation_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(remaining_hours) })
     end
-    hint << l(:charts_deviation_hint_issue, { :estimated_hours => estimated_hours, :work_done => done_ratio })
+    hint << l(:charts_deviation_hint_issue, { :estimated_hours => RedmineCharts::Utils.round(estimated_hours), :work_done => done_ratio.to_f.round })
     if row
       hint << l(:charts_deviation_hint_label, { :issue_id => row.id, :issue_name => row.subject})
     else
@@ -213,11 +254,11 @@ class ChartsDeviationController < ChartsController
 
   def get_logged_hint(logged_ratio, remaining_ratio, done_ratio, logged_hours, estimated_hours, row = nil)
     if logged_ratio > 100 and remaining_ratio == 0 # Issue is finished.
-      hint = l(:charts_deviation_hint_logged_over_estimation, { :logged_hours => logged_hours.to_i, :hours_over_estimation => logged_hours.to_i-estimated_hours.to_i, :over_estimation => logged_ratio - 100 })
+      hint = l(:charts_deviation_hint_logged_over_estimation, { :logged_hours => RedmineCharts::Utils.round(logged_hours), :hours_over_estimation => RedmineCharts::Utils.round(logged_hours.to_f - estimated_hours.to_f), :over_estimation => (logged_ratio.to_f - 100).round })
     else
-      hint = l(:charts_deviation_hint_logged, { :logged_hours => logged_hours.to_i })
+      hint = l(:charts_deviation_hint_logged, { :logged_hours => RedmineCharts::Utils.round(logged_hours) })
     end
-    hint << l(:charts_deviation_hint_issue, { :estimated_hours => estimated_hours, :work_done => done_ratio })
+    hint << l(:charts_deviation_hint_issue, { :estimated_hours => RedmineCharts::Utils.round(estimated_hours), :work_done => done_ratio.to_f.round })
     if row
       hint << l(:charts_deviation_hint_label, { :issue_id => row.id, :issue_name => row.subject})
     else

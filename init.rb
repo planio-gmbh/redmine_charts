@@ -2,7 +2,18 @@ require 'redmine'
 
 RAILS_DEFAULT_LOGGER.info 'Starting Charts Plugin for RedMine'
 
-require_dependency 'redmine_charts/date_format'
+require 'dispatcher'
+require_dependency 'redmine_charts/enumeration_patch'
+
+unless defined?(Redmine::I18n)
+  require_dependency 'redmine_charts/i18n_patch'
+end
+
+Dispatcher.to_prepare do
+  Enumeration.send(:include, ChartsEnumerationPatch)
+end
+
+require_dependency 'redmine_charts/sql_utils'
 require_dependency 'redmine_charts/line_data_converter'
 require_dependency 'redmine_charts/pie_data_converter'
 require_dependency 'redmine_charts/stack_data_converter'
@@ -14,13 +25,13 @@ require_dependency 'redmine_charts/range_utils'
 Redmine::Plugin.register :redmine_charts do
   name 'Charts Plugin'
   author 'Maciej Szczytowski'
-  description 'Plugin for Redmine to show Your projects\' charts.'
+  description 'Plugin for Redmine which integrates some nice project charts.'
   url 'http://github.com/mszczytowski/redmine_charts/'
   version '0.0.12'
 
   # Minimum version of Redmine.
 
-  requires_redmine :version_or_higher => '0.8.3'
+  requires_redmine :version_or_higher => '0.8.0'
 
   # Configuring permissions for plugin's controllers.
 

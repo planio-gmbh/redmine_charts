@@ -1,7 +1,7 @@
 Redmine Charts
 ==============
 
-Plugin for Redmine to show Your projects' charts.
+Plugin for Redmine which integrates some nice project charts.
 
 ## Instalation
 
@@ -16,6 +16,15 @@ Install OpenFlashChart plugin.
 
 Run Redmine and have a fun!
 
+## Changelog
+
+### 0.0.12
+
+- many bug fixes (#6, #7, #8, #9, #10)
+- new conditions (trackers, priorities, versions)
+- pages on deviations chart (#5)
+- hours logged for project and not estimated issues on deviations chart
+
 ## Charts
 
 ### Burndown
@@ -26,13 +35,13 @@ Timeline with estimated, logged and remaining hours.
 
 ### Logged hours ratio
 
-Number of hours were logged proportional to total total, grouped and filtered by users, issues, activities or categories.
+Number of hours were logged proportional to total total, grouped and filtered by users, issues, activities, categories, version, priorities or trackers.
 
 ![Screenshot of groups chart](http://farm4.static.flickr.com/3313/3220723922_64540005a0_o.jpg)
 
 ### Logged hours timeline
 
-Timeline with logged hours, grouped and filtered by users, issues, activities or categories.
+Timeline with logged hours, grouped and filtered by users, issues, activities, categories, version, priorities and trackers.
 
 ![Screenshot of hours chart](http://farm4.static.flickr.com/3112/3220723804_2b274e7e2f_o.jpg)
 

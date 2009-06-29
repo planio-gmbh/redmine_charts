@@ -1,9 +1,13 @@
 module RedmineCharts
   module GroupingUtils
 
-    include Redmine::I18n
+    if defined?(Redmine::I18n)
+      include Redmine::I18n
+    else
+      extend ChartsI18nPatch
+    end
 
-    @@types = [ :users, :issues, :activities, :categories ]
+    @@types = [ :users, :issues, :activities, :categories, :trackers, :versions, :priorities ]
 
     def self.default_types
       @@types
@@ -22,18 +26,30 @@ module RedmineCharts
     end
 
     def self.to_string(id, grouping, default = nil)
-      if grouping == :categories and category = IssueCategory.find_by_id(id.to_i)
-        category.name.capitalize
+      if grouping.nil? or grouping == :none
+        l(:charts_group_all)
+      elsif grouping == :categories and category = IssueCategory.find_by_id(id.to_i)
+        category.name
       elsif grouping == :users and user = User.find_by_id(id.to_i)
-        user.login.capitalize
+        user.login
       elsif grouping == :issues and issue = Issue.find_by_id(id.to_i)
-        "##{issue.id} #{issue.subject.capitalize}"
+        subject = issue.subject
+        if subject.length > 24
+          subject = "#{subject[0, 20].strip} ..."
+        end
+        "##{issue.id} #{subject}"
       elsif grouping == :activities and activity = Enumeration.find_by_id(id.to_i)
-        activity.name.capitalize
+        activity.name
+      elsif grouping == :priorities and priority = Enumeration.find_by_id(id.to_i)
+        priority.name
+      elsif grouping == :trackers and tracker = Tracker.find_by_id(id.to_i)
+        tracker.name
+      elsif grouping == :versions and version = Version.find_by_id(id.to_i)
+        version.name
       elsif default
         default
       else
-        id
+        l(:charts_group_none)
       end
     end
 

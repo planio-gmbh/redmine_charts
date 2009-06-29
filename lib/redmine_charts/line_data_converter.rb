@@ -1,14 +1,18 @@
 module RedmineCharts
   module LineDataConverter
 
-    include Redmine::I18n
+    if defined?(Redmine::I18n)
+      include Redmine::I18n
+    else
+      extend ChartsI18nPatch
+    end
 
     def self.convert(chart, data)
       index = 0
 
       data[:sets].each do |set|
         line = OpenFlashChart::LineDot.new
-        line.text = (set[0] == '0') ? l(:charts_group_all) : set[0]
+        line.text = set[0]
         line.width = 2
         line.colour = RedmineCharts::Utils.color(index)
         line.dot_size =  2

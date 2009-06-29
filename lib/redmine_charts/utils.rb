@@ -1,7 +1,7 @@
 module RedmineCharts
   module Utils
 
-    @@colors = ['#80C31C', '#FF7900', '#37414A', '#DFC329', '#00477F', '#d01f3c', '#356aa0', '#C79810', '#4C88BE', '#5E4725', '#6363AC']
+    @@colors = ['#80C31C', '#FF7900', '#DFC329', '#00477F', '#d01f3c', '#356aa0', '#C79810', '#4C88BE', '#5E4725', '#6363AC']
 
     @@controllers = %w{burndown ratio timeline deviation}.collect { |name| [name.to_sym, "charts_#{name}".to_sym] }
 
@@ -29,6 +29,10 @@ module RedmineCharts
 
     def self.color(i)
       @@colors[i % @@colors.length]
+    end
+
+    def self.round(i)
+      ((i.to_f*10).round).to_f/10
     end
 
   end

@@ -1,7 +1,11 @@
 module RedmineCharts
   module RangeUtils
 
-    include Redmine::I18n
+    if defined?(Redmine::I18n)
+      include Redmine::I18n
+    else
+      extend ChartsI18nPatch
+    end
 
     @@in_types = [ :days, :weeks, :months ]
 
@@ -38,7 +42,7 @@ module RedmineCharts
         labels[i] = get_label(dates[i][0], dates[i][1], range[:in])
       end
 
-      sql = ActiveRecord::Base.sql_format_date(range[:in], column)
+      sql = RedmineCharts::SqlUtils.sql_format_date(range[:in], column)
 
       {
         :date_from => dates[0][0].to_date,

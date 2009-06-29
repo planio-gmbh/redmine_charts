@@ -4,7 +4,7 @@ class ChartsRatioController < ChartsController
   
   protected
 
-  def get_data(conditions, grouping, range)
+  def get_data(conditions, grouping, range, pagination)
     grouping ||= :users
     
     group = case grouping
@@ -12,14 +12,37 @@ class ChartsRatioController < ChartsController
     when :issues then "issue_id"
     when :activities then "activity_id"
     when :categories then "issues.category_id"
+    when :priorities then "issues.priority_id"
+    when :trackers then "issues.tracker_id"
+    when :versions then "issues.fixed_version_id"
     end
+
+    joins = nil
+
+    conditions_new = {}
+
+    conditions.each do |k,v|
+      if k == :project_id
+        conditions_new["time_entries.project_id".to_sym] = v
+      else
+        conditions_new[k] = v
+      end
+    end
+
+    conditions = conditions_new
+
+    conditions.each do |k,v|
+      joins = "left join issues on issues.id = issue_id" if k.to_s[0,7] == 'issues.'
+    end
+
+    joins = "left join issues on issues.id = issue_id" if group[0,7] == 'issues.'
 
     select = []
     select << "sum(hours) as value_y"
     select << "#{group} as group_id"
     select = select.join(", ")
 
-    rows = TimeEntry.find(:all, :joins => "left join issues on issues.id = issue_id", :select => select, :conditions => conditions, :readonly => true, :group => group, :order => "1 asc")
+    rows = TimeEntry.find(:all, :joins => joins, :select => select, :conditions => conditions, :readonly => true, :group => group, :order => "1 asc, 2 asc")
 
     bigger_rows = []
     total_hours = 0
@@ -27,12 +50,12 @@ class ChartsRatioController < ChartsController
     other_no = 0
 
     rows.each do |row|
-      total_hours += row.value_y.to_i
+      total_hours += row.value_y.to_f
     end
 
     rows.each do |row|
       if row.group_id == 0 or ((other_value + row.value_y.to_f)/total_hours) < 0.05
-        other_value += row.value_y.to_i
+        other_value += row.value_y.to_f
         other_no += 1
       else
         bigger_rows << row
@@ -54,11 +77,10 @@ class ChartsRatioController < ChartsController
       labels << l(:charts_ratio_label, { :label => l(:charts_ratio_none) })
       set << [1, l(:charts_ratio_hint, { :label => l(:charts_ratio_none), :hours => 0, :percent => 0, :total_hours => 0 })]
     else
-
       rows.each do |row|
         labels << l(:charts_ratio_label, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)) })
-        hint = l(:charts_ratio_hint, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), :hours => row.value_y.to_i, :percent => get_percent(row.value_y, total_hours), :total_hours => total_hours })
-        set << [row.value_y.to_i, hint]
+        hint = l(:charts_ratio_hint, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, grouping, l(:charts_ratio_others)), :hours => RedmineCharts::Utils.round(row.value_y), :percent => get_percent(row.value_y, total_hours), :total_hours => RedmineCharts::Utils.round(total_hours) })
+        set << [RedmineCharts::Utils.round(row.value_y), hint]
       end
     end
 
@@ -85,8 +107,8 @@ class ChartsRatioController < ChartsController
   private
 
   def get_percent(value, total)
-    if total > 0
-      Integer(value.to_f/total*100)
+    if total > 0      
+      (value.to_f/total*100).round
     else
       0
     end

@@ -1,9 +1,13 @@
 module RedmineCharts
   module ConditionsUtils
 
-    include Redmine::I18n
-
-    @@default_types = [ :user_id, :issue_id, :activity_id, "issues.category_id".to_sym ]
+    if defined?(Redmine::I18n)
+      include Redmine::I18n
+    else
+      extend ChartsI18nPatch
+    end
+    
+    @@default_types = [ "time_entries.user_id".to_sym, "time_entries.issue_id".to_sym, "time_entries.activity_id".to_sym, "issues.category_id".to_sym, "issues.fixed_version_id".to_sym, "issues.tracker_id".to_sym, "issues.priority_id".to_sym ]
 
     def self.default_types
       @@default_types
@@ -21,18 +25,21 @@ module RedmineCharts
     def self.to_options(options, project_id)
       options.collect do |i|
         case i
-        when :user_id then 
+        when "time_entries.user_id".to_sym then
           users = {}          
           project_and_its_children_ids(project_id).each do |pid|
-            Project.find(pid).assignable_users.each do |u|
-              users[u.login] = u.id
+            Project.find(pid).members.each do |m|
+              users[m.user.name] = m.user.id
             end
           end
           
-          [:user_id, users.to_a.unshift([l(:charts_condition_all), 0])]
-        when :issue_id then [:issue_id, nil]
-        when :activity_id then [:activity_id, Enumeration.values("ACTI").collect { |a| [a.name.downcase, a.id] }.unshift([l(:charts_condition_all), 0])]
-        when "issues.category_id".to_sym then ["issues.category_id".to_sym, IssueCategory.find_all_by_project_id(project_and_its_children_ids(project_id)).collect { |c| [c.name.downcase, c.id] }.unshift([l(:charts_condition_all), 0])]
+          ["time_entries.user_id".to_sym, users.to_a.unshift([l(:charts_condition_all), 0])]
+        when "time_entries.issue_id".to_sym then ["time_entries.issue_id".to_sym, nil]
+        when "time_entries.activity_id".to_sym then ["time_entries.activity_id".to_sym, Enumeration.find_all_by_opt("ACTI").collect { |a| [a.name, a.id] }.unshift([l(:charts_condition_all), 0])]
+        when "issues.category_id".to_sym then ["issues.category_id".to_sym, IssueCategory.find_all_by_project_id(project_and_its_children_ids(project_id)).collect { |c| [c.name, c.id] }.unshift([l(:charts_condition_all), 0])]
+        when "issues.fixed_version_id".to_sym then ["issues.fixed_version_id".to_sym, Version.find_all_by_project_id(project_and_its_children_ids(project_id)).collect { |c| [c.name, c.id] }.unshift([l(:charts_condition_all), 0])]
+        when "issues.tracker_id".to_sym then ["issues.tracker_id".to_sym, Tracker.all.collect { |c| [c.name, c.id] }.unshift([l(:charts_condition_all), 0])]
+        when "issues.priority_id".to_sym then ["issues.priority_id".to_sym, Enumeration.find_all_by_opt("IPRI").collect { |a| [a.name, a.id] }.unshift([l(:charts_condition_all), 0])]
         end
       end
     end

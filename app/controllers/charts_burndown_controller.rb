@@ -1,10 +1,10 @@
 class ChartsBurndownController < ChartsController
 
   unloadable
-  
+
   protected
 
-  def get_data(conditions, grouping, range)
+  def get_data(conditions, grouping, range, pagination)
     prepare_ranged = RedmineCharts::RangeUtils.prepare_range(range, "start_date")
 
     estimated = []
@@ -23,14 +23,14 @@ class ChartsBurndownController < ChartsController
       hours = i > 0 ? estimated[i-1][0] : 0
       for k in j..(estimated_hours_rows.size - 1)
         if estimated_hours_rows[k].issue_date.to_time <= date[1]
-          hours += estimated_hours_rows[k].hours.to_i
+          hours += estimated_hours_rows[k].hours.to_f
           j += 1
         else
           break
         end
       end
                         
-      estimated[i] = [hours, l(:charts_burndown_hint_estimated, { :estimated_hours => hours })]
+      estimated[i] = [hours, l(:charts_burndown_hint_estimated, { :estimated_hours => RedmineCharts::Utils.round(hours) })]
       max = hours if max < hours
     end
 
@@ -43,35 +43,52 @@ class ChartsBurndownController < ChartsController
       hours = i > 0 ? logged[i-1][0] : 0
       for k in j..(logged_hours_rows.size - 1)
         if logged_hours_rows[k].spent_on.to_time <= date[1]
-          hours += logged_hours_rows[k].hours.to_i
+          hours += logged_hours_rows[k].hours.to_f
           j += 1
         else
           break
         end
       end    
-      logged[i] = [hours, l(:charts_burndown_hint_logged, { :logged_hours => hours })]
+      logged[i] = [hours, l(:charts_burndown_hint_logged, { :logged_hours => RedmineCharts::Utils.round(hours) })]
       max = hours if max < hours
     end
 
     # get data for done ratio, remaining and predicted hours
 
-    prepare_ranged[:dates].each_with_index do |date,i|    
-      rows = JournalDetail.find_by_sql(["select sum(journal_details.value*issues.estimated_hours)/sum(issues.estimated_hours) as ratio_done from (select max(journal_details.id) as journal_details_id, journals.journalized_id as issue_id from issues left join journals on journals.journalized_id = issues.id and journals.journalized_type ='Issue' left join journal_details on journals.id = journal_details.journal_id and journal_details.prop_key = 'done_ratio' where issues.project_id in (?) and (journals.id is null or journals.created_on <= ?) group by issues.id) left join issues on issues.id = issue_id left join journal_details on journal_details.id = journal_details_id", conditions[:project_id], date[1]])
-      if rows 
-        ratio_done = rows[0].ratio_done
+    prepare_ranged[:dates].each_with_index do |date,i|
+      rows = JournalDetail.find_by_sql(["select
+        (sum(#{RedmineCharts::SqlUtils.sql_string_to_number('journal_details.value')}*issues.estimated_hours)/sum(issues.estimated_hours)) as done_ratio
+        from
+          (select
+            max(journal_details.id) as max_id,
+            journals.journalized_id as issue_id
+          from
+            issues
+            left join journals on journals.journalized_id = issues.id and journals.journalized_type ='Issue'
+            left join journal_details on journals.id = journal_details.journal_id and journal_details.prop_key = 'done_ratio'
+          where
+            issues.project_id in (?)
+            and (journals.id is null or journals.created_on <= ?)
+          group by journals.journalized_id
+        ) as max_journal_details
+        left join issues on issues.id = max_journal_details.issue_id
+        left join journal_details on journal_details.id = max_journal_details.max_id", conditions[:project_id], date[1]])
+      if rows
+        done[i] = rows[0].done_ratio.to_f
+      else
+        done[i] = 0.0
       end
-      done[i] = ratio_done.to_i
       
       remaining_hours = done[i] > 0 ? logged[i][0]/done[i]*(100-done[i]) : estimated[i][0]
-      
-      remaining[i] = [remaining_hours, l(:charts_burndown_hint_remaining, { :remaining_hours => remaining_hours, :work_done => done[i] })]
+
+      remaining[i] = [remaining_hours, l(:charts_burndown_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(remaining_hours), :work_done => done[i].round })]
       
       predicted_hours = logged[i][0] + remaining[i][0]
       
-      if predicted_hours.to_i > estimated[i][0].to_i
-        predicted[i] = [predicted_hours, l(:charts_burndown_hint_predicted_over_estimation, { :remaining_hours => predicted_hours, :hours_over_estimation => predicted_hours - estimated[i][0] }), true]
+      if predicted_hours.to_f > estimated[i][0].to_f
+        predicted[i] = [predicted_hours, l(:charts_burndown_hint_predicted_over_estimation, { :predicted_hours => RedmineCharts::Utils.round(predicted_hours), :hours_over_estimation => RedmineCharts::Utils.round(predicted_hours - estimated[i][0]) }), true]
       else
-        predicted[i] = [predicted_hours, l(:charts_burndown_hint_predicted, { :remaining_hours => predicted_hours })]
+        predicted[i] = [predicted_hours, l(:charts_burndown_hint_predicted, { :predicted_hours => RedmineCharts::Utils.round(predicted_hours) })]
       end
       
       max = predicted_hours if max < predicted_hours
@@ -87,7 +104,7 @@ class ChartsBurndownController < ChartsController
     {
       :labels => prepare_ranged[:labels],
       :count => prepare_ranged[:steps],
-      :max => max,
+      :max => max > 1 ? max : 1,
       :sets => sets
     }
   end

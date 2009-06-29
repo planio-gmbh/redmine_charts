@@ -1,5 +1,9 @@
 module ChartsHelper
 
+  def self.l(s)
+    s
+  end
+
   # Shows chart plugin menu.
   def show_charts_menu(separator = ' | ')
     res = ""
@@ -42,6 +46,27 @@ module ChartsHelper
     end
 
     res
+  end
+
+  # Shows pages.
+  def show_pages(page, pages)
+    if pages > 1
+      if page == 1
+        res = l(:charts_previous)
+      else
+        res = link_to_function(l(:charts_previous), :onclick => 'charts_previous();')
+      end
+
+      res << ' - '
+
+      if page == pages
+        res << l(:charts_next)
+      else
+        res << link_to_function(l(:charts_next), :onclick => 'charts_next();')
+      end
+
+      res
+    end
   end
 
 end

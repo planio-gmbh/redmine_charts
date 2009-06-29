@@ -1,9 +1,13 @@
 module RedmineCharts
-  module DateFormat
+  module SqlUtils
 
     case ActiveRecord::Base.connection.adapter_name
-    when /mysql/i
-      def sql_format_date(format, column)
+    when /mysql|jdbc/i
+      def self.sql_string_to_number(column)
+        column
+      end
+
+      def self.sql_format_date(format, column)
         case format
         when :weeks
           "(case when cast(date_format(#{column}, '%d') as unsigned) <= cast(date_format(#{column}, '%w') as unsigned) then date_format(date_add(#{column}, interval - 7 day), '%Y%m%d') - date_format(#{column}, '%w') + 7 else date_format(#{column}, '%Y%m%d') - date_format(#{column}, '%w') end)"
@@ -14,7 +18,11 @@ module RedmineCharts
         end
       end
     when /postgresql/i
-      def sql_format_date(format, column)
+      def self.sql_string_to_number(column)
+        "to_number(%s, '999')" % column
+      end
+
+      def self.sql_format_date(format, column)
         case format
         when :weeks
           "(case when date_part('days', #{column}) <= date_part('dow', #{column}) then cast(to_char(#{column} - interval '7 days','YYYYMMDD') as integer) - date_part('dow', #{column}) + 7 else cast(to_char(#{column},'YYYYMMDD') as integer) - date_part('dow', #{column}) end)"
@@ -25,7 +33,11 @@ module RedmineCharts
         end
       end
     when /sqlite/i
-      def sql_format_date(format, column)
+      def self.sql_string_to_number(column)
+        column
+      end
+
+      def self.sql_format_date(format, column)
         case format
         when :weeks
           "(case when cast(strftime('%d', #{column}) as 'integer') <= strftime('%w', #{column}) then strftime('%Y%m%d', date(#{column}, '-7 day')) - strftime('%w', #{column}) + 7 else strftime('%Y%m%d', #{column}) - strftime('%w', #{column}) end)"
@@ -41,5 +53,3 @@ module RedmineCharts
 
   end
 end
-
-ActiveRecord::Base.send(:extend, RedmineCharts::DateFormat)
