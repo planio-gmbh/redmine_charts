@@ -217,7 +217,7 @@ class ChartsDeviationController < ChartsController
   # Remaining ratio: 20/40*(100-40) = 120 = 60
   #
   def get_remaining_ratio(logged_ratio, done_ratio)
-    logged_ratio.to_f/done_ratio.to_f*(100-done_ratio.to_f)
+    logged_ratio.to_f/((done_ratio.to_f == 0.0 ? 1.0 : done_ratio.to_f)*(100-done_ratio.to_f))
   end
 
   # Number of remaining hours depending on logged hours.
