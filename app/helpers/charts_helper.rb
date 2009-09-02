@@ -23,7 +23,14 @@ module ChartsHelper
   def show_graph
     url_for_data = url_for(controller.params.merge(:action => :data)).gsub('&amp;', '&')
     relative_url_path = ActionController::Base.respond_to?(:relative_url_root) ? ActionController::Base.relative_url_root : ActionController::AbstractRequest.relative_url_root
-    controller.open_flash_chart_object('100%', '400', url_for_data, true, "#{relative_url_path}/")
+    html, div_name = controller.open_flash_chart_object_and_div_name('100%', '400', url_for_data, true, "#{relative_url_path}/")
+
+    html << '<script type="text/javascript">' << "\n"
+    html << "var charts_to_image_title = '#{h(controller.title)}';\n" 
+    html << "var charts_to_image_id = '#{div_name}';\n"
+    html << '</script>'
+
+    html
   end
 
   # Shows date condition.

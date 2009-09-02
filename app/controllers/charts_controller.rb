@@ -136,6 +136,10 @@ class ChartsController < ApplicationController
     render :text => chart.to_s
   end
 
+  def title
+    get_title
+  end
+
   protected
 
   # Returns chart title

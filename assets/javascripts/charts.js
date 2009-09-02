@@ -23,3 +23,9 @@ function charts_next() {
     $('page').value = parseInt($('page').value) + 1;
     $('page').form.submit();
 }
+
+function save_image() { 
+  with(window.open('', charts_to_image_title).document) {
+    write('<html><head><title>' + charts_to_image_title + '<\/title><\/head><body><img src="data:image/png;base64,' + $$('#' + charts_to_image_id)[0].get_img_binary() + '" /><\/body><\/html>')
+  }
+}
