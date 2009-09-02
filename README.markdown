@@ -16,7 +16,24 @@ Install OpenFlashChart plugin.
 
 Run Redmine and have a fun!
 
+## Translations
+
+- ja by indication
+- pt-br by enderson
+- nl by onno-schuit
+- en by myself and trappist 
+- ru by Vadim Kruchkov
+- es by Rafael Lorenzo 
+- pl by myself
+
+Thanks for contribution. 
+
 ## Changelog
+
+### 0.0.13
+
+- bug fixes (#13, #15)
+- saving charts as images (#14)
 
 ### 0.0.12
 
