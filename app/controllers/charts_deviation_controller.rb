@@ -11,11 +11,11 @@ class ChartsDeviationController < ChartsController
 
   def get_data(conditions, grouping, range, pagination)
 
-    joins = "left join issues on time_entries.issue_id = issues.id"
+    joins = "left join time_entries on time_entries.issue_id = issues.id"
     group = "issues.id, issues.subject, issues.status_id, issues.done_ratio, issues.estimated_hours"
     select = "#{group}, sum(time_entries.hours) as logged_hours"
     
-    rows = TimeEntry.find(:all, :conditions => ["time_entries.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]], :joins => joins, :select => select, :readonly => true, :group => group, :order => "issues.id asc")
+    rows = Issue.find(:all, :conditions => ["issues.project_id in (?) and issues.estimated_hours > 0", conditions[:project_id]], :joins => joins, :select => select, :readonly => true, :group => group, :order => "issues.id asc")
 
     labels = []
     max = 0
@@ -217,7 +217,11 @@ class ChartsDeviationController < ChartsController
   # Remaining ratio: 20/40*(100-40) = 120 = 60
   #
   def get_remaining_ratio(logged_ratio, done_ratio)
-    logged_ratio.to_f/((done_ratio.to_f == 0.0 ? 1.0 : done_ratio.to_f)*(100-done_ratio.to_f))
+    if done_ratio.to_f == 0.0 
+      100
+    else 
+      logged_ratio.to_f/done_ratio.to_f*(100-done_ratio.to_f)
+    end
   end
 
   # Number of remaining hours depending on logged hours.
