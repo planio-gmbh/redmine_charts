@@ -27,7 +27,7 @@ Redmine::Plugin.register :redmine_charts do
   author 'Maciej Szczytowski'
   description 'Plugin for Redmine which integrates some nice project charts.'
   url 'http://github.com/mszczytowski/redmine_charts/'
-  version '0.0.13'
+  version '0.0.14'
 
   # Minimum version of Redmine.
 
