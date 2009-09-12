@@ -25,10 +25,15 @@ Run Redmine and have a fun!
 - ru by Vadim Kruchkov
 - es by Rafael Lorenzo 
 - pl by myself
+- fr by Yannick Quenec'hdu
 
 Thanks for contribution. 
 
 ## Changelog
+
+### 0.0.14
+
+- new translations (fr)
 
 ### 0.0.13
 
