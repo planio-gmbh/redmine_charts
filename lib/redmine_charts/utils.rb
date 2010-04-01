@@ -3,12 +3,12 @@ module RedmineCharts
 
     @@colors = ['#80C31C', '#FF7900', '#DFC329', '#00477F', '#d01f3c', '#356aa0', '#C79810', '#4C88BE', '#5E4725', '#6363AC']
 
-    @@controllers = %w{burndown ratio timeline deviation}.collect { |name| [name.to_sym, "charts_#{name}".to_sym] }
+    @@controllers = %w{burndown ratio timeline deviation issue}.collect { |name| [name.to_sym, "charts_#{name}".to_sym] }
 
     # Returns default controller name, which should be entry when user click 'charts' label in project menu.
     # See init.rb.
     def self.default_controller
-      @@controllers.first[1].to_s
+      @@controllers.first[0].to_s
     end
 
     # Returns array of controllers for builing permissions configuration.
@@ -32,7 +32,7 @@ module RedmineCharts
     end
 
     def self.round(i)
-      ((i.to_f*10).round).to_f/10
+      ((i.to_f*10).ceil).to_f/10
     end
 
   end

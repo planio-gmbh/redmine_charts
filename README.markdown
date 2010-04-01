@@ -18,18 +18,30 @@ Run Redmine and have a fun!
 
 ## Translations
 
-- ja by indication
-- pt-br by enderson
+- ja by In Dow
+- pt-br by Enderson Maia
 - nl by onno-schuit
-- en by myself and trappist 
+- en by Maciej Szczytowski and Rocco Stanzione
 - ru by Vadim Kruchkov
 - es by Rafael Lorenzo 
-- pl by myself
+- pl by Maciej Szczytowski
 - fr by Yannick Quenec'hdu
+- ko by Ki Won Kim
+- da by Jakob Skjerning
 
 Thanks for contribution. 
 
 ## Changelog
+
+### 0.1.0
+
+- migration to Redmine 0.9.x
+- new conditions (owners, authors, statuses and projects)
+- conditions in burndown chart
+- multiselection in conditions (#3)
+- new issue chart (#2)
+- issues with closed status are considered as 100% complete (#1)
+- new translations (ko)
 
 ### 0.0.14
 

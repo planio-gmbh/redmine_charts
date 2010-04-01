@@ -1,118 +1,192 @@
 module RedmineCharts
   module RangeUtils
 
-    if defined?(Redmine::I18n)
-      include Redmine::I18n
-    else
-      extend ChartsI18nPatch
+    include Redmine::I18n
+
+    @@types = [ :months, :weeks, :days ]
+    @@days_per_year = 366
+    @@weeks_per_year = 52
+    @@months_per_year = 12
+
+    def self.types
+      @@types
     end
 
-    @@in_types = [ :days, :weeks, :months ]
+    def self.options
+      @@types.collect do |type|
+        [l("charts_show_last_#{type}".to_sym), type]
 
-    def self.in_options
-      @@in_options ||= @@in_types.collect { |i| [l("charts_show_last_#{i}".to_sym), i.to_s] }
+      end
     end
-    
-    def self.set_params(params)     
-      params[:range_steps] = 10 if params[:range_steps].blank?
-      params[:range_offset] = 1 if params[:range_offset].blank?
-      params[:range_in] = :weeks if params[:range_in].blank?
+
+    def self.default_range
+      { :range => :weeks, :limit => 20, :offset => 0 }
     end
 
     def self.from_params(params)
-      {
-        :steps => Integer(params[:range_steps]),
-        :offset => Integer(params[:range_offset]),
-        :in => params[:range_in].to_sym
-      }
+      if params[:range] and params[:offset] and params[:limit]
+        range = {}
+        range[:range] = params[:range] ? params[:range].to_sym : :weeks
+        range[:offset] = Integer(params[:offset])
+        range[:limit] = Integer(params[:limit])
+        range
+      else
+        nil
+      end
     end
 
-    def self.prepare_range(range, column = "created_on")
-      dates = []
-
-      range[:steps].times do |i|
-        dates[i] = get_times(range[:steps],range[:offset],i,range[:in])
+    def self.propose_range(start_date)
+      if (diff = diff(start_date[:day], current_day, @@days_per_year)) <= 20
+        type = :days
+      elsif (diff = diff(start_date[:week], current_week, @@weeks_per_year)) <= 20
+        type = :weeks
+      else
+        (diff = diff(start_date[:month], current_month, @@months_per_year))
+        type = :months
       end
 
+      diff = 10 if diff < 10
+
+      { :range => type, :offset => 0, :limit => diff}
+    end
+
+    def self.prepare_range(range)
       keys = []
       labels = []
 
-      range[:steps].times do |i|
-        keys[i] = dates[i][0].strftime("%Y%m%d")
-        labels[i] = get_label(dates[i][0], dates[i][1], range[:in])
+      limit = range[:limit] - 1
+
+      if range[:range] == :days
+        current, label = subtract_day(current_day, range[:offset])
+
+        keys << current
+        labels << label
+
+        limit.times do
+          current, label = subtract_day(current, 1)
+          keys << current
+          labels << label
+        end
+      elsif range[:range] == :weeks
+        current, label = subtract_week(current_week, range[:offset])
+
+        keys << current
+        labels << label
+
+        limit.times do
+          current, label = subtract_week(current, 1)
+          keys << current
+          labels << label
+        end
+      else
+        current, label = subtract_month(current_month, range[:offset])
+
+        keys << current
+        labels << label
+
+        limit.times do
+          current, label = subtract_month(current, 1)
+          keys << current
+          labels << label
+        end
       end
 
-      sql = RedmineCharts::SqlUtils.sql_format_date(range[:in], column)
+      keys.reverse!
+      labels.reverse!
 
-      {
-        :date_from => dates[0][0].to_date,
-        :date_to => dates[dates.size-1][1].to_date,
-        :labels => labels,
-        :keys => keys,
-        :dates => dates,
-        :steps => range[:steps],
-        :sql => sql
-      }
+      range[:keys] = keys
+      range[:labels] = labels
+      range[:max] = keys.last
+      range[:min] = keys.first
+
+      range
     end
 
     private
 
-    def self.get_label(from, to, type)
-      if type == :months
-        return from.strftime("%b %y")
-      elsif type == :days
-        return from.strftime("%d %b %y")
-      else
-        year_from = from.strftime("%y")
-        month_from = from.strftime("%b")
-        day_from = from.strftime("%d").to_i
-
-        year_to = to.strftime("%y")
-        month_to = to.strftime("%b")
-        day_to = to.strftime("%d").to_i
-
-        if year_from != year_to
-          return "#{day_from} #{month_from} #{year_from} - #{day_to} #{month_to} #{year_to}"
-        elsif month_from != month_to
-          return "#{day_from} #{month_from} - #{day_to} #{month_to} #{year_from}"
-        else
-          return "#{day_from} - #{day_to} #{month_from} #{year_from}"
-        end
-      end
+    def self.format_week(date)
+      date.strftime('%Y0%W')
     end
 
-    def self.get_times(steps, offset, i, type)
-      if type == :months
-        time = ((steps*offset)-i-1).send(type).ago
-        [
-          Time.mktime(time.year, time.month, 1, 0, 0, 0),
-          Time.mktime(time.year, time.month, get_days_in_month(time.year, time.month), 23, 59, 59)
-        ]
-      elsif type == :days
-        time = ((steps*offset)-i-1).send(type).ago
-        [
-          Time.mktime(time.year, time.month, time.day, 0, 0, 0),
-          Time.mktime(time.year, time.month, time.day, 23, 59, 59)
-        ]
-      else
-        time = ((steps*offset)-i-1).send(type).ago
-        day_of_week = time.strftime('%w').to_i
-        time -= day_of_week.days
-        time2 = time + 6.days
-        [
-          Time.mktime(time.year, time.month, time.day, 0, 0, 0),
-          Time.mktime(time2.year, time2.month, time2.day, 23, 59, 59)
-        ]
-      end
+    def self.format_month(date)
+      date.strftime('%Y0%m')
     end
 
-    def self.get_days_in_month(year, month)
-      if month == 2 and ((year % 4 == 0 and year % 100 != 0) or (year % 400 == 0))
-        29
-      else
-        [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1]
-      end
+    def self.format_day(date)
+      date.strftime('%Y%j')
     end
-    
+
+    def self.current_week
+      format_week(Time.now)
+    end
+
+    def self.current_month
+      format_month(Time.now)
+    end
+
+    def self.current_day
+      format_day(Time.now)
+    end
+
+    def self.date_from_week(year_and_week_of_year)
+      week_of_year = year_and_week_of_year.to_s[4...7].to_i
+      year = year_and_week_of_year.to_s[0...4].to_i
+      Time.mktime(year) + (week_of_year-1).weeks
+    end
+
+    def self.date_from_month(year_and_month)
+      month = year_and_month.to_s[4...7].to_i
+      year = year_and_month.to_s[0...4].to_i
+      Time.mktime(year,month)
+    end
+
+    def self.date_from_day(year_and_day_of_year)
+      day_of_year = year_and_day_of_year.to_s[4...7].to_i
+      year = year_and_day_of_year.to_s[0...4].to_i
+      Time.mktime(year) + (day_of_year-1).days
+    end
+
+    def self.diff(from, to, per_year)
+      year_diff = to.to_s[0...4].to_i - from.to_s[0...4].to_i
+      diff = to.to_s[4...7].to_i - from.to_s[4...7].to_i
+      (year_diff * per_year) + diff
+    end
+
+    def self.subtract_month(current, offset)
+      date = date_from_month(current) - offset.months
+      [date.strftime("%Y0%m"), date.strftime("%b %y")]
+    end
+
+    def self.subtract_week(current, offset)
+      date = date_from_week(current) - (offset-1).weeks
+
+      date -= (date.strftime("%w").to_i - 1).days
+
+      day_from = date.strftime("%d").to_i
+      month_from = date.strftime("%b")
+      year_from = date.strftime("%y")
+
+      date += 6.days
+
+      day_to = date.strftime("%d").to_i
+      month_to = date.strftime("%b")
+      year_to = date.strftime("%y")
+
+      if year_from != year_to
+        label = "#{day_from} #{month_from} #{year_from} - #{day_to} #{month_to} #{year_to}"
+      elsif month_from != month_to
+        label = "#{day_from} #{month_from} - #{day_to} #{month_to} #{year_from}"
+      else
+        label = "#{day_from} - #{day_to} #{month_from} #{year_from}"
+      end
+
+      [date.strftime("%Y0%W"), label]
+    end
+
+    def self.subtract_day(current, offset)
+      date = date_from_day(current) - offset.days
+      [date.strftime("%Y%j"), date.strftime("%d %b %y")]
+    end
+
   end
 end

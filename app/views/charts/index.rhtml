@@ -9,38 +9,32 @@
     <span style="font-size:small"><%= show_charts_menu %></span>
 </h2>
 
-<% if @show_left_column %>
-    <div class="splitcontentleft" style="width:30%">
+<% form_tag '#', :method => :get do %>
 
-      <% if @help %>
-          <div class="box"><%= @help %></div>
-      <% end %>
+  <% if @show_left_column %>
+      <div class="splitcontentleft" style="width:30%">
 
-      <% form_tag '#', :method => :get do %>
+        <% if @help %>
+            <div class="box"><%= @help %></div>
+        <% end %>
+
         <%= hidden_field_tag :page, @page %>
+        <%= hidden_field_tag :project_id, @project.id %>
           
         <% if @show_conditions %>
-          <% if @sub_project_condition %>
-            <div class="box" style="text-align:center">
-              <p><%= check_box_tag :include_subprojects, "1", !params[:include_subprojects].blank? %> <%= l(:charts_condition_include_subprojects) %></p>          
-            </div>
-          <% end %>
-          <% if @date_condition %>
-            <div class="box" style="text-align:center">
-              <p><%= show_date_condition(params[:range_steps], params[:range_in], params[:range_offset]) %></p>
-            </div>
-          <% end %>
           <% unless @grouping_options.empty? and @conditions_options.empty? %>
-            <div class="box">
+            <div class="box tabular">
               <% unless @grouping_options.empty? %>
-                <p><%= l(:charts_group_by) %> <%= select_tag :grouping, options_for_select(@grouping_options, params[:grouping] ? params[:grouping].to_sym : nil) %></p>
+                <p><label for="grouping"><%= l(:charts_group_by) %>:</label> <%= select_tag :grouping, options_for_select(@grouping_options, @grouping), :style => "width:200px" %></p>
               <% end %>
               <% @conditions_options.each do |condition| %>
-                <% if condition[1].nil? %>
-                  <p><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %> <%= text_field_tag "conditions_#{condition[0]}".to_sym, params["conditions_#{condition[0]}".to_sym].blank? ? nil : Integer(params["conditions_#{condition[0]}".to_sym]) %></p>
-                <% else %>
-                  <p><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %> <%= select_tag "conditions_#{condition[0]}".to_sym, options_for_select(condition[1], params["conditions_#{condition[0]}".to_sym] ? Integer(params["conditions_#{condition[0]}".to_sym]) : nil) %></p>
-                <% end %>
+                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
+                  <% if condition[1].nil? %>
+                    <%= text_field_tag condition[0].to_sym, @conditions[condition[0].to_sym].blank? ? nil : @conditions[condition[0].to_sym] %></p>
+                  <% else %>
+                    <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:multiple => true, :size => 4, :style => "width:200px"} %>
+                  <% end %>
+                </p>
               <% end %>              
             </div>
           <% end %>
@@ -48,18 +42,25 @@
             <%= submit_tag l(:charts_button) %>
           </div>
         <% end %>
-      <% end %>
-      <br/>
-    </div>
-<% end %>
 
-<div class="splitcontentright" style="width:<%= @show_left_column ? "68%" : "100%" %>">
-    <%= show_graph %>
-
-    <% if @show_pages %>
-      <div style="text-align:center;padding-top:20px">
-        <%= show_pages(@page, @pages) %>
+        <br/>
       </div>
-    <% end %>
+  <% end %>
 
-</div>
+  <div class="splitcontentright" style="width:<%= @show_left_column ? "68%" : "100%" %>">
+      <%= show_graph(@data) %>
+
+      <% if @show_pages %>
+        <div style="text-align:center;padding-top:20px">
+          <%= show_pages(@page, @pages) %>
+        </div>
+      <% end %>
+      <% if @date_condition %>
+        <div style="text-align:center;padding-top:20px">
+          <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
+        </div>
+      <% end %>
+
+  </div>
+  
+<% end %>

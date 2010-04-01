@@ -2,15 +2,11 @@ class ChartsController < ApplicationController
 
   unloadable
 
-  unless defined?(Redmine::I18n)
-    include ChartsI18nPatch
-  end
-
   menu_item :charts
 
-  before_filter :check_params
+  before_filter :find_project
 
-  before_filter :find_project, :authorize, :only => [:index]  
+  before_filter :authorize, :only => [:index]
 
   def controller_name
     "charts"
@@ -41,19 +37,12 @@ class ChartsController < ApplicationController
     end
 
     unless get_conditions_options.empty?
-      @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options, params[:project_id])
+      @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options, @project.id)
       @show_conditions = true
     else
       @conditions_options = []
     end
     
-    if show_sub_project_condition
-      @show_conditions = true
-      @sub_project_condition = true
-    else
-      @sub_project_condition = false
-    end
-
     @show_left_column = @show_conditions
 
     unless get_help.blank?
@@ -63,26 +52,23 @@ class ChartsController < ApplicationController
       @help = nil
     end
 
-    range = RedmineCharts::RangeUtils.from_params(params)
-    pagination = RedmineCharts::PaginationUtils.from_params(params)
-    grouping = RedmineCharts::GroupingUtils.from_params(params)
-    conditions = RedmineCharts::ConditionsUtils.from_params(params, get_conditions_options)
+    @range = RedmineCharts::RangeUtils.from_params(params)
+    @pagination = RedmineCharts::PaginationUtils.from_params(params)
+    @grouping = RedmineCharts::GroupingUtils.from_params(get_grouping_options, params)
+    @conditions = RedmineCharts::ConditionsUtils.from_params(get_conditions_options, @project.id, params)
 
-    prepare_view(conditions, grouping, range, pagination)
+    @data = data
 
     render :template => "charts/index"
   end
+
+  protected
 
   # Return data for chart
   def data
     chart =OpenFlashChart.new
 
-    range = RedmineCharts::RangeUtils.from_params(params)
-    pagination = RedmineCharts::PaginationUtils.from_params(params)
-    grouping = RedmineCharts::GroupingUtils.from_params(params)
-    conditions = RedmineCharts::ConditionsUtils.from_params(params, get_conditions_options)
-
-    data = get_data(conditions, grouping, range, pagination)
+    data = get_data
 
     get_converter.convert(chart, data)
    
@@ -94,7 +80,7 @@ class ChartsController < ApplicationController
 
     if show_x_axis
       x = XAxis.new
-      x.set_range(0,data[:count],1) if data[:count]
+      x.set_range(0,data[:count]-1,1) if data[:count]
       if data[:labels]
         labels = []
         if get_x_axis_labels > 0
@@ -106,7 +92,7 @@ class ChartsController < ApplicationController
         data[:labels].each_with_index do |l,i|
           if i % step == 0
             labels << l
-          else 
+          else
             labels << ""
           end
         end
@@ -124,7 +110,7 @@ class ChartsController < ApplicationController
       legend.set_style('{font-size: 12px}')
       chart.set_x_legend(legend)
     end
-    
+
     unless get_x_legend.nil?
       legend = YLegend.new(get_y_legend)
       legend.set_style('{font-size: 12px}')
@@ -133,14 +119,12 @@ class ChartsController < ApplicationController
 
     chart.set_bg_colour('#ffffff');
 
-    render :text => chart.to_s
+    chart.to_s
   end
 
   def title
     get_title
   end
-
-  protected
 
   # Returns chart title
   def get_title
@@ -157,18 +141,13 @@ class ChartsController < ApplicationController
     nil
   end
 
-  # Prepares data for view
-  def prepare_view(conditions, grouping, range, pagination)
-    nil
-  end
-
   # Returns data for chart
-  def get_data(conditions, grouping, range, pagination)
+  def get_data
     raise "overwrite it"
   end
 
   # Returns hints for given record and grouping type
-  def get_hints(record, grouping)
+  def get_hints(record)
     nil
   end
 
@@ -212,19 +191,14 @@ class ChartsController < ApplicationController
     false
   end
   
-  # Returns true if checkbox "include subprojects in chart data"
-  def show_sub_project_condition
-    true
-  end
-
   # Returns values for grouping options
   def get_grouping_options
-    RedmineCharts::GroupingUtils.default_types
+    RedmineCharts::GroupingUtils.types
   end
 
   # Returns type of conditions available for that chart
   def get_conditions_options
-    RedmineCharts::ConditionsUtils.default_types
+    RedmineCharts::ConditionsUtils.types
   end
 
   private
@@ -239,11 +213,6 @@ class ChartsController < ApplicationController
     @project = Project.find(params[:project_id])
   rescue ActiveRecord::RecordNotFound
     render_404
-  end
-
-  # Checks and sets default params values
-  def check_params
-    RedmineCharts::RangeUtils.set_params(params)    
   end
 
 end
