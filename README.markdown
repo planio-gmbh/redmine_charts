@@ -14,6 +14,11 @@ Install OpenFlashChart plugin.
 
     $ ./script/plugin install git://github.com/pullmonkey/open_flash_chart.git
 
+Migrate database and populate new tables
+
+    $ rake db:migrate:plugins
+    $ rake charts:migrate
+
 Run Redmine and have a fun!
 
 ## Translations
@@ -41,7 +46,7 @@ Thanks for contribution.
 - multiselection in conditions (#3)
 - new issue chart (#2)
 - issues with closed status are considered as 100% complete (#1)
-- new translations (ko)
+- new translations (ko, da)
 
 ### 0.0.14
 
