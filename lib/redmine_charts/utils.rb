@@ -8,7 +8,7 @@ module RedmineCharts
     # Returns default controller name, which should be entry when user click 'charts' label in project menu.
     # See init.rb.
     def self.default_controller
-      @@controllers.first[0].to_s
+      @@controllers.first[1].to_s
     end
 
     # Returns array of controllers for builing permissions configuration.
