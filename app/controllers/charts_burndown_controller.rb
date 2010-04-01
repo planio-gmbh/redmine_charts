@@ -155,4 +155,8 @@ class ChartsBurndownController < ChartsController
     []
   end
 
+  def get_conditions_options
+    RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids]
+  end
+
 end
