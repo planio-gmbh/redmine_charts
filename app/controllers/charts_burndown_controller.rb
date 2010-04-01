@@ -74,8 +74,10 @@ class ChartsBurndownController < ChartsController
 
       total_logged_hours[index] += logged_hours_per_issue[0][index]
 
-      if issues_per_date[index]
+      if issues_per_date[index] > 0
         total_done[index] = total_done[index].to_f / issues_per_date[index]
+      else
+        total_done[index] = 0
       end
 
       total_predicted_hours[index] = total_remaining_hours[index] + total_logged_hours[index]
@@ -98,7 +100,7 @@ class ChartsBurndownController < ChartsController
     @range[:keys].each_with_index do |key,index|
       estimated << [total_estimated_hours[index], l(:charts_burndown_hint_estimated, { :estimated_hours => RedmineCharts::Utils.round(total_estimated_hours[index]) })]
       logged  << [total_logged_hours[index], l(:charts_burndown_hint_logged, { :logged_hours => RedmineCharts::Utils.round(total_logged_hours[index]) })]
-      remaining << [total_remaining_hours[index], l(:charts_burndown_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] ? Integer(total_done[index]) : 0 })]
+      remaining << [total_remaining_hours[index], l(:charts_burndown_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] > 0 ? Integer(total_done[index]) : 0 })]
       if total_predicted_hours[index] > total_estimated_hours[index]
         predicted << [total_predicted_hours[index], l(:charts_burndown_hint_predicted_over_estimation, { :predicted_hours => RedmineCharts::Utils.round(total_predicted_hours[index]), :hours_over_estimation => RedmineCharts::Utils.round(total_predicted_hours[index] - total_estimated_hours[index]) }), true]
       else
