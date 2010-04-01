@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ConditionsUtilsTest < ActiveSupport::TestCase
 
   def test_if_return_default_controller
-    assert_equal "burndown", RedmineCharts::Utils.default_controller
+    assert_equal "charts_burndown", RedmineCharts::Utils.default_controller
   end
 
   def test_if_return_controllers_for_permissions
