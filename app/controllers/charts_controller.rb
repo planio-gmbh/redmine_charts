@@ -80,7 +80,7 @@ class ChartsController < ApplicationController
 
     if show_x_axis
       x = XAxis.new
-      x.set_range(0,data[:count]-1,1) if data[:count]
+      x.set_range(0,data[:count] > 1 ? data[:count] - 1 : 1,1) if data[:count]
       if data[:labels]
         labels = []
         if get_x_axis_labels > 0
