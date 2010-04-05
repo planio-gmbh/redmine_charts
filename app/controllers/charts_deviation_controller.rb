@@ -121,7 +121,11 @@ class ChartsDeviationController < ChartsController
     ]
 
     if logged_hours_for_not_estimated_issues > 0
-      value = logged_hours_for_not_estimated_issues.to_f / (total_logged_hours.to_f + total_remaining_hours.to_f) * 100
+      if total_logged_hours.to_f + total_remaining_hours.to_f > 0
+        value = logged_hours_for_not_estimated_issues.to_f / (total_logged_hours.to_f + total_remaining_hours.to_f) * 100
+      else
+        value = 100
+      end
       values = []
       values << [value, l(:charts_deviation_hint_logged_not_estimated, { :logged_hours => RedmineCharts::Utils.round(logged_hours_for_not_estimated_issues) })]
       (labels.size - 1).times { values << nil }
