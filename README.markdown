@@ -33,6 +33,7 @@ Run Redmine and have a fun!
 - fr by Yannick Quenec'hdu
 - ko by Ki Won Kim
 - da by Jakob Skjerning
+- de by Bernd Engelsing
 
 Thanks for contribution. 
 
