@@ -27,8 +27,8 @@ class ChartsRatioController < ChartsController
 
     if other_no > 1
       rows = bigger_rows
-      other_row = Struct.new(:value_x, :value_y, :group_id).new
-      other_row.value_y = other_value
+      other_row = Struct.new(:value_x, :logged_hours, :group_id, :grouping).new
+      other_row.logged_hours = other_value
       other_row.group_id = 0
       other_row.grouping = :others
       rows << other_row
