@@ -58,17 +58,25 @@
   <% end %>
 
   <div class="splitcontentright" style="width:<%= @show_left_column ? "68%" : "100%" %>">
-      <%= show_graph(@data) %>
+      <% if @error %>
 
-      <% if @show_pages %>
-        <div style="text-align:center;padding-top:20px">
-          <%= show_pages(@page, @pages) %>
-        </div>
-      <% end %>
-      <% if @date_condition %>
-        <div style="text-align:center;padding-top:20px">
-          <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
-        </div>
+        <p><%= @error_message %></p>
+
+      <% else %>
+
+        <%= show_graph(@data) %>
+
+        <% if @show_pages %>
+          <div style="text-align:center;padding-top:20px">
+            <%= show_pages(@page, @pages) %>
+          </div>
+        <% end %>
+        <% if @date_condition %>
+          <div style="text-align:center;padding-top:20px">
+            <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
+          </div>
+        <% end %>
+
       <% end %>
 
   </div>

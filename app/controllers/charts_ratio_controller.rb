@@ -36,10 +36,10 @@ class ChartsRatioController < ChartsController
 
     labels = []
     set = []
+    error = nil
 
     if rows.empty?
-      labels << l(:charts_ratio_label, { :label => l(:charts_ratio_none) })
-      set << [1, l(:charts_ratio_hint, { :label => l(:charts_ratio_none), :hours => 0, :percent => 0, :total_hours => 0 })]
+      error = :charts_error_no_data
     else
       rows.each do |row|
         labels << l(:charts_ratio_label, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, row.grouping.to_sym, l(:charts_ratio_others)) })
@@ -49,6 +49,7 @@ class ChartsRatioController < ChartsController
     end
 
     {
+      :error => error,
       :labels => labels,
       :count => rows.size,
       :max => 0,

@@ -116,6 +116,7 @@ class ChartsBurndownController < ChartsController
     ]
 
     {
+      :error => nil,
       :labels => @range[:labels],
       :count => @range[:keys].size,
       :max => max > 1 ? max : 1,

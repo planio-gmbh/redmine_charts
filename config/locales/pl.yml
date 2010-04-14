@@ -93,4 +93,6 @@ pl:
   charts_issue_hint: "{{label}}<br>{{issues}} ({{percent}}%) z {{total_issues}} zagadnień"
   charts_issue_others: "Inne"
   charts_issue_none: "Brak"
-  charts_issue_help: "Ilość zagadnień dla danych grup i kryteriów."  
+  charts_issue_help: "Ilość zagadnień dla danych grup i kryteriów."
+
+  charts_error_no_data: "Brak danych."

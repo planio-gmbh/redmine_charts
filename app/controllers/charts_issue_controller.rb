@@ -26,10 +26,10 @@ class ChartsIssueController < ChartsController
 
     labels = []
     set = []
+    error = nil
 
     if rows.empty?
-      labels << l(:charts_issue_label, { :label => l(:charts_issue_none) })
-      set << [1, l(:charts_issue_hint, { :label => l(:charts_issue_none), :issues => 0, :percent => 0, :total_issues => 0 })]
+      error = :charts_error_no_data
     else
       rows.each do |row|
         labels << l(:charts_issue_label, { :label => RedmineCharts::GroupingUtils.to_string(row.group_id, @grouping, l(:charts_issue_others)) })
@@ -39,6 +39,7 @@ class ChartsIssueController < ChartsController
     end
 
     {
+      :error => error,
       :labels => labels,
       :count => rows.size,
       :max => 0,
@@ -65,5 +66,6 @@ class ChartsIssueController < ChartsController
   def get_multiconditions_options
     RedmineCharts::ConditionsUtils.types - [:activity_ids, :issue_ids, :user_ids]
   end
+
 
 end

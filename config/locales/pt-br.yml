@@ -96,3 +96,5 @@
   charts_issue_others: "Others"
   charts_issue_none: "None"
   charts_issue_help: "Number of issues for given group and conditions."
+
+  charts_error_no_data: "There is no data to show."

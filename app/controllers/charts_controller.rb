@@ -68,9 +68,13 @@ class ChartsController < ApplicationController
     @range = RedmineCharts::RangeUtils.from_params(params)
     @pagination = RedmineCharts::PaginationUtils.from_params(params)
     @grouping = RedmineCharts::GroupingUtils.from_params(get_grouping_options, params)
-    @conditions = RedmineCharts::ConditionsUtils.from_params(get_conditions_options, @project.id, params)
+    @conditions = RedmineCharts::ConditionsUtils.from_params(get_conditions_options + get_multiconditions_options, @project.id, params)
 
-    @data = data
+    create_chart
+
+    if @error
+      @error_message = l(@error)
+    end
 
     render :template => "charts/index"
   end
@@ -78,61 +82,65 @@ class ChartsController < ApplicationController
   protected
 
   # Return data for chart
-  def data
+  def create_chart
     chart = OpenFlashChart.new
 
     data = get_data
 
-    get_converter.convert(chart, data)
-   
-    if get_y_legend
-      y = YAxis.new
-      y.set_range(0,(data[:max]*1.2).round,(data[:max]/get_y_axis_labels).round) if data[:max]
-      chart.y_axis = y
-    end
-
-    if get_x_legend
-      x = XAxis.new
-      x.set_range(0,data[:count] > 1 ? data[:count] - 1 : 1,1) if data[:count]
-      if data[:labels]
-        labels = []
-        if get_x_axis_labels > 0
-          step = (data[:labels].size/get_x_axis_labels).to_i
-          step = 1 if step == 0
-        else
-          step = 1
-        end
-        data[:labels].each_with_index do |l,i|
-          if i % step == 0
-            labels << l
-          else
-            labels << ""
-          end
-        end
-        x.set_labels(labels)
-      end
-      chart.x_axis = x
+    if data[:error]
+      @error = data[:error]
     else
-      x = XAxis.new
-      x.set_labels([""])
-      chart.x_axis = x
+      get_converter.convert(chart, data)
+
+      if get_y_legend
+        y = YAxis.new
+        y.set_range(0,(data[:max]*1.2).round,(data[:max]/get_y_axis_labels).round) if data[:max]
+        chart.y_axis = y
+      end
+
+      if get_x_legend
+        x = XAxis.new
+        x.set_range(0,data[:count] > 1 ? data[:count] - 1 : 1,1) if data[:count]
+        if data[:labels]
+          labels = []
+          if get_x_axis_labels > 0
+            step = (data[:labels].size/get_x_axis_labels).to_i
+            step = 1 if step == 0
+          else
+            step = 1
+          end
+          data[:labels].each_with_index do |l,i|
+            if i % step == 0
+              labels << l
+            else
+              labels << ""
+            end
+          end
+          x.set_labels(labels)
+        end
+        chart.x_axis = x
+      else
+        x = XAxis.new
+        x.set_labels([""])
+        chart.x_axis = x
+      end
+
+      unless get_x_legend.nil?
+        legend = XLegend.new(get_x_legend)
+        legend.set_style('{font-size: 12px}')
+        chart.set_x_legend(legend)
+      end
+
+      unless get_x_legend.nil?
+        legend = YLegend.new(get_y_legend)
+        legend.set_style('{font-size: 12px}')
+        chart.set_y_legend(legend)
+      end
+
+      chart.set_bg_colour('#ffffff');
+
+      @data = chart.to_s
     end
-
-    unless get_x_legend.nil?
-      legend = XLegend.new(get_x_legend)
-      legend.set_style('{font-size: 12px}')
-      chart.set_x_legend(legend)
-    end
-
-    unless get_x_legend.nil?
-      legend = YLegend.new(get_y_legend)
-      legend.set_style('{font-size: 12px}')
-      chart.set_y_legend(legend)
-    end
-
-    chart.set_bg_colour('#ffffff');
-
-    chart.to_s
   end
 
   def title

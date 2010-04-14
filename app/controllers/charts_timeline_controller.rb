@@ -29,6 +29,7 @@ class ChartsTimelineController < ChartsController
     sets = sets.sort.collect { |name, values| [name, values] }
 
     {
+      :error => nil,
       :labels => @range[:labels],
       :count => @range[:keys].size,
       :max => max > 1 ? max : 1,

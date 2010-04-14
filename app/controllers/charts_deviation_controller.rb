@@ -131,8 +131,9 @@ class ChartsDeviationController < ChartsController
       (labels.size - 1).times { values << nil }
       sets << [l(:charts_deviation_group_logged_not_estimated), values]
     end
-
+  
     {
+      :error => (:charts_error_no_data if labels.size == 1),
       :labels => labels,
       :count => labels.size,
       :max => max > 100 ? max : 100,

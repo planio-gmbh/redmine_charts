@@ -95,4 +95,6 @@ es:
   charts_issue_hint: "{{label}}<br>{{issues}} ({{percent}}%) of total {{total_issues}} issues"
   charts_issue_others: "Others"
   charts_issue_none: "None"
-  charts_issue_help: "Number of issues for given group and conditions."  
+  charts_issue_help: "Number of issues for given group and conditions."
+
+  charts_error_no_data: "There is no data to show."

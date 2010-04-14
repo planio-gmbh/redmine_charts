@@ -69,8 +69,8 @@ de:
 
   charts_previous: "&laquo; Vorherige Seite"
   charts_next: "Naechste Seite &raquo;"
-  charts_deviation_group_logged_not_estimated: erfasste Stunden f&üuml;r nicht abgeschaetzte Tickets
-  charts_deviation_hint_logged_not_estimated: "{{logged_hours}} erfasste Stunden f&üuml;r nicht abgeschaetzte Tickets"
+  charts_deviation_group_logged_not_estimated: erfasste Stunden f&ï¿½uml;r nicht abgeschaetzte Tickets
+  charts_deviation_hint_logged_not_estimated: "{{logged_hours}} erfasste Stunden f&ï¿½uml;r nicht abgeschaetzte Tickets"
   charts_condition_tracker_ids: "Tracker"
   charts_condition_priority_ids: "Prioritaet"
   charts_condition_fixed_version_ids: "Version"
@@ -94,3 +94,5 @@ de:
   charts_issue_others: "Andere"
   charts_issue_none: "Keine"
   charts_issue_help: "Nummer von Tickets fuer die eingestellte Gruppe und Bedingungen."
+
+  charts_error_no_data: "There is no data to show."
