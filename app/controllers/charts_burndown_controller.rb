@@ -87,7 +87,7 @@ class ChartsBurndownController < ChartsController
       total_remaining_hours[index] = 0 if total_remaining_hours[index] < 0.01
       total_done[index] = 0 if total_done[index] < 0.01
       total_predicted_hours[index] = 0 if total_predicted_hours[index] < 0.01
-      
+
       max = total_predicted_hours[index] if max < total_predicted_hours[index]
       max = total_estimated_hours[index] if max < total_estimated_hours[index]
     end
@@ -139,23 +139,11 @@ class ChartsBurndownController < ChartsController
     l(:charts_burndown_y)
   end
 
-  def show_x_axis
-    true
-  end
-
-  def show_y_axis
-    true
-  end
-
   def show_date_condition
     true
   end
 
-  def get_grouping_options
-    []
-  end
-
-  def get_conditions_options
+  def get_multiconditions_options
     RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids]
   end
 

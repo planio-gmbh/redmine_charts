@@ -52,10 +52,6 @@ class ChartsTimelineController < ChartsController
     l(:charts_timeline_help)
   end
   
-  def get_type
-    :line
-  end
-  
   def get_x_legend
     l(:charts_timeline_x)
   end
@@ -64,20 +60,12 @@ class ChartsTimelineController < ChartsController
     l(:charts_timeline_y)
   end
   
-  def show_x_axis
-    true
-  end
-  
-  def show_y_axis
-    true
-  end
-  
   def show_date_condition
     true
   end
-  
+
   def get_grouping_options
     [ :none, RedmineCharts::GroupingUtils.types ].flatten
   end
-  
+
 end

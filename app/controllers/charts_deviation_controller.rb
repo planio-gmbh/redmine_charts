@@ -160,28 +160,16 @@ class ChartsDeviationController < ChartsController
   def get_y_legend
     l(:charts_deviation_y)
   end
-  
-  def show_x_axis
-    true
-  end
 
   def get_x_axis_labels
     0
   end
-  
-  def show_y_axis
-    true
-  end
-  
+
   def show_date_condition
     false
   end
 
-  def get_grouping_options
-    []
-  end
-
-  def get_conditions_options
+  def get_multiconditions_options
     [:project_ids]
   end
 

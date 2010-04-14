@@ -22,20 +22,30 @@
         <%= hidden_field_tag :project_id, @project.id %>
           
         <% if @show_conditions %>
-          <% unless @grouping_options.empty? and @conditions_options.empty? %>
+          <% unless @grouping_options.empty? and @conditions_options.empty? and @multiconditions_options.empty? and @textconditions_options.empty? %>
             <div class="box tabular">
               <% unless @grouping_options.empty? %>
                 <p><label for="grouping"><%= l(:charts_group_by) %>:</label> <%= select_tag :grouping, options_for_select(@grouping_options, @grouping), :style => "width:200px" %></p>
               <% end %>
+              <% @textconditions_options.each do |condition| %>
+                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
+                  <%= text_field_tag condition[0].to_sym, @conditions[condition[0].to_sym].blank? ? nil : @conditions[condition[0].to_sym] %>
+                </p>
+              <% end %>
               <% @conditions_options.each do |condition| %>
                 <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
-                  <% if condition[1].nil? %>
-                    <%= text_field_tag condition[0].to_sym, @conditions[condition[0].to_sym].blank? ? nil : @conditions[condition[0].to_sym] %></p>
-                  <% else %>
+                  <% unless condition[1].nil? %>
+                    <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:style => "width:200px"} %>
+                  <% end %>
+                </p>
+              <% end %>
+              <% @multiconditions_options.each do |condition| %>
+                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
+                  <% unless condition[1].nil? %>
                     <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:multiple => true, :size => 4, :style => "width:200px"} %>
                   <% end %>
                 </p>
-              <% end %>              
+              <% end %>
             </div>
           <% end %>
           <div style="text-align:center">

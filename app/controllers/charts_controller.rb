@@ -36,13 +36,26 @@ class ChartsController < ApplicationController
       @grouping_options = []
     end
 
+    @textconditions_options = []
+
     unless get_conditions_options.empty?
       @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options, @project.id)
+      @textconditions_options = @conditions_options.select { |condition| condition[1].nil? }
+      @conditions_options = @conditions_options.select { |condition| not condition[1].nil? }
       @show_conditions = true
     else
       @conditions_options = []
     end
-    
+
+    unless get_multiconditions_options.empty?
+      @multiconditions_options = RedmineCharts::ConditionsUtils.to_options(get_multiconditions_options, @project.id)
+      @textconditions_options = @multiconditions_options.select { |condition| condition[1].nil? }
+      @multiconditions_options = @multiconditions_options.select { |condition| not condition[1].nil? }
+      @show_conditions = true
+    else
+      @multiconditions_options = []
+    end
+
     @show_left_column = @show_conditions
 
     unless get_help.blank?
@@ -66,25 +79,25 @@ class ChartsController < ApplicationController
 
   # Return data for chart
   def data
-    chart =OpenFlashChart.new
+    chart = OpenFlashChart.new
 
     data = get_data
 
     get_converter.convert(chart, data)
    
-    if show_y_axis
+    if get_y_legend
       y = YAxis.new
       y.set_range(0,(data[:max]*1.2).round,(data[:max]/get_y_axis_labels).round) if data[:max]
       chart.y_axis = y
     end
 
-    if show_x_axis
+    if get_x_legend
       x = XAxis.new
       x.set_range(0,data[:count] > 1 ? data[:count] - 1 : 1,1) if data[:count]
       if data[:labels]
         labels = []
         if get_x_axis_labels > 0
-          step = (data[:labels].size/get_y_axis_labels).to_i
+          step = (data[:labels].size/get_x_axis_labels).to_i
           step = 1 if step == 0
         else
           step = 1
@@ -133,7 +146,7 @@ class ChartsController < ApplicationController
 
   # Returns chart type: line, pie or stack
   def get_type
-    "line"
+    :line
   end
 
   # Returns help string, displayed above chart
@@ -161,19 +174,9 @@ class ChartsController < ApplicationController
     nil
   end
 
-  # Returns true if X axis should be displayed
-  def show_x_axis
-    false
-  end
-
   # Returns how many labels should be displayed on x axis. 0 means all labels.
   def get_x_axis_labels
     5
-  end
-
-  # Returns true if Y axis should be displayed
-  def show_y_axis
-    false
   end
 
   # Returns how many labels should be displayed on y axis. 0 means all labels.
@@ -193,12 +196,17 @@ class ChartsController < ApplicationController
   
   # Returns values for grouping options
   def get_grouping_options
-    RedmineCharts::GroupingUtils.types
+    []
   end
 
   # Returns type of conditions available for that chart
   def get_conditions_options
-    RedmineCharts::ConditionsUtils.types
+    []
+  end
+
+  # Returns type of conditions available for that chart
+  def get_multiconditions_options
+    []
   end
 
   private
