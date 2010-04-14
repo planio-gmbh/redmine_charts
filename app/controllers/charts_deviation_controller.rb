@@ -105,7 +105,7 @@ class ChartsDeviationController < ChartsController
     logged_values = logged_values[offset..limit]
     remaining_values = remaining_values[offset..limit]
 
-    unless labels
+    if labels.nil? or labels.empty?
       { :error => :charts_error_no_data }
     else
       labels.unshift(l(:charts_deviation_project_label))
