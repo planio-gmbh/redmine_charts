@@ -7,7 +7,7 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
   end
 
   def test_if_return_controllers_for_permissions
-    assert_equal({:charts_burndown => :index, :charts_ratio => :index, :charts_timeline => :index, :charts_deviation => :index, :charts_issue => :index}, RedmineCharts::Utils.controllers_for_permissions)
+    assert_equal({:charts_burndown => :index, :charts_burndown2 => :index, :charts_ratio => :index, :charts_timeline => :index, :charts_deviation => :index, :charts_issue => :index}, RedmineCharts::Utils.controllers_for_permissions)
   end
 
   def test_if_return_controllers_for_routing
@@ -15,7 +15,7 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
     RedmineCharts::Utils.controllers_for_routing do |k,v|
       result << [k, v]
     end
-    assert_equal [["burndown", "charts_burndown"], ["ratio", "charts_ratio"], ["timeline", "charts_timeline"], ["deviation", "charts_deviation"], ["issue", "charts_issue"]], result
+    assert_equal [["burndown", "charts_burndown"], ["burndown2", "charts_burndown2"], ["ratio", "charts_ratio"], ["timeline", "charts_timeline"], ["deviation", "charts_deviation"], ["issue", "charts_issue"]], result
   end
 
   def test_if_return_colors
@@ -29,6 +29,12 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
     assert_equal 3.1, RedmineCharts::Utils.round(3.1)
     assert_equal 3.2, RedmineCharts::Utils.round(3.11)
     assert_equal 3.2, RedmineCharts::Utils.round(3.191111)
+  end
+
+  def test_if_can_get_percent
+    assert_equal 0, RedmineCharts::Utils.percent(1,0)
+    assert_equal 30, RedmineCharts::Utils.percent(3,10)
+    assert_equal 27, RedmineCharts::Utils.percent(3,11)
   end
 
 end
