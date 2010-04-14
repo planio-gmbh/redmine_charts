@@ -60,11 +60,11 @@ class ChartsIssueController < ChartsController
   end
 
   def get_grouping_options
-    RedmineCharts::GroupingUtils.types - [:activity_id, :issue_id, :user_id]
+    (RedmineCharts::GroupingUtils.types - [:activity_id, :issue_id, :user_id]).flatten
   end
 
   def get_multiconditions_options
-    RedmineCharts::ConditionsUtils.types - [:activity_ids, :issue_ids, :user_ids]
+    (RedmineCharts::ConditionsUtils.types - [:activity_ids, :issue_ids, :user_ids]).flatten
   end
 
 

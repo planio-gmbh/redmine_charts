@@ -98,7 +98,7 @@ class ChartsDeviationControllerTest < ChartsControllerTest
 
     body = get_data :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 3
 
-    assert_equal 1, body['elements'][0]['values'].size
+    assert_nil body
   end
 
 end

@@ -40,8 +40,8 @@ class ChartsController < ApplicationController
 
     unless get_conditions_options.empty?
       @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options, @project.id)
-      @textconditions_options = @conditions_options.select { |condition| condition[1].nil? }
-      @conditions_options = @conditions_options.select { |condition| not condition[1].nil? }
+      @textconditions_options = @conditions_options.select { |c1,c2| c2.nil? }
+      @conditions_options = @conditions_options.select { |c1,c2| not c2.nil? }
       @show_conditions = true
     else
       @conditions_options = []
@@ -49,8 +49,8 @@ class ChartsController < ApplicationController
 
     unless get_multiconditions_options.empty?
       @multiconditions_options = RedmineCharts::ConditionsUtils.to_options(get_multiconditions_options, @project.id)
-      @textconditions_options = @multiconditions_options.select { |condition| condition[1].nil? }
-      @multiconditions_options = @multiconditions_options.select { |condition| not condition[1].nil? }
+      @textconditions_options = @multiconditions_options.select { |c1,c2| c2.nil? }
+      @multiconditions_options = @multiconditions_options.select { |c1,c2| not c2.nil? }
       @show_conditions = true
     else
       @multiconditions_options = []
@@ -89,6 +89,7 @@ class ChartsController < ApplicationController
 
     if data[:error]
       @error = data[:error]
+      @data = nil
     else
       get_converter.convert(chart, data)
 

@@ -268,13 +268,9 @@ class ChartsRatioControllerTest < ChartsControllerTest
   def test_empty
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :category_ids => 15043, :fixed_version_ids => 15041
+    body = get_data:project_id => 15041, :project_ids => [15041], :category_ids => 15043, :fixed_version_ids => 15041
 
-    assert_equal 1, body['elements'][0]['values'].size
-    assert_equal l(:charts_ratio_none), body['elements'][0]['values'][0]["label"]
-    assert_in_delta 1, body['elements'][0]['values'][0]["value"], 1
-    assert_equal "#{l(:charts_ratio_hint, :label => l(:charts_ratio_none), :hours => 0, :percent => 0, :total_hours => 0)}",
-      body['elements'][0]['values'][0]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+    assert_nil body
   end
 
 end

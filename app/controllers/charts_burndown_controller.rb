@@ -116,7 +116,6 @@ class ChartsBurndownController < ChartsController
     ]
 
     {
-      :error => nil,
       :labels => @range[:labels],
       :count => @range[:keys].size,
       :max => max > 1 ? max : 1,
@@ -145,7 +144,7 @@ class ChartsBurndownController < ChartsController
   end
 
   def get_multiconditions_options
-    RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids]
+    (RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids]).flatten
   end
 
 end

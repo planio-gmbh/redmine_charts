@@ -26,7 +26,7 @@ class ChartsControllerTest < ActionController::TestCase
   def get_data options = {}
     get :index, options
     assert_response :success
-    ActiveSupport::JSON.decode(@controller.get_data_value)
+    ActiveSupport::JSON.decode(@controller.get_data_value) if @controller.get_data_value
   end
 
 #  def get_day_labels(date_from)

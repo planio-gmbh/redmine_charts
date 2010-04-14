@@ -29,7 +29,6 @@ class ChartsTimelineController < ChartsController
     sets = sets.sort.collect { |name, values| [name, values] }
 
     {
-      :error => nil,
       :labels => @range[:labels],
       :count => @range[:keys].size,
       :max => max > 1 ? max : 1,
@@ -52,7 +51,11 @@ class ChartsTimelineController < ChartsController
   def get_help
     l(:charts_timeline_help)
   end
-  
+
+  def get_type
+    :line
+  end
+
   def get_x_legend
     l(:charts_timeline_x)
   end
@@ -60,13 +63,17 @@ class ChartsTimelineController < ChartsController
   def get_y_legend
     l(:charts_timeline_y)
   end
-  
+
   def show_date_condition
     true
   end
 
   def get_grouping_options
     [ :none, RedmineCharts::GroupingUtils.types ].flatten
+  end
+
+  def get_multiconditions_options
+    RedmineCharts::ConditionsUtils.types
   end
 
 end

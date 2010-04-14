@@ -105,41 +105,38 @@ class ChartsDeviationController < ChartsController
     logged_values = logged_values[offset..limit]
     remaining_values = remaining_values[offset..limit]
 
-    if labels == nil
-      labels = [l(:charts_deviation_project_label)]
-      logged_values = [project_logged_value]
-      remaining_values = [project_remaining_value]
+    unless labels
+      { :error => :charts_error_no_data }
     else
       labels.unshift(l(:charts_deviation_project_label))
       logged_values.unshift(project_logged_value)
       remaining_values.unshift(project_remaining_value)
-    end
 
-    sets = [
-      [l(:charts_deviation_group_logged), logged_values],
-      [l(:charts_deviation_group_remaining), remaining_values]
-    ]
+      sets = [
+        [l(:charts_deviation_group_logged), logged_values],
+        [l(:charts_deviation_group_remaining), remaining_values]
+      ]
 
-    if logged_hours_for_not_estimated_issues > 0
-      if total_logged_hours.to_f + total_remaining_hours.to_f > 0
-        value = logged_hours_for_not_estimated_issues.to_f / (total_logged_hours.to_f + total_remaining_hours.to_f) * 100
-      else
-        value = 100
+      if logged_hours_for_not_estimated_issues > 0
+        if total_logged_hours.to_f + total_remaining_hours.to_f > 0
+          value = logged_hours_for_not_estimated_issues.to_f / (total_logged_hours.to_f + total_remaining_hours.to_f) * 100
+        else
+          value = 100
+        end
+        values = []
+        values << [value, l(:charts_deviation_hint_logged_not_estimated, { :logged_hours => RedmineCharts::Utils.round(logged_hours_for_not_estimated_issues) })]
+        (labels.size - 1).times { values << nil }
+        sets << [l(:charts_deviation_group_logged_not_estimated), values]
       end
-      values = []
-      values << [value, l(:charts_deviation_hint_logged_not_estimated, { :logged_hours => RedmineCharts::Utils.round(logged_hours_for_not_estimated_issues) })]
-      (labels.size - 1).times { values << nil }
-      sets << [l(:charts_deviation_group_logged_not_estimated), values]
-    end
   
-    {
-      :error => (:charts_error_no_data if labels.size == 1),
-      :labels => labels,
-      :count => labels.size,
-      :max => max > 100 ? max : 100,
-      :sets => sets,
-      :horizontal_line => 100
-    }
+      {
+        :labels => labels,
+        :count => labels.size,
+        :max => max > 100 ? max : 100,
+        :sets => sets,
+        :horizontal_line => 100
+      }
+    end
   end
 
   def get_title
