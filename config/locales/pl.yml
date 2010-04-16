@@ -96,3 +96,13 @@ pl:
   charts_issue_help: "Ilość zagadnień dla danych grup i kryteriów."
 
   charts_error_no_data: "Brak danych."
+  charts_error_no_version: "Brak wersji."
+
+  charts_link_burndown2: "Burndown z velocity"
+  charts_burndown2_x: ""
+  charts_burndown2_y: "godziny"
+  charts_burndown2_group_velocity: "velocity"
+  charts_burndown2_hint_velocity: "pozostało {{remaining_hours}} godzin (zgodnie z planowanym velocity)"
+  charts_burndown2_group_burndown: "burndown"
+  charts_burndown2_hint_remaining: "pozostało {{remaining_hours}} godzin (wykonano {{work_done}}% pracy)"
+  charts_burndown2_help: "Wykres przedstawia ilość pozostałych godzin w stosunku do planowanego velocity. Dane są przedstawiane dla wybranej wersji od daty jest utworzenia do planowanego zakończenia."

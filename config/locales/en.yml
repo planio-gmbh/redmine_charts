@@ -95,4 +95,14 @@ en:
   charts_issue_none: "None"
   charts_issue_help: "Number of issues for given group and conditions."
 
-  charts_error_no_data: "There is no data to show."  
+  charts_error_no_data: "There is no data to show."
+  charts_error_no_version: "There is no version to show."
+
+  charts_link_burndown2: "Burndown with velocity"
+  charts_burndown2_x: ""
+  charts_burndown2_y: "hours"
+  charts_burndown2_group_velocity: "velocity"
+  charts_burndown2_hint_velocity: "{{remaining_hours}} hours to finish (according to velocity)"
+  charts_burndown2_group_burndown: "burndown"
+  charts_burndown2_hint_remaining: "{{remaining_hours}} hours to finish ({{work_done}}% work done)"
+  charts_burndown2_help: "Burndown (remaining hours) with velocity. Chart displays data for given version from version's creation date to version's effective date."

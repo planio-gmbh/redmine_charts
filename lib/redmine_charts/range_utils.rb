@@ -7,6 +7,7 @@ module RedmineCharts
     @@days_per_year = 366
     @@weeks_per_year = 52
     @@months_per_year = 12
+    @@seconds_per_day = 86400
 
     def self.types
       @@types
@@ -33,6 +34,12 @@ module RedmineCharts
       else
         nil
       end
+    end
+
+    def self.propose_range_for_two_dates(start_date, end_date)
+      diff = diff(format_day(start_date), format_day(end_date), @@days_per_year) + 1
+      offset = ((Time.now - end_date.to_time)/@@seconds_per_day).floor
+      { :range => :days, :offset => offset, :limit => diff}
     end
 
     def self.propose_range(start_date)

@@ -47,7 +47,8 @@ Thanks for contribution.
 - multiselection in conditions (#3)
 - new issue chart (#2)
 - issues with closed status are considered as 100% complete (#1)
-- new translations (ko, da)
+- new translations (ko, da, de)
+- new chart - burndown with velocity (#12)
 
 ### 0.0.14
 

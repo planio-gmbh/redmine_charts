@@ -1,44 +1,65 @@
-class ChartsBurndownController < ChartsController
+class ChartsBurndown2Controller < ChartsController
 
   unloadable
 
   protected
 
   def get_data
-    total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done = get_data_for_burndown_chart
+    @conditions[:fixed_version_ids] ||= get_current_fixed_version_in(@project.id)
 
-    max = 0
-    estimated = []
-    logged = []
-    remaining = []
-    predicted = []
-
-    @range[:keys].each_with_index do |key,index|
-      max = total_predicted_hours[index] if max < total_predicted_hours[index]
-      max = total_estimated_hours[index] if max < total_estimated_hours[index]
-      estimated << [total_estimated_hours[index], l(:charts_burndown_hint_estimated, { :estimated_hours => RedmineCharts::Utils.round(total_estimated_hours[index]) })]
-      logged  << [total_logged_hours[index], l(:charts_burndown_hint_logged, { :logged_hours => RedmineCharts::Utils.round(total_logged_hours[index]) })]
-      remaining << [total_remaining_hours[index], l(:charts_burndown_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] > 0 ? Integer(total_done[index]) : 0 })]
-      if total_predicted_hours[index] > total_estimated_hours[index]
-        predicted << [total_predicted_hours[index], l(:charts_burndown_hint_predicted_over_estimation, { :predicted_hours => RedmineCharts::Utils.round(total_predicted_hours[index]), :hours_over_estimation => RedmineCharts::Utils.round(total_predicted_hours[index] - total_estimated_hours[index]) }), true]
-      else
-        predicted << [total_predicted_hours[index], l(:charts_burndown_hint_predicted, { :predicted_hours => RedmineCharts::Utils.round(total_predicted_hours[index]) })]
-      end
+    version = unless @conditions[:fixed_version_ids].empty?
+      Version.first(:conditions => {:id => @conditions[:fixed_version_ids][0], :project_id => @project.id})
     end
 
-    sets = [
-      [l(:charts_burndown_group_estimated), estimated],
-      [l(:charts_burndown_group_logged), logged],
-      [l(:charts_burndown_group_remaining), remaining],
-      [l(:charts_burndown_group_predicted), predicted],
-    ]
+    unless version
+      { :error => :charts_error_no_version }
+    else
+      start_date = version.created_on.to_date
+      end_date = version.effective_date ? version.effective_date.to_date : Time.now.to_date
 
-    {
-      :labels => @range[:labels],
-      :count => @range[:keys].size,
-      :max => max > 1 ? max : 1,
-      :sets => sets
-    }
+      @range = RedmineCharts::RangeUtils.propose_range_for_two_dates(start_date, end_date)
+
+      total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done = get_data_for_burndown_chart
+
+      max = 0
+      total_estimated = 0
+      remaining = []
+
+      @range[:keys].each_with_index do |key, index|
+        max = total_estimated_hours[index] if max < total_estimated_hours[index]
+        max = total_remaining_hours[index] if max < total_remaining_hours[index]
+        total_estimated = total_estimated_hours[index] if total_estimated < total_estimated_hours[index]
+
+        if RedmineCharts::RangeUtils.date_from_day(key).to_time <= Time.now
+          remaining << [total_remaining_hours[index], l(:charts_burndown2_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] > 0 ? Integer(total_done[index]) : 0 })]
+        end
+      end
+
+      daily_velocity = total_estimated.to_f/@range[:keys].size
+
+      velocity = []
+
+      @range[:keys].size.times do
+        velocity << [total_estimated, l(:charts_burndown2_hint_velocity, { :remaining_hours => RedmineCharts::Utils.round(total_estimated)})]
+        total_estimated -= daily_velocity
+        total_estimated = 0 if total_estimated < 0
+      end
+
+      velocity[velocity.size-1] = [0, l(:charts_burndown2_hint_velocity, { :remaining_hours => 0.0})]
+
+      sets = [
+        [l(:charts_burndown2_group_velocity), velocity],
+        [l(:charts_burndown2_group_burndown), remaining],
+      ]
+
+      {
+        :labels => @range[:labels],
+        :count => @range[:keys].size,
+        :max => max,
+        :sets => sets
+      }
+    end
+
   end
 
   def get_data_for_burndown_chart
@@ -128,27 +149,32 @@ class ChartsBurndownController < ChartsController
   end
 
   def get_title
-    l(:charts_link_burndown)
+    l(:charts_link_burndown2)
   end
 
   def get_help
-    l(:charts_burndown_help)
+    l(:charts_burndown2_help)
   end
 
   def get_x_legend
-    l(:charts_burndown_x)
+    l(:charts_burndown2_x)
   end
 
   def get_y_legend
-    l(:charts_burndown_y)
+    l(:charts_burndown2_y)
   end
 
-  def show_date_condition
-    true
+  def get_conditions_options
+    [:fixed_version_ids]
   end
 
-  def get_multiconditions_options
-    (RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids]).flatten
+  private
+
+  def get_current_fixed_version_in(project_id)
+    version = Version.all(:conditions => {:project_id => project_id}).detect do |version|
+      version.created_on.to_date <= Date.current && !version.effective_date.nil? && version.effective_date >= Date.current
+    end
+    [version.id]
   end
 
 end
