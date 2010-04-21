@@ -78,7 +78,7 @@ module RedmineCharts
     module InstanceMethods
 
       def chart_remove_time_entry
-        return if time_entry.hours == 0
+        return if self.hours == 0
 
         day = RedmineCharts::RangeUtils.format_day(self.spent_on)
         week = RedmineCharts::RangeUtils.format_week(self.spent_on)
