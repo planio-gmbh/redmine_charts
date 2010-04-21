@@ -109,7 +109,7 @@ class ChartsBurndown2Controller < ChartsController
     end
 
     rows.each do |row|
-      index = @range[:keys].index(row.range_value)
+      index = @range[:keys].index(row.range_value.to_s)
       (0..(index-1)).each do |i|
         logged_hours_per_issue[row.group_id.to_i][i] -= row.logged_hours.to_f if logged_hours_per_issue[row.group_id.to_i]
       end
@@ -174,7 +174,8 @@ class ChartsBurndown2Controller < ChartsController
     version = Version.all(:conditions => {:project_id => project_id}).detect do |version|
       version.created_on.to_date <= Date.current && !version.effective_date.nil? && version.effective_date >= Date.current
     end
-    [version.id]
+    [version.id] if version
+    []
   end
 
 end

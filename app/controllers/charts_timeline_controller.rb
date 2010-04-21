@@ -13,7 +13,7 @@ class ChartsTimelineController < ChartsController
     if rows.size > 0
       rows.each do |row|
         group_name = RedmineCharts::GroupingUtils.to_string(row.group_id, @grouping)
-        index = @range[:keys].index(row.range_value)
+        index = @range[:keys].index(row.range_value.to_s)
         if index
           sets[group_name] ||= Array.new(@range[:keys].size, [0, get_hints])
           sets[group_name][index] = [row.logged_hours.to_f, get_hints(row)]

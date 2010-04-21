@@ -88,7 +88,7 @@ class ChartsBurndownController < ChartsController
     end
 
     rows.each do |row|
-      index = @range[:keys].index(row.range_value)
+      index = @range[:keys].index(row.range_value.to_s)
       (0..(index-1)).each do |i|
         logged_hours_per_issue[row.group_id.to_i][i] -= row.logged_hours.to_f if logged_hours_per_issue[row.group_id.to_i]
       end
