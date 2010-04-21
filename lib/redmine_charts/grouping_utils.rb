@@ -40,9 +40,9 @@ module RedmineCharts
           name = "#{name[0, 20].strip} ..."
         end
         "##{project.id} #{name}"
-      elsif grouping == :activity_id and activity = Enumeration.find_by_id(id.to_i)
+      elsif grouping == :activity_id and activity = TimeEntryActivity.find_by_id(id.to_i)
         activity.name
-      elsif grouping == :priority_id and priority = Enumeration.find_by_id(id.to_i)
+      elsif grouping == :priority_id and priority = IssuePriority.find_by_id(id.to_i)
         priority.name
       elsif grouping == :tracker_id and tracker = Tracker.find_by_id(id.to_i)
         tracker.name
