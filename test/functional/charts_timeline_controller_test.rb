@@ -411,7 +411,7 @@ class ChartsTimelineControllerTest < ChartsControllerTest
     assert_equal get_label(2.3, 1, '10 Mar 10'), body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
     assert_equal 4, body['elements'][1]['values'].size
-    assert_equal 'Immediate', body['elements'][1]['text']
+    assert_equal 'Development', body['elements'][1]['text']
 
     assert_in_delta 3.3, body['elements'][1]['values'][0]['value'], 0.1
     assert_equal get_label(3.3, 1, '09 Mar 10'), body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
@@ -485,7 +485,7 @@ class ChartsTimelineControllerTest < ChartsControllerTest
   def test_activities_condition
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 8, :limit => 10, :offset => 0
+    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 10, :limit => 10, :offset => 0
 
     assert_equal 10, body['elements'][0]['values'].size
     assert_equal l(:charts_group_all), body['elements'][0]['text']

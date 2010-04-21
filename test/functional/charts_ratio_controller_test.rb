@@ -46,9 +46,9 @@ class ChartsRatioControllerTest < ChartsControllerTest
     assert_equal "#{l(:charts_ratio_hint, :label => 'Design', :hours => 10.2, :percent => 28, :total_hours => 36.1)}",
       body['elements'][0]['values'][1]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
-    assert_equal 'Immediate', body['elements'][0]['values'][0]["label"]
+    assert_equal 'Development', body['elements'][0]['values'][0]["label"]
     assert_in_delta 25.8, body['elements'][0]['values'][0]["value"], 1
-    assert_equal "#{l(:charts_ratio_hint, :label => 'Immediate', :hours => 25.9, :percent => 72, :total_hours => 36.1)}",
+    assert_equal "#{l(:charts_ratio_hint, :label => 'Development', :hours => 25.9, :percent => 72, :total_hours => 36.1)}",
       body['elements'][0]['values'][0]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
   end
 
@@ -192,10 +192,10 @@ class ChartsRatioControllerTest < ChartsControllerTest
   def test_activities_condition
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => 'activity_id', :activity_ids => 8
+    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => 'activity_id', :activity_ids => 10
 
     assert_equal 1, body['elements'][0]['values'].size
-    assert_equal 'Immediate', body['elements'][0]['values'][0]["label"]
+    assert_equal 'Development', body['elements'][0]['values'][0]["label"]
     assert_in_delta 26, body['elements'][0]['values'][0]["value"], 1
   end
 
