@@ -41,49 +41,49 @@ class RangeUtilsTest < ActiveSupport::TestCase
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2010009", :month => "201003", :day => "2010062" })
     assert_equal :days, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 10, range[:limit]
+    assert_equal 11, range[:limit]
   end
 
   def test_if_can_propose_range_for_10_days_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2010008", :month => "2010003", :day => "2010052" })
     assert_equal :days, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 10, range[:limit]
+    assert_equal 11, range[:limit]
   end
 
   def test_if_can_propose_range_for_20_days_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2010007", :month => "2010003", :day => "2010042" })
     assert_equal :days, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 20, range[:limit]
+    assert_equal 21, range[:limit]
   end
 
   def test_if_can_propose_range_for_21_days_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2010006", :month => "2010003", :day => "2010041" })
     assert_equal :weeks, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 10, range[:limit]
+    assert_equal 11, range[:limit]
   end
 
   def test_if_can_propose_range_for_20_weeks_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2009041", :month => "2009011", :day => "2009300" })
     assert_equal :weeks, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 20, range[:limit]
+    assert_equal 21, range[:limit]
   end
 
   def test_if_can_propose_range_for_21_weeks_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2009040", :month => "2009011", :day => "2009300" })
     assert_equal :months, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 10, range[:limit]
+    assert_equal 11, range[:limit]
   end
 
   def test_if_can_propose_range_for_21_months_ago
     range = RedmineCharts::RangeUtils.propose_range({ :week => "2009039", :month => "2008001", :day => "2009300" })
     assert_equal :months, range[:range]
     assert_equal 0, range[:offset]
-    assert_equal 26, range[:limit]
+    assert_equal 27, range[:limit]
   end
 
   def test_if_can_prepare_range_for_days

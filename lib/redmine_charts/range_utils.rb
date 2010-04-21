@@ -54,7 +54,7 @@ module RedmineCharts
 
       diff = 10 if diff < 10
 
-      { :range => type, :offset => 0, :limit => diff}
+      { :range => type, :offset => 0, :limit => diff + 1}
     end
 
     def self.prepare_range(range)
