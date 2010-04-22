@@ -2,11 +2,10 @@ require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/charts_controller_test'
 require 'charts_burndown2_controller'
 
-Time.set_current_date = Time.mktime(2010,4,16)
-
 class ChartsBurndown2ControllerTest < ChartsControllerTest
 
   def setup
+    Time.set_current_date = Time.mktime(2010,4,16)
     @controller = ChartsBurndown2Controller.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new

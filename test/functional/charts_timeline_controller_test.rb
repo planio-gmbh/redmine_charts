@@ -2,11 +2,10 @@ require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/charts_controller_test'
 require 'charts_timeline_controller'
 
-Time.set_current_date = Time.mktime(2010,3,12)
-
 class ChartsTimelineControllerTest < ChartsControllerTest
 
   def setup
+    Time.set_current_date = Time.mktime(2010,3,12)
     @controller = ChartsTimelineController.new
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new

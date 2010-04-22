@@ -5,6 +5,7 @@ require 'charts_burndown_controller'
 class ChartsBurndownControllerTest < ChartsControllerTest
 
   def setup
+    Time.set_current_date = Time.mktime(2010,3,12)
     @controller = ChartsBurndownController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
