@@ -66,7 +66,7 @@ class RangeUtilsTest < ActiveSupport::TestCase
   end
 
   def test_if_can_propose_range_for_20_weeks_ago
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2009041", :month => "2009011", :day => "2009300" })
+    range = RedmineCharts::RangeUtils.propose_range({ :week => "2009042", :month => "2009011", :day => "2009300" })
     assert_equal :weeks, range[:range]
     assert_equal 0, range[:offset]
     assert_equal 21, range[:limit]
@@ -126,8 +126,11 @@ class RangeUtilsTest < ActiveSupport::TestCase
   def test_if_can_prepare_range_for_days_with_year_difference
     range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 60, :offset => 5 })
     assert_equal :days, range[:range]
-    assert_equal "2009363", range[:min]
+    assert_equal "2009364", range[:min]
     assert_equal "2010057", range[:max]
+    assert_equal "2009365", range[:keys][1]
+    assert_equal "2009366", range[:keys][2]
+    assert_equal "2010001", range[:keys][3]
   end
 
 
@@ -148,15 +151,21 @@ class RangeUtilsTest < ActiveSupport::TestCase
   def test_if_can_prepare_range_for_weeks_with_year_difference
     range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 15, :offset => 1 })
     assert_equal :weeks, range[:range]
-    assert_equal "2009046", range[:min]
+    assert_equal "2009047", range[:min]
     assert_equal "2010008", range[:max]
     assert_equal 15, range[:keys].size
-    assert_equal "2009046", range[:keys][0]
+    assert_equal "2009047", range[:keys][0]
+    assert_equal "2009051", range[:keys][4]
+    assert_equal "2009052", range[:keys][5]
+    assert_equal "2009053", range[:keys][6]
+    assert_equal "2010001", range[:keys][7]
     assert_equal "2010008", range[:keys][14]
     assert_equal 15, range[:labels].size
     assert_equal "30 Nov - 6 Dec 09", range[:labels][2]
+    assert_equal "21 - 27 Dec 09", range[:labels][5]
     assert_equal "28 Dec 09 - 3 Jan 10", range[:labels][6]
-    assert_equal "4 - 10 Jan 10", range[:labels][7]
+    assert_equal "28 Dec 09 - 3 Jan 10", range[:labels][7]
+    assert_equal "4 - 10 Jan 10", range[:labels][8]
   end
 
   def test_if_can_prepare_range_for_months
@@ -184,6 +193,8 @@ class RangeUtilsTest < ActiveSupport::TestCase
     assert_equal :months, range[:range]
     assert_equal "2009012", range[:min]
     assert_equal "2010002", range[:max]
+    assert_equal "2009012", range[:keys][0]
+    assert_equal "2010001", range[:keys][1]
   end
 
   def test_if_can_prepare_range_for_months_with_2_year_difference
@@ -191,6 +202,10 @@ class RangeUtilsTest < ActiveSupport::TestCase
     assert_equal :months, range[:range]
     assert_equal "2008011", range[:min]
     assert_equal "2010002", range[:max]
+    assert_equal "2008012", range[:keys][1]
+    assert_equal "2009001", range[:keys][2]
+    assert_equal "2009012", range[:keys][13]
+    assert_equal "2010001", range[:keys][14]
   end
 
   def test_if_can_prepare_range_for_100_months
@@ -203,14 +218,14 @@ class RangeUtilsTest < ActiveSupport::TestCase
   def test_if_can_prepare_range_for_100_weeks
     range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 100, :offset => 1 })
     assert_equal :weeks, range[:range]
-    assert_equal "2008013", range[:min]
+    assert_equal "2008015", range[:min]
     assert_equal "2010008", range[:max]
   end
 
   def test_if_can_prepare_range_for_100_days
     range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 100, :offset => 1 })
     assert_equal :days, range[:range]
-    assert_equal "2009327", range[:min]
+    assert_equal "2009328", range[:min]
     assert_equal "2010061", range[:max]
   end
 
