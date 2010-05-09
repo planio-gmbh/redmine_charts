@@ -84,7 +84,7 @@ class ChartsBurndown2Controller < ChartsController
     total_predicted_hours = Array.new(@range[:keys].size, 0)
     total_done = Array.new(@range[:keys].size, 0)
     issues_per_date = Array.new(@range[:keys].size, 0)
-
+    issues_children = []
     logged_hours_per_issue = {}
     estimated_hours_per_issue = {}
 
@@ -94,6 +94,10 @@ class ChartsBurndown2Controller < ChartsController
     issues.each do |issue|
       logged_hours_per_issue[issue.id] ||= Array.new(@range[:keys].size, current_logged_hours_per_issue[issue.id] || 0)
       estimated_hours_per_issue[issue.id] ||= Array.new(@range[:keys].size, 0)
+
+      if RedmineCharts.has_sub_issues_functionality_active
+        issues_children << issue.parent_id if issue.parent_id
+      end
 
       if @range[:range] == :days
         range_value = issue.created_on.to_time.strftime('%Y%j')
@@ -106,6 +110,10 @@ class ChartsBurndown2Controller < ChartsController
         estimated_hours_per_issue[issue.id][i] = issue.estimated_hours if range_value <= key and issue.estimated_hours
         issues_per_date[i] += 1 if range_value <= key
       end
+    end
+
+    issues_children.each do |issue_with_children|
+      estimated_hours_per_issue[issue_with_children] = Array.new(@range[:keys].size, 0)
     end
 
     rows.each do |row|

@@ -1,4 +1,4 @@
---- 
+---
 charts_issues_15041:
   created_on: 2010-01-30
   project_id: 15041
@@ -6,6 +6,11 @@ charts_issues_15041:
   priority_id: 4
   subject: Issue1
   id: 15041
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15041
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id: 15041
   category_id: 15041
   description: Issue1
@@ -24,6 +29,11 @@ charts_issues_15042:
   priority_id: 4
   subject: Issue2
   id: 15042
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15042
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id:
   category_id: 15042
   description: Issue2
@@ -42,6 +52,11 @@ charts_issues_15043:
   priority_id: 4
   subject: Issue3
   id: 15043
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15043
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id: 15042
   category_id: 15042
   description: Issue3
@@ -60,6 +75,11 @@ charts_issues_15044:
   priority_id: 5
   subject: Issue4
   id: 15044
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15044
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id: 15041
   category_id: 15042
   description: Issue4
@@ -77,6 +97,11 @@ charts_issues_15045:
   priority_id: 5
   subject: Issue5
   id: 15045
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15045
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id: 15042
   category_id: 15042
   description: Issue5
@@ -95,6 +120,11 @@ charts_issues_15046:
   priority_id: 5
   subject: Issue5
   id: 15046
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+  root_id: 15046
+  lft: 1
+  rgt: 2
+<% end %>
   fixed_version_id: 15042
   category_id: 15041
   description: Issue5
@@ -106,3 +136,93 @@ charts_issues_15046:
   due_date: 2010-03-06
   done_ratio: 60
   estimated_hours: 12
+<% if RedmineCharts.has_sub_issues_functionality_active %>
+charts_issues_15047:
+  created_on: 2010-03-09
+  project_id: 15044
+  updated_on: 2010-03-09
+  priority_id: 5
+  subject: Issue Parent
+  id: 15047
+  fixed_version_id: 15043
+  category_id: 15044
+  description: Issue
+  tracker_id: 1
+  assigned_to_id: 2
+  author_id: 1
+  status_id: 3
+  start_date: 2010-03-09
+  due_date: 2010-03-06
+  done_ratio: 50
+  estimated_hours: 12
+  parent_id:
+  root_id: 15047
+  lft: 1
+  rgt: 8
+charts_issues_15048:
+  created_on: 2010-03-09
+  project_id: 15044
+  updated_on: 2010-03-09
+  priority_id: 5
+  subject: Issue Child 1
+  id: 15048
+  fixed_version_id: 15043
+  category_id: 15044
+  description: Issue
+  tracker_id: 1
+  assigned_to_id: 2
+  author_id: 1
+  status_id: 3
+  start_date: 2010-03-09
+  due_date: 2010-03-06
+  done_ratio: 40
+  estimated_hours: 5
+  parent_id: 15047
+  root_id: 15047
+  lft: 2
+  rgt: 3
+charts_issues_15049:
+  created_on: 2010-03-09
+  project_id: 15044
+  updated_on: 2010-03-09
+  priority_id: 5
+  subject: Issue Child 2
+  id: 15049
+  fixed_version_id: 15043
+  category_id: 15044
+  description: Issue
+  tracker_id: 1
+  assigned_to_id: 2
+  author_id: 1
+  status_id: 3
+  start_date: 2010-03-09
+  due_date: 2010-03-06
+  done_ratio: 60
+  estimated_hours: 7
+  parent_id: 15047
+  root_id: 15047
+  lft: 4
+  rgt: 7
+charts_issues_15050:
+  created_on: 2010-03-09
+  project_id: 15044
+  updated_on: 2010-03-09
+  priority_id: 5
+  subject: Issue Child 2.1
+  id: 15050
+  fixed_version_id: 15043
+  category_id: 15044
+  description: Issue
+  tracker_id: 1
+  assigned_to_id: 2
+  author_id: 1
+  status_id: 3
+  start_date: 2010-03-09
+  due_date: 2010-03-06
+  done_ratio: 60
+  estimated_hours: 7
+  parent_id: 15049
+  root_id: 15047
+  lft: 5
+  rgt: 6
+<% end %>

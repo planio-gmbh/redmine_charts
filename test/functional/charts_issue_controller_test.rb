@@ -34,4 +34,19 @@ class ChartsIssueControllerTest < ChartsControllerTest
       body['elements'][0]['values'][2]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
   end
 
+  def test_sub_tasks
+    if RedmineCharts.has_sub_issues_functionality_active
+      Setting.default_language = 'en'
+
+      body = get_data :project_id => 15044, :project_ids => [15044]
+
+      assert_equal 1, body['elements'][0]['values'].size
+
+      assert_equal 'Resolved', body['elements'][0]['values'][0]["label"]
+      assert_in_delta 4, body['elements'][0]['values'][0]["value"], 1
+      assert_equal "#{l(:charts_issue_hint, :label => 'Resolved', :issues => 4, :percent => 100, :total_issues => 4)}",
+        body['elements'][0]['values'][0]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+    end
+  end
+
 end

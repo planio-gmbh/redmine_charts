@@ -49,6 +49,7 @@ Thanks for contribution.
 - issues with closed status are considered as 100% complete (#1)
 - new translations (ko, da, de)
 - new chart - burndown with velocity (#12)
+- support for subissues (#36)
 
 ### 0.0.14
 

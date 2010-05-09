@@ -102,6 +102,13 @@ class ChartTimeEntry < ActiveRecord::Base
     if group == 'chart_time_entries.issue_id'
       select << ", issues.estimated_hours as estimated_hours, issues.subject as subject"
       group << ", issues.estimated_hours, issues.subject"
+
+      if RedmineCharts.has_sub_issues_functionality_active
+        select << ", issues.root_id, issues.parent_id"
+        group << ", issues.root_id, issues.parent_id"
+      else
+        select << ", chart_time_entries.issue_id as root_id, null as parent_id"
+      end
     else
       select << ", 0 as estimated_hours"
     end

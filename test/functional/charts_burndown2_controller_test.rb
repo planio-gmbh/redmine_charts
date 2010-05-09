@@ -48,4 +48,18 @@ class ChartsBurndown2ControllerTest < ChartsControllerTest
 
   end
 
+  def test_sub_tasks
+    if RedmineCharts.has_sub_issues_functionality_active
+      Setting.default_language = 'en'
+
+      body = get_data :project_id => 15044, :fixed_version_ids => [15043]
+
+      assert_in_delta 12, body['elements'][0]['values'][0]['value'], 0.1
+      assert_equal "#{l(:charts_burndown2_hint_velocity, :remaining_hours => 12.0)}<br>#{'20 Mar 10'}", body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+
+      assert_in_delta 12.0, body['elements'][1]['values'][0]['value'], 0.1
+      assert_equal "#{l(:charts_burndown_hint_remaining, :remaining_hours => 12.0, :work_done => 0)}<br>#{'20 Mar 10'}", body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+    end
+  end
+
 end

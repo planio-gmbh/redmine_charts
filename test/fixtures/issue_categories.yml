@@ -19,3 +19,9 @@ charts_issue_categories_15044:
   project_id: 15043
   assigned_to_id: 2
   id: 15044
+charts_issue_categories_15045:
+  name: Category5
+  project_id: 15044
+  assigned_to_id: 2
+  id: 15045
+

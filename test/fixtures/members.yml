@@ -29,3 +29,15 @@ charts_members_15045:
   mail_notification: true
   id: 15045
   user_id: 2
+charts_members_15046:
+  created_on: 2010-01-30
+  project_id: 15044
+  mail_notification: true
+  id: 15046
+  user_id: 2
+charts_members_15047:
+  created_on: 2010-01-30
+  project_id: 15044
+  mail_notification: true
+  id: 15047
+  user_id: 2

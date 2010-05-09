@@ -718,6 +718,20 @@ class ChartsTimelineControllerTest < ChartsControllerTest
     assert_equal get_label(0, 0, '12 Mar 10'), body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
   end
 
+  def test_sub_tasks
+    if RedmineCharts.has_sub_issues_functionality_active
+      Setting.default_language = 'en'
+
+      body = get_data :project_id => 15044, :project_ids => 15044, :range => 'weeks', :limit => 10, :offset => 0
+
+      assert_equal 10, body['elements'][0]['values'].size
+      assert_equal l(:charts_group_all), body['elements'][0]['text']
+
+      assert_in_delta 13.2, body['elements'][0]['values'][9]['value'], 0.1
+      assert_equal get_label(13.2, 4, '1 - 7 Mar 10'), body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+    end
+  end
+
   def test_all_conditions
     Setting.default_language = 'en'
     get_data :project_id => 15041, :category_ids => 15043, :tracker_ids => 15043, :fixed_version_ids => 15043, :fixed_version_ids => 15041, :user_ids => 15043, :issue_ids => 15043, :activity_ids => 15043, :author_ids => 1, :status_ids => 5

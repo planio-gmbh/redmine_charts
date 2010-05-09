@@ -15,3 +15,11 @@ charts_versions_15042:
   id: 15042
   description: Stable release
   effective_date: 2010-05-01
+charts_versions_15043:
+  created_on: 2010-03-20
+  name: "2.0"
+  project_id: 15044
+  updated_on: 2010-03-20
+  id: 15043
+  description: Stable release
+  effective_date: 2010-05-01

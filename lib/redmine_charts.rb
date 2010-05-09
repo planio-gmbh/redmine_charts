@@ -7,3 +7,11 @@ require 'redmine_charts/grouping_utils'
 require 'redmine_charts/range_utils'
 require 'redmine_charts/issue_patch'
 require 'redmine_charts/time_entry_patch'
+
+module RedmineCharts
+
+  def self.has_sub_issues_functionality_active
+    (Redmine::VERSION.to_a <=> [0,9,5]) >= 0            
+  end
+
+end

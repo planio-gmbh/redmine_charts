@@ -24,8 +24,8 @@ class ChartsDeviationControllerTest < ChartsControllerTest
     assert_in_delta 38.0, body['elements'][0]['values'][0][1]['val'], 1
     assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 11.0, :hours_over_estimation => 3.1, :over_estimation => 12)}#{l(:charts_deviation_hint_issue, :estimated_hours => 30.0, :work_done => 73)}#{l(:charts_deviation_hint_project_label)}",
       body['elements'][0]['values'][0][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
-    assert_in_delta 39.3, body['elements'][0]['values'][0][2]['val'], 1
-    assert_equal "#{l(:charts_deviation_hint_logged_not_estimated, :logged_hours => 13.0)}",
+    assert_in_delta 42.4, body['elements'][0]['values'][0][2]['val'], 1
+    assert_equal "#{l(:charts_deviation_hint_logged_not_estimated, :logged_hours => 14.0)}",
       body['elements'][0]['values'][0][2]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
     assert_in_delta 56.0, body['elements'][0]['values'][1][0]['val'], 1
@@ -99,6 +99,55 @@ class ChartsDeviationControllerTest < ChartsControllerTest
     body = get_data :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 3
 
     assert_nil body
+  end
+
+  def test_sub_tasks
+    if RedmineCharts.has_sub_issues_functionality_active
+      Setting.default_language = 'en'
+
+      body = get_data :project_id => 15044, :project_ids => [15044]
+
+      assert_equal 5, body['elements'][0]['values'].size
+
+      assert_in_delta 110.0, body['elements'][0]['values'][0][0]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_logged, :logged_hours => 13.2)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_project_label)}",
+        body['elements'][0]['values'][0][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_in_delta 100.0, body['elements'][0]['values'][0][1]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 12.0, :hours_over_estimation => 13.2, :over_estimation => 110)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_project_label)}",
+        body['elements'][0]['values'][0][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+
+      assert_in_delta 110.0, body['elements'][0]['values'][1][0]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_logged, :logged_hours => 13.2)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15047, :issue_name => 'Issue Parent')}",
+        body['elements'][0]['values'][1][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_in_delta 100.0, body['elements'][0]['values'][1][1]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 12.0, :hours_over_estimation => 13.2, :over_estimation => 110)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15047, :issue_name => 'Issue Parent')}",
+        body['elements'][0]['values'][1][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+
+      tmp = ActiveRecord::Base.connection.adapter_name =~ /postgresql|sqlite/i ? 3.4 : 3.3
+
+      assert_in_delta 66.0, body['elements'][0]['values'][2][0]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_logged, :logged_hours => 3.3)}#{l(:charts_deviation_hint_issue, :estimated_hours => 5.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15048, :issue_name => 'Issue Child 1')}",
+        body['elements'][0]['values'][2][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_in_delta 100.0, body['elements'][0]['values'][2][1]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 5.0, :hours_over_estimation => tmp, :over_estimation => 66)}#{l(:charts_deviation_hint_issue, :estimated_hours => 5.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15048, :issue_name => 'Issue Child 1')}",
+        body['elements'][0]['values'][2][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+
+      assert_in_delta 94.3, body['elements'][0]['values'][3][0]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_logged, :logged_hours => 6.6)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15049, :issue_name => 'Issue Child 2')}",
+        body['elements'][0]['values'][3][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_in_delta 100.0, body['elements'][0]['values'][3][1]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 7.0, :hours_over_estimation => 6.6, :over_estimation => 94)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15049, :issue_name => 'Issue Child 2')}",
+        body['elements'][0]['values'][3][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+
+      tmp = ActiveRecord::Base.connection.adapter_name =~ /postgresql|sqlite/i ? 3.4 : 3.3
+
+      assert_in_delta 47.1, body['elements'][0]['values'][4][0]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_logged, :logged_hours => 3.3)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15050, :issue_name => 'Issue Child 2.1')}",
+        body['elements'][0]['values'][4][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_in_delta 100.0, body['elements'][0]['values'][4][1]['val'], 1
+      assert_equal "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 7.0, :hours_over_estimation => tmp, :over_estimation => 47)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15050, :issue_name => 'Issue Child 2.1')}",
+        body['elements'][0]['values'][4][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+    end
   end
 
 end
