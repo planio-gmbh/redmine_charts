@@ -18,10 +18,12 @@ module RedmineCharts
         values = values.select { |value| value > 0 }
         conditions[type] = values unless values.empty?
       end
+
       if conditions[:project_ids]
-        project_ids = project_and_its_children_ids(project_id)
+        project_ids = Project.all.collect { |project| project.id } 
         conditions[:project_ids] = conditions[:project_ids].select { |p| project_ids.include? p }
       end
+
       if conditions[:project_ids].nil? or conditions[:project_ids].empty?
         conditions[:project_ids] = project_and_its_children_ids(project_id)
       end
@@ -30,22 +32,20 @@ module RedmineCharts
 
     def self.to_options(types, project_id)
       conditions = {}
-      project_ids = project_and_its_children_ids(project_id)
-      members = all_users_for_project(project_ids)
-      members = members.sort { |a,b| a[1] <=> b[1] }
+      members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
       types.each do |type|
         case type
         when :user_ids then conditions[:user_ids] = members
         when :assigned_to_ids then conditions[:assigned_to_ids] = members
         when :author_ids then conditions[:author_ids] = members
         when :issue_ids then conditions[:issue_ids] = nil
-        when :project_ids then conditions[:project_ids] = Project.find(project_ids).collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :category_ids then conditions[:category_ids] = IssueCategory.find_all_by_project_id(project_ids).collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :fixed_version_ids then conditions[:fixed_version_ids] = Version.find_all_by_project_id(project_ids).collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :priority_ids then conditions[:priority_ids] = IssuePriority.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
-        when :status_ids then conditions[:status_ids] = IssueStatus.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[1] <=> b[1] }
+        when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :category_ids then conditions[:category_ids] = IssueCategory.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :fixed_version_ids then conditions[:fixed_version_ids] = Version.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :priority_ids then conditions[:priority_ids] = IssuePriority.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :status_ids then conditions[:status_ids] = IssueStatus.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
         end
       end
       conditions
@@ -71,16 +71,6 @@ module RedmineCharts
     end
     
     private 
-
-    def self.all_users_for_project(project_ids)
-      users = {}
-      project_ids.each do |pid|
-        Project.find(pid).members.each do |m|
-          users[m.user.name] = m.user.id
-        end
-      end
-      users.to_a.sort
-    end
 
     def self.project_and_its_children_ids(project_id)
       project_ids = []

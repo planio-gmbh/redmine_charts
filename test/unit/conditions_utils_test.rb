@@ -15,16 +15,16 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
     options = RedmineCharts::ConditionsUtils.to_options(types, 15041)
 
     assert_equal nil, options[:issue_ids], 'Issue condition'
-    assert_equal [["Project1", 15041], ["Project2", 15042]], options[:project_ids], 'Project condition'
-    assert_equal [["redMine Admin", 1], ["John Smith", 2], ["Dave Lopper", 3]], options[:user_ids], 'User condition'
-    assert_equal [["redMine Admin", 1], ["John Smith", 2], ["Dave Lopper", 3]], options[:assigned_to_ids], 'Owner condition'
-    assert_equal [["redMine Admin", 1], ["John Smith", 2], ["Dave Lopper", 3]], options[:author_ids], 'Author condition'
-    assert_equal [["Design", 9], ["Development", 10], ["QA", 11], ["Inactive Activity", 14]], options[:activity_ids], 'Activity condition'
-    assert_equal [["Category1", 15041], ["Category2", 15042], ["Category3", 15043]], options[:category_ids], 'Category condition'
-    assert_equal [["1.0", 15041], ["2.0", 15042]], options[:fixed_version_ids], 'Version condition'
+    assert_equal [["Project1", 15041], ["Project2", 15042], ["Project3", 15043], ["Project4", 15044]], options[:project_ids], 'Project condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:user_ids], 'User condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:assigned_to_ids], 'Owner condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:author_ids], 'Author condition'
+    assert_equal [["Design", 9], ["Development", 10], ["Inactive Activity", 14], ["QA", 11]], options[:activity_ids], 'Activity condition'
+    assert_equal [["Project1 - Category1", 15041], ["Project1 - Category2", 15042], ["Project2 - Category3", 15043], ["Project3 - Category4", 15044], ["Project4 - Category5", 15045]], options[:category_ids], 'Category condition'
+    assert_equal [["Project1 - 1.0", 15041], ["Project1 - 2.0", 15042], ["Project4 - 2.0", 15043]], options[:fixed_version_ids], 'Version condition'
     assert_equal [["Bug", 1], ["Feature request", 2], ["Support request", 3]], options[:tracker_ids], 'Tracker condition'
-    assert_equal [["Low", 4], ["Normal", 5], ["High", 6], ["Urgent", 7], ["Immediate", 8]], options[:priority_ids], 'Priority condition'
-    assert_equal [["New", 1], ["Assigned", 2], ["Resolved", 3], ["Feedback", 4], ["Closed", 5], ["Rejected", 6]], options[:status_ids], 'Status condition'
+    assert_equal [["High", 6], ["Immediate", 8], ["Low", 4], ["Normal", 5], ["Urgent", 7]], options[:priority_ids], 'Priority condition'
+    assert_equal [["Assigned", 2], ["Closed", 5], ["Feedback", 4], ["New", 1], ["Rejected", 6], ["Resolved", 3]], options[:status_ids], 'Status condition'
   end
 
   def test_if_set_project_ids_if_not_provided_in_params
@@ -41,14 +41,14 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
 
   def test_if_set_project_ids_if_provided_wrong_in_params
     types = RedmineCharts::ConditionsUtils.types
-    conditions = RedmineCharts::ConditionsUtils.from_params(types, 15041, {:project_ids => [0, nil, 15041, 15043]})
-    assert_equal [15041], conditions[:project_ids]
+    conditions = RedmineCharts::ConditionsUtils.from_params(types, 15041, {:project_ids => [0, nil, 15041, 15043, 15099],})
+    assert_equal [15041, 15043], conditions[:project_ids]
   end
 
   def test_if_can_read_project_ids_from_params
     types = RedmineCharts::ConditionsUtils.types
     conditions = RedmineCharts::ConditionsUtils.from_params(types, 15041, {:project_ids => [15041, 15042, 15043]})
-    assert_equal [15041,15042], conditions[:project_ids]
+    assert_equal [15041,15042,15043], conditions[:project_ids]
   end
 
   def test_if_can_read_conditions_from_params
