@@ -177,6 +177,10 @@ class ChartsBurndown2Controller < ChartsController
     [:fixed_version_ids]
   end
 
+  def get_multiconditions_options
+    (RedmineCharts::ConditionsUtils.types - [:activity_ids, :user_ids, :fixed_version_ids, :project_ids]).flatten
+  end
+
   private
 
   def get_current_fixed_version_in(project_id)
