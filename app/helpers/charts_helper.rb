@@ -5,15 +5,15 @@ module ChartsHelper
   end
 
   # Shows chart plugin menu.
-  def show_charts_menu(separator = ' | ')
+  def show_charts_menu
     res = ""
     RedmineCharts::Utils.controllers_for_routing do |name, controller_name|      
       link_name = l("charts_link_#{name}".to_sym)
 
       if controller.controller_name == controller_name
-        res << separator << link_name
+        res << link_name << "<br /> "
       else
-        res << separator << link_to(link_name, :controller => controller_name, :project_id => @project)
+        res << link_to(link_name, :controller => controller_name, :project_id => @project) << "<br /> "
       end
     end
     res

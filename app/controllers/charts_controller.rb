@@ -16,11 +16,8 @@ class ChartsController < ApplicationController
   def index
     @title = get_title
 
-    @show_conditions = false
-
     if show_date_condition
       @date_condition = true
-      @show_conditions = true
     else
       @date_condition = false
     end
@@ -31,7 +28,6 @@ class ChartsController < ApplicationController
 
     unless get_grouping_options.empty?
       @grouping_options = RedmineCharts::GroupingUtils.to_options(get_grouping_options)
-      @show_conditions = true
     else
       @grouping_options = []
     end
@@ -42,7 +38,6 @@ class ChartsController < ApplicationController
       @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options, @project.id)
       @textconditions_options = @conditions_options.select { |c1,c2| c2.nil? }
       @conditions_options = @conditions_options.select { |c1,c2| not c2.nil? }
-      @show_conditions = true
     else
       @conditions_options = []
     end
@@ -51,12 +46,11 @@ class ChartsController < ApplicationController
       @multiconditions_options = RedmineCharts::ConditionsUtils.to_options(get_multiconditions_options, @project.id)
       @textconditions_options = @multiconditions_options.select { |c1,c2| c2.nil? }
       @multiconditions_options = @multiconditions_options.select { |c1,c2| not c2.nil? }
-      @show_conditions = true
     else
       @multiconditions_options = []
     end
 
-    @show_left_column = @show_conditions
+    @all_conditions_options = @conditions_options + @multiconditions_options + @textconditions_options 
 
     unless get_help.blank?
       @help = get_help

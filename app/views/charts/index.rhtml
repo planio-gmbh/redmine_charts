@@ -5,80 +5,53 @@
   <%= javascript_include_tag '/plugin_assets/redmine_charts/javascripts/charts.js' %>
 <% end %>
 
-<h2><%=l(:charts_menu_label)%>
-    <span style="font-size:small"><%= show_charts_menu %></span>
-</h2>
+<% content_for :sidebar do %>
+  <h3><%= l(:charts_menu_label) %></h3>
+  <%= show_charts_menu %>
+<% end %>
+
+<h2><%= @title %></h2>
 
 <% form_tag '#', :method => :get do %>
 
-  <% if @show_left_column %>
-      <div class="splitcontentleft" style="width:30%">
+  <%= hidden_field_tag :page, @page %>
+  <%= hidden_field_tag :project_id, @project.id %>
 
-        <% if @help %>
-            <div class="box"><%= @help %></div>
-        <% end %>
+  <div id="query_form_content">
 
-        <%= hidden_field_tag :page, @page %>
-        <%= hidden_field_tag :project_id, @project.id %>
-          
-        <% if @show_conditions %>
-          <% unless @grouping_options.empty? and @conditions_options.empty? and @multiconditions_options.empty? and @textconditions_options.empty? %>
-            <div class="box tabular">
-              <% unless @grouping_options.empty? %>
-                <p><label for="grouping"><%= l(:charts_group_by) %>:</label> <%= select_tag :grouping, options_for_select(@grouping_options, @grouping), :style => "width:200px" %></p>
-              <% end %>
-              <% @textconditions_options.each do |condition| %>
-                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
-                  <%= text_field_tag condition[0].to_sym, @conditions[condition[0].to_sym].blank? ? nil : @conditions[condition[0].to_sym] %>
-                </p>
-              <% end %>
-              <% @conditions_options.each do |condition| %>
-                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
-                  <% unless condition[1].nil? %>
-                    <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:style => "width:200px"} %>
-                  <% end %>
-                </p>
-              <% end %>
-              <% @multiconditions_options.each do |condition| %>
-                <p><label for="<%= "conditions_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %>:</label>
-                  <% unless condition[1].nil? %>
-                    <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:multiple => true, :size => 4, :style => "width:200px"} %>
-                  <% end %>
-                </p>
-              <% end %>
-            </div>
-          <% end %>
-          <div style="text-align:center">
-            <%= submit_tag l(:charts_button) %>
-          </div>
-        <% end %>
+    <% if @help %>
+      <p><%= @help %></p>
+    <% end %>
 
-        <br/>
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);"><%= l(:label_filter_plural) %></legend>
+      <div>
+        <%= render :partial => 'charts/filters' %>
       </div>
+    </fieldset>
+
+  <p class="buttons">
+    <%= submit_tag l(:charts_button) %>
+  </p>
+
+
+  <% if @error %>
+    <p><%= @error_message %></p>
+  <% else %>
+    <%= show_graph(@data) %>
+
+    <% if @show_pages %>
+      <div style="text-align:center;padding-top:20px">
+        <%= show_pages(@page, @pages) %>
+      </div>
+    <% end %>
+
+    <% if @date_condition %>
+      <div style="text-align:center;padding-top:20px">
+        <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
+      </div>
+    <% end %>
+
   <% end %>
 
-  <div class="splitcontentright" style="width:<%= @show_left_column ? "68%" : "100%" %>">
-      <% if @error %>
-
-        <p><%= @error_message %></p>
-
-      <% else %>
-
-        <%= show_graph(@data) %>
-
-        <% if @show_pages %>
-          <div style="text-align:center;padding-top:20px">
-            <%= show_pages(@page, @pages) %>
-          </div>
-        <% end %>
-        <% if @date_condition %>
-          <div style="text-align:center;padding-top:20px">
-            <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
-          </div>
-        <% end %>
-
-      <% end %>
-
-  </div>
-  
 <% end %>
