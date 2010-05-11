@@ -48,11 +48,11 @@ class ChartsIssueController < ChartsController
   end
 
   def get_title
-    l(:charts_link_ratio)
+    l(:charts_link_issue)
   end
   
   def get_help
-    l(:charts_ratio_help)
+    l(:charts_issue_help)
   end
   
   def get_type
