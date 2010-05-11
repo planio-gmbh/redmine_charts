@@ -99,6 +99,7 @@ ja:
 
   charts_error_no_data: "There is no data to show."
   charts_error_no_version: "There is no version to show."
+  charts_error_select_version: "Please select the version to show."
 
   charts_link_burndown2: "Burndown with velocity"
   charts_burndown2_x: ""

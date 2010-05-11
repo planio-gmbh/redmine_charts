@@ -12,7 +12,11 @@ class ChartsBurndown2Controller < ChartsController
     end
 
     unless version
-      { :error => :charts_error_no_version }
+      if RedmineCharts::ConditionsUtils.to_options([:fixed_version_ids])[:fixed_version_ids].empty?
+        { :error => :charts_error_no_version }
+      else
+        { :error => :charts_error_select_version}
+      end      
     else
       start_date = version.created_on.to_date
       end_date = version.effective_date ? version.effective_date.to_date : Time.now.to_date
