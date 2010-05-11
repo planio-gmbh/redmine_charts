@@ -97,7 +97,6 @@ pl:
 
   charts_error_no_data: "Brak danych."
   charts_error_no_version: "Brak wersji."
-  charts_error_select_version: "Proszę wybrać wersję."
 
   charts_link_burndown2: "Burndown z velocity"
   charts_burndown2_x: ""
