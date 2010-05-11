@@ -12,7 +12,7 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
 
   def test_if_return_proper_conditions
     types = RedmineCharts::ConditionsUtils.types
-    options = RedmineCharts::ConditionsUtils.to_options(types, 15041)
+    options = RedmineCharts::ConditionsUtils.to_options(types)
 
     assert_equal nil, options[:issue_ids], 'Issue condition'
     assert_equal [["Project1", 15041], ["Project2", 15042], ["Project3", 15043], ["Project4", 15044]], options[:project_ids], 'Project condition'

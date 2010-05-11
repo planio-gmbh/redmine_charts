@@ -30,7 +30,7 @@ module RedmineCharts
       conditions
     end
 
-    def self.to_options(types, project_id)
+    def self.to_options(types)
       conditions = {}
       members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
       types.each do |type|
