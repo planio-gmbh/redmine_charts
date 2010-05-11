@@ -67,6 +67,7 @@ class ChartsBurndown2Controller < ChartsController
 
     @conditions.each do |c, v|
       column_name = RedmineCharts::ConditionsUtils.to_column(c, 'issues')
+      column_name = 'issues.id' if column_name == 'issues.issue_id'
       conditions[column_name] = v if v and column_name
     end
 
