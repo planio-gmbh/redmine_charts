@@ -11,7 +11,7 @@ require 'redmine_charts/time_entry_patch'
 module RedmineCharts
 
   def self.has_sub_issues_functionality_active
-    (Redmine::VERSION.to_a <=> [0,9,5]) >= 0            
+    (Redmine::VERSION.to_a <=> [0,9,4,'devel']) >= 0
   end
 
 end
