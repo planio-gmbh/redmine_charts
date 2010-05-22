@@ -64,13 +64,38 @@ class ChartsController < ApplicationController
     @grouping = RedmineCharts::GroupingUtils.from_params(get_grouping_options, params)
     @conditions = RedmineCharts::ConditionsUtils.from_params(get_conditions_options + get_multiconditions_options, @project.id, params)
 
+    if params[:chart_form_action] == 'saved_condition_update'
+      @saved_condition = create_saved_condition(:update, @conditions, @grouping)
+    elsif params[:chart_form_action] == 'saved_condition_create'
+      @saved_condition = create_saved_condition(:create, @conditions, @grouping)
+    end
+
+    unless @saved_condition
+      @saved_condition = ChartSavedCondition.first(:conditions => {:id => params[:saved_condition_id]}) if params[:saved_condition_id]
+    end
+
+    @saved_conditions = ChartSavedCondition.all(:conditions => ["project_id is null or project_id = ?", @project.id])
+
     create_chart
 
-    if @error
-      @error_message = l(@error)
+    if @error and not flash[:error]
+      flash[:error] = l(@error)
     end
 
     render :template => "charts/index"
+  end
+
+  def destroy_saved_condition
+    condition = ChartSavedCondition.first(:conditions => {:id => params[:id]})
+
+    unless condition
+      flash[:error] = l(:charts_saved_condition_flash_not_found)
+    else
+      condition.destroy
+      flash[:notice] = l(:charts_saved_condition_flash_deleted)
+    end
+
+    redirect_to :action => :index
   end
 
   protected
@@ -224,6 +249,43 @@ class ChartsController < ApplicationController
     @project = Project.find(params[:project_id])
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+
+  def create_saved_condition(action, conditions, grouping)
+    if action == :create
+      condition = ChartSavedCondition.new
+    else
+      condition = ChartSavedCondition.first(:conditions => {:id => params[:saved_condition_id]})
+    end
+
+    unless condition
+      flash[:error] = l(:charts_saved_condition_flash_not_found)
+    else
+      condition.name = params["saved_condition_#{action}_name".to_sym]
+      condition.project_id = params["saved_condition_#{action}_project_id".to_sym]
+      condition.chart = self.class.name.underscore.sub("charts_","").sub("_controller","")
+
+      conditions[:grouping] = grouping
+
+      condition.conditions = conditions
+
+      if condition.save
+        flash[:notice] = l("charts_saved_condition_flash_#{action}d".to_sym)
+        condition
+      else
+        if condition.errors
+          if condition.errors.on(:name) == 'can\'t be blank'
+            flash[:error] = l(:charts_saved_condition_flash_name_cannot_be_blank)
+          elsif condition.errors.on(:name) == 'has already been taken'
+            flash[:error] = l(:charts_saved_condition_flash_name_exists)
+          else
+            flash[:error] = condition.errors.full_messages.join("<br/>")
+          end
+        end
+
+        nil
+      end
+    end
   end
 
 end
