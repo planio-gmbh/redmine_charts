@@ -14,12 +14,25 @@ Install OpenFlashChart plugin.
 
     $ ./script/plugin install git://github.com/pullmonkey/open_flash_chart.git
 
-Migrate database and populate new tables
+Migrate database.
 
     $ rake db:migrate:plugins
+
+Populate tables with old data.
+
     $ rake charts:migrate
 
 Run Redmine and have a fun!
+
+## Troubleshouting
+
+### I don't see any data in charts / I don't see my old data in charts
+
+Run migration task "charts:migrate" to populate tables used by plugin with Your old data.
+
+### I don't see charts tab / I don't see link to add new saved condition
+
+Add permission to Your user.
 
 ## Translations
 
@@ -50,6 +63,7 @@ Thanks for the contribution.
 - new translations (ko, da, de)
 - new chart - burndown with velocity (#12)
 - support for subissues (#36)
+- saved condition (#24)
 
 ### 0.0.14
 
