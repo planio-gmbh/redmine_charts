@@ -114,7 +114,7 @@ pl:
   button_delete_condition: "Usuń zapisane kryteria"
   button_save_condition: "Zapisz kryteria"
   button_save_condition_as_new: "Zapisz kryteria jako nowe"
-  charts_saved_condition_label: "Zapisane kryteria"
+  charts_saved_condition_label: "Zapisz kryteria"
   charts_saved_condition_name: "Nazwa"
   charts_saved_condition_project_id: "Pokazuj te kryteria tylko dla bieżącego projektu"
   charts_saved_condition_flash_not_found: "Zapisane kryteria nie istnięją"
