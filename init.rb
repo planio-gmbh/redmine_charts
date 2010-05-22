@@ -33,6 +33,7 @@ Redmine::Plugin.register :redmine_charts do
 
   project_module :charts do
     permission :view_charts, RedmineCharts::Utils.controllers_for_permissions, :require => :member
+    permission :save_charts, {:charts_saved_condition => [:create, :edit, :destroy]}, :require => :member
   end
 
   # Creating menu entry. It appears in project menu, after 'new_issue' entry.
