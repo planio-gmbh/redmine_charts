@@ -5,10 +5,8 @@ class ChartsDeviationController < ChartsController
   protected  
 
   def get_data
-    @page = @pagination[:page]
-    @pages = (ChartTimeEntry.get_aggregation(:issue_id, @conditions).size.to_f / @pagination[:per_page]).ceil
-
     rows = ChartTimeEntry.get_aggregation(:issue_id, @conditions)
+
     done_ratios = ChartDoneRatio.get_aggregation_for_issue(@conditions)
 
     rows.sort! do |row1, row2|
@@ -101,7 +99,7 @@ class ChartsDeviationController < ChartsController
         labels.delete_at(index)
       end
     end
-
+    
     # Project logged and remaining ratio.
     if labels.size > 0
       issues_roots = 1 if issues_roots == 0
@@ -119,6 +117,9 @@ class ChartsDeviationController < ChartsController
 
     hint = get_remaining_hint(project_logged_ratio, project_remaining_ratio, project_done_ratio, total_logged_hours, total_remaining_hours, total_estimated_hours)
     project_remaining_value = [project_remaining_ratio, hint]
+
+    @page = @pagination[:page]
+    @pages = (labels.size.to_f / @pagination[:per_page]).ceil
 
     offset = @pagination[:per_page] * (@pagination[:page] - 1)
     limit = offset + @pagination[:per_page] - 1
