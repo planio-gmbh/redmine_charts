@@ -62,11 +62,13 @@ module ChartsHelper
 
   # Shows pages.
   def show_pages(page, pages)
+    res = ""
+
     if pages > 1
       if page == 1
-        res = l(:charts_previous)
+        res << l(:charts_previous)
       else
-        res = link_to_function(l(:charts_previous), :onclick => 'charts_previous();')
+        res << link_to_function(l(:charts_previous), :onclick => 'charts_previous();')
       end
 
       res << ' - '
@@ -76,9 +78,9 @@ module ChartsHelper
       else
         res << link_to_function(l(:charts_next), :onclick => 'charts_next();')
       end
-
-      res
     end
+
+    res
   end
 
 end
