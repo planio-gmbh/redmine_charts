@@ -27,7 +27,7 @@ fr:
   charts_ratio_hint: "{{label}}<br>{{hours}} ({{percent}}%) total {{total_hours}} d'heures"
   charts_ratio_others: "Autres"
   charts_ratio_none: "Vide"
-  charts_ratio_help: "Heures qui ont été réalisées proportionnellement au nombre total d'heures, regroupée et filtrée par utilisateurs, demandes, activitiés ou catégories."
+  charts_ratio_help: "Heures qui ont été réalisées proportionnellement au nombre total d'heures, regroupées et filtrées par utilisateurs, demandes, activitiés ou catégories."
 
   charts_timeline_x: ""
   charts_timeline_y: "heures"
