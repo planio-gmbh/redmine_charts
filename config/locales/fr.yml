@@ -74,6 +74,12 @@ fr:
   charts_condition_tracker_ids: "Tracker"
   charts_condition_priority_ids: "Priorités"
   charts_condition_fixed_version_ids: "Version"
+  charts_condition_project_ids: "Projet"
+  charts_condition_author_ids: "Auteur"
+  charts_condition_status_ids: "Status"
+  charts_group_by_status_id: "status"
+  charts_group_by_author_id: "auteur"
+  charts_group_by_project_id: "projet"
   charts_group_by_tracker_id: "trackers"
   charts_group_by_priority_id: "prioritiés"
   charts_group_by_fixed_version_id: "versions"
@@ -81,21 +87,15 @@ fr:
 
   # To translate
 
-  charts_condition_project_ids: "Projet"
-  charts_condition_author_ids: "Auteur"
-  charts_condition_status_ids: "Status"
   charts_condition_assigned_to_ids: "Owner"
-  charts_group_by_status_id: "statuses"
-  charts_group_by_author_id: "authors"
-  charts_group_by_project_id: "projects"
   charts_group_by_assigned_to_id: "owners"
 
-  charts_link_issue: "Issues ratio"
+  charts_link_issue: "Ratio des demandes"
   charts_issue_label: "{{label}}"
   charts_issue_hint: "{{label}}<br>{{issues}} ({{percent}}%) of total {{total_issues}} issues"
   charts_issue_others: "Others"
-  charts_issue_none: "None"
-  charts_issue_help: "Number of issues for given group and conditions."
+  charts_issue_none: "Aucune"
+  charts_issue_help: "Nombre de demande pour le groupe et les conditions spécifiées."
 
   charts_error_no_data: "Aucune données à afficher."
   charts_error_no_version: "Aucune version à afficher"
