@@ -81,8 +81,8 @@ fr:
 
   # To translate
 
-  charts_condition_project_ids: "Project"
-  charts_condition_author_ids: "Author"
+  charts_condition_project_ids: "Projet"
+  charts_condition_author_ids: "Auteur"
   charts_condition_status_ids: "Status"
   charts_condition_assigned_to_ids: "Owner"
   charts_group_by_status_id: "statuses"
@@ -97,12 +97,12 @@ fr:
   charts_issue_none: "None"
   charts_issue_help: "Number of issues for given group and conditions."
 
-  charts_error_no_data: "There is no data to show."
-  charts_error_no_version: "There is no version to show."
+  charts_error_no_data: "Aucune données à afficher."
+  charts_error_no_version: "Aucune version à afficher"
 
   charts_link_burndown2: "Burndown with velocity"
   charts_burndown2_x: ""
-  charts_burndown2_y: "hours"
+  charts_burndown2_y: "heures"
   charts_burndown2_group_velocity: "velocity"
   charts_burndown2_hint_velocity: "{{remaining_hours}} hours to finish (according to velocity)"
   charts_burndown2_group_burndown: "burndown"
