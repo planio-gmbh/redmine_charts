@@ -41,7 +41,7 @@ Add permission to Your user.
 - nl by onno-schuit
 - en by Maciej Szczytowski and Rocco Stanzione
 - ru by Vadim Kruchkov
-- es by Rafael Lorenzo 
+- es by Rafael Lorenzo, José Javier Sianes Ruiz 
 - pl by Maciej Szczytowski
 - fr by Yannick Quenec'hdu
 - ko by Ki Won Kim
