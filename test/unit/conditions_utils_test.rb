@@ -14,11 +14,15 @@ class ConditionsUtilsTest < ActiveSupport::TestCase
     types = RedmineCharts::ConditionsUtils.types
     options = RedmineCharts::ConditionsUtils.to_options(types)
 
+    options[:user_ids] = options[:user_ids].select { |u| u[1] != 9 }
+    options[:assigned_to_ids] = options[:assigned_to_ids].select { |u| u[1] != 9 }
+    options[:author_ids] = options[:author_ids].select { |u| u[1] != 9 }
+
     assert_equal nil, options[:issue_ids], 'Issue condition'
     assert_equal [["Project1", 15041], ["Project2", 15042], ["Project3", 15043], ["Project4", 15044]], options[:project_ids], 'Project condition'
-    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:user_ids], 'User condition'
-    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:assigned_to_ids], 'Owner condition'
-    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8], ["User Misc", 9]], options[:author_ids], 'Author condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8]], options[:user_ids], 'User condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8]], options[:assigned_to_ids], 'Owner condition'
+    assert_equal [["Anonymous", 6], ["Dave Lopper", 3], ["Dave2 Lopper2", 5], ["John Smith", 2], ["redMine Admin", 1], ["Robert Hill", 4], ["Some One", 7], ["User Misc", 8]], options[:author_ids], 'Author condition'
     assert_equal [["Design", 9], ["Development", 10], ["Inactive Activity", 14], ["QA", 11]], options[:activity_ids], 'Activity condition'
     assert_equal [["Project1 - Category1", 15041], ["Project1 - Category2", 15042], ["Project2 - Category3", 15043], ["Project3 - Category4", 15044], ["Project4 - Category5", 15045]], options[:category_ids], 'Category condition'
     assert_equal [["Project1 - 1.0", 15041], ["Project1 - 2.0", 15042], ["Project4 - 2.0", 15043]], options[:fixed_version_ids], 'Version condition'
