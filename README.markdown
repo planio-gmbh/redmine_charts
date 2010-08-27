@@ -47,6 +47,7 @@ Add permission to Your user.
 - ko by Ki Won Kim
 - da by Jakob Skjerning
 - de by Bernd Engelsing
+- sv by Martin Bagge
 
 Thanks for the contribution. 
 
