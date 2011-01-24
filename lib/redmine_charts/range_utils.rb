@@ -173,6 +173,8 @@ module RedmineCharts
 
       if week_of_year > offset
         week_of_year -= offset
+      elsif week_of_year == offset && week_of_year == 1
+        week_of_year = 0
       else
         year -= 1
         week_of_year = @@weeks_per_year + week_of_year - offset
