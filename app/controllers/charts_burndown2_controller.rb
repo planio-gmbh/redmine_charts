@@ -14,7 +14,7 @@ class ChartsBurndown2Controller < ChartsController
     unless version
       { :error => :charts_error_no_version }          
     else
-      start_date = version.created_on.to_date
+      start_date = version.start_date
       end_date = version.effective_date ? version.effective_date.to_date : Time.now.to_date
 
       @range = RedmineCharts::RangeUtils.propose_range_for_two_dates(start_date, end_date)
