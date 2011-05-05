@@ -16,11 +16,11 @@ Install OpenFlashChart plugin.
 
 Migrate database.
 
-    $ rake db:migrate:plugins
+    $ rake db:migrate:plugins RAILS_ENV=production
 
 Populate tables with old data.
 
-    $ rake charts:migrate
+    $ rake charts:migrate RAILS_ENV=production
 
 Run Redmine and have a fun!
 
@@ -51,6 +51,15 @@ Add permission to Your user.
 Thanks for the contribution. 
 
 ## Changelog
+
+## 0.1.1
+- compatible with Redmine 1.1.2
+- Only list active projects, fix from Anton Kravchenko's fork. 
+- weeks starts from 0 - yondo
+- support version has no tickets case Anton Kravchenko (author)
+- avoid error  kzgs (author)
+- use Version#start_date for start date of burndown chart  kzgs (author)
+- fixing bug where the index is not found in range[:keys] from: Michael Co... 
 
 ### 0.1.0
 
