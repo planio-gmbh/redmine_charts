@@ -39,7 +39,7 @@ module RedmineCharts
         when :assigned_to_ids then conditions[:assigned_to_ids] = members
         when :author_ids then conditions[:author_ids] = members
         when :issue_ids then conditions[:issue_ids] = nil
-        when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+        when :project_ids then conditions[:project_ids] = Project.active.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
         when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
         when :category_ids then conditions[:category_ids] = IssueCategory.all.collect { |a| ["#{a.project} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
         when :fixed_version_ids then conditions[:fixed_version_ids] = Version.all.collect { |a| ["#{a.project} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
