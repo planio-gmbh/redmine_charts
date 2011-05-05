@@ -24,6 +24,7 @@ class ChartDoneRatio < ActiveRecord::Base
     rows.each do |row|
       done_ratios[row.issue_id.to_i] ||= Array.new(range[:keys].size, 0)
       index = range[:keys].index(row.range_value.to_s)
+      next unless index
       (index...range[:keys].size).each do |i|
         done_ratios[row.issue_id.to_i][i] = row.done_ratio.to_i
       end
