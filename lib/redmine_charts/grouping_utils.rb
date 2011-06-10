@@ -27,7 +27,7 @@ module RedmineCharts
       elsif grouping == :category_id and category = IssueCategory.find_by_id(id.to_i)
         category.name
       elsif [:user_id, :author_id, :assigned_to_id].include? grouping and user = User.find_by_id(id.to_i)
-        "#{user.firstname} #{user.lastname}"
+        "#{user.name}"
       elsif grouping == :issue_id and issue = Issue.find_by_id(id.to_i)
         subject = issue.subject
         if subject.length > 24
