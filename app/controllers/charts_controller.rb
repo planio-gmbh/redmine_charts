@@ -71,7 +71,7 @@ class ChartsController < ApplicationController
     end
 
     unless @saved_condition
-      @saved_condition = ChartSavedCondition.first(:conditions => {:id => params[:saved_condition_id]}) if params[:saved_condition_id]
+      @saved_condition = ChartSavedCondition.first(:conditions => {:id => params[:saved_condition_id]}) if not params[:saved_condition_id].blank?
     end
 
     @saved_conditions = ChartSavedCondition.all(:conditions => ["project_id is null or project_id = ?", @project.id])
