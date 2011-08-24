@@ -201,6 +201,12 @@ class ChartsDeviationController < ChartsController
   private
 
   def add_logged_hours_to_parent_issue issues_tree, id, logged_hours
+    if issues_tree[id].nil?
+      issues_tree[id] = {}
+    end
+    if issues_tree[id][:logged_hours].nil?
+      issues_tree[id][:logged_hours] = 0
+    end
     issues_tree[id][:logged_hours] += logged_hours
 
     if issues_tree[id][:parent_id]
