@@ -35,7 +35,7 @@ class ChartsBurndown2Controller < ChartsController
         end
       end
 
-      daily_velocity = total_estimated.to_f/@range[:keys].size
+      daily_velocity = total_estimated.to_f / (@range[:keys].size > 1 ? @range[:keys].size - 1 : 1)
 
       velocity = []
 
