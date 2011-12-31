@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ChartTimeEntryTest < ActiveSupport::TestCase
+class ChartDoneRatioTest < ActiveSupport::TestCase
 
   def test_aggregation
     aggregation = ChartDoneRatio.get_aggregation_for_issue(:project_ids => [15041])
