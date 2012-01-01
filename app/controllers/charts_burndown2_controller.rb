@@ -130,7 +130,7 @@ class ChartsBurndown2Controller < ChartsController
         estimated = estimated_hours_per_issue[issue.id] ? estimated_hours_per_issue[issue.id][index] : 0
         done_ratio = done_ratios_per_issue[issue.id] ? done_ratios_per_issue[issue.id][index] : 0
 
-        total_remaining_hours[index] += done_ratio > 0 ? logged/done_ratio*(100-done_ratio) : estimated
+        total_remaining_hours[index] += ((done_ratio > 0 and logged > 0) ? (logged/done_ratio) : (estimated/100)) * (100-done_ratio)
 
         total_logged_hours[index] += logged
         total_estimated_hours[index] += estimated
