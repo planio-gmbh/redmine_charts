@@ -37,9 +37,7 @@ module RedmineCharts
     end
 
     def self.propose_range_for_two_dates(start_date, end_date)
-      diff = diff(format_day(start_date), format_day(end_date), @@days_per_year) + 1
-      offset = ((Time.now - end_date.to_time)/@@seconds_per_day).floor
-      { :range => :days, :offset => offset, :limit => diff}
+      { :range => :days, :offset => (Date.today - end_date).to_i, :limit => (end_date - start_date).to_i + 1 }
     end
 
     def self.propose_range(start_date)
@@ -165,26 +163,11 @@ module RedmineCharts
     end
 
     def self.subtract_week(current, offset)
-      year = current[0..3].to_i
-      week_of_year = current[4..6].to_i
+      date = Date.strptime(current, "%Y0%W") - offset.weeks
 
-      year -= offset/@@weeks_per_year
-      offset %= @@weeks_per_year
+      key = "%d%03d" % [date.year, date.strftime("%W").to_i]
 
-      if week_of_year > offset
-        week_of_year -= offset
-      elsif week_of_year == offset && week_of_year == 1
-        week_of_year = 0
-      else
-        year -= 1
-        week_of_year = @@weeks_per_year + week_of_year - offset
-      end
-
-      key = "%d%03d" % [year, week_of_year]
-
-      date = date_from_week(key)
-
-      date -= (date.strftime("%w").to_i - 1).days
+      date -= ((date.strftime("%w").to_i + 6) % 7).days
 
       day_from = date.strftime("%d").to_i
       month_from = date.strftime("%b")
@@ -208,22 +191,11 @@ module RedmineCharts
     end
 
     def self.subtract_day(current, offset)
-      year = current[0..3].to_i
-      day_of_year = current[4..6].to_i
+      date = Date.strptime(current, "%Y%j") - offset
 
-      year -= offset/@@days_per_year
-      offset %= @@days_per_year
+      key = "%d%03d" % [date.year, date.yday]
 
-      if day_of_year > offset
-        day_of_year -= offset
-      else
-        year -= 1
-        day_of_year = @@days_per_year + day_of_year - offset
-      end
-
-      key = "%d%03d" % [year, day_of_year]
-
-      [key, date_from_day(key).strftime("%d %b %y")]
+      [key, date.strftime("%d %b %y")]
     end
 
   end
