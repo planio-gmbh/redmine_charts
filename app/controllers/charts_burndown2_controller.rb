@@ -19,30 +19,25 @@ class ChartsBurndown2Controller < ChartsController
 
       @range = RedmineCharts::RangeUtils.propose_range_for_two_dates(start_date, end_date)
 
-      total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done = get_data_for_burndown_chart
+      total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done, total_velocities = get_data_for_burndown_chart
 
       max = 0
       total_estimated = 0
       remaining = []
 
       @range[:keys].each_with_index do |key, index|
-        max = total_estimated_hours[index] if max < total_estimated_hours[index]
+        max = total_velocities[index] if max < total_velocities[index]
         max = total_remaining_hours[index] if max < total_remaining_hours[index]
-        total_estimated = total_estimated_hours[index] if total_estimated < total_estimated_hours[index]
 
         if RedmineCharts::RangeUtils.date_from_day(key).to_time <= Time.now
           remaining << [total_remaining_hours[index], l(:charts_burndown2_hint_remaining, { :remaining_hours => RedmineCharts::Utils.round(total_remaining_hours[index]), :work_done => total_done[index] > 0 ? Integer(total_done[index]) : 0 })]
         end
       end
 
-      daily_velocity = total_estimated.to_f / (@range[:keys].size > 1 ? @range[:keys].size - 1 : 1)
-
       velocity = []
 
-      @range[:keys].size.times do
-        velocity << [total_estimated, l(:charts_burndown2_hint_velocity, { :remaining_hours => RedmineCharts::Utils.round(total_estimated)})]
-        total_estimated -= daily_velocity
-        total_estimated = 0 if total_estimated < 0
+      @range[:keys].size.times do |index|
+        velocity << [total_velocities[index], l(:charts_burndown2_hint_velocity, { :remaining_hours => RedmineCharts::Utils.round(total_velocities[index])})]
       end
 
       velocity[velocity.size-1] = [0, l(:charts_burndown2_hint_velocity, { :remaining_hours => 0.0})]
@@ -73,6 +68,13 @@ class ChartsBurndown2Controller < ChartsController
 
     issues = Issue.all(:conditions => conditions)
 
+    # remove parent issues
+    issues_children = []
+    issues.each do |issue|
+      issues_children << issue.parent_id if RedmineCharts.has_sub_issues_functionality_active and issue.parent_id
+    end
+    issues.delete_if {|issue| issues_children.include?(issue.id)}
+
     rows, @range = ChartTimeEntry.get_timeline(:issue_id, @conditions, @range)
 
     current_logged_hours_per_issue = ChartTimeEntry.get_aggregation_for_issue(@conditions, @range)
@@ -84,10 +86,11 @@ class ChartsBurndown2Controller < ChartsController
     total_remaining_hours = Array.new(@range[:keys].size, 0)
     total_predicted_hours = Array.new(@range[:keys].size, 0)
     total_done = Array.new(@range[:keys].size, 0)
+    total_velocities = Array.new(@range[:keys].size, 0)
     issues_per_date = Array.new(@range[:keys].size, 0)
-    issues_children = []
     logged_hours_per_issue = {}
     estimated_hours_per_issue = {}
+    velocities_per_issue = {}
 
     logged_hours_per_issue[0] = Array.new(@range[:keys].size, current_logged_hours_per_issue[0] || 0)
     estimated_hours_per_issue[0] ||= Array.new(@range[:keys].size, 0)
@@ -95,26 +98,37 @@ class ChartsBurndown2Controller < ChartsController
     issues.each do |issue|
       logged_hours_per_issue[issue.id] ||= Array.new(@range[:keys].size, current_logged_hours_per_issue[issue.id] || 0)
       estimated_hours_per_issue[issue.id] ||= Array.new(@range[:keys].size, 0)
+      velocities_per_issue[issue.id] ||= Array.new(@range[:keys].size, 0)
 
-      if RedmineCharts.has_sub_issues_functionality_active
-        issues_children << issue.parent_id if issue.parent_id
+      issue_start_date = issue.created_on.to_date
+      range_start_date = issue.created_on.to_date
+      if issue.start_date
+        issue_start_date = issue.start_date if issue.start_date > issue.created_on.to_date
+        range_start_date = issue.start_date if issue.start_date < issue.created_on.to_date
       end
 
-      if @range[:range] == :days
-        range_value = issue.created_on.to_time.strftime('%Y%j')
-      elsif @range[:range] == :weeks
-        range_value = issue.created_on.to_time.strftime('%Y0%W')
-      else
-        range_value = issue.created_on.to_time.strftime('%Y0%m')
-      end
+      issue_start_key = [RedmineCharts::RangeUtils.format_date_with_unit(issue_start_date, @range[:range]), @range[:keys].first].max
+      range_start_key = [RedmineCharts::RangeUtils.format_date_with_unit(range_start_date, @range[:range]), @range[:keys].first].max
+      range_end_key = issue.due_date ? [RedmineCharts::RangeUtils.format_date_with_unit(issue.due_date, @range[:range]), @range[:keys].last].min : @range[:keys].last
+
+      range_start_date = RedmineCharts::RangeUtils.date_from_unit(range_start_key, @range[:range])
+      range_end_date = RedmineCharts::RangeUtils.date_from_unit(range_end_key, @range[:range])
+      range_diff_days = (range_end_date - issue_start_date)
+
       @range[:keys].each_with_index do |key, i|
-        estimated_hours_per_issue[issue.id][i] = issue.estimated_hours if range_value <= key and issue.estimated_hours
-        issues_per_date[i] += 1 if range_value <= key
+        if range_start_key <= key
+          if issue.estimated_hours
+            if key <= range_end_key
+              velocities_per_issue[issue.id][i] =
+                (range_diff_days > 0 and key > issue_start_key) ?
+                (issue.estimated_hours * (range_end_date - RedmineCharts::RangeUtils.date_from_unit(key, @range[:range])) / range_diff_days) :
+                issue.estimated_hours
+            end
+            estimated_hours_per_issue[issue.id][i] = issue.estimated_hours
+          end
+          issues_per_date[i] += 1
+        end
       end
-    end
-
-    issues_children.each do |issue_with_children|
-      estimated_hours_per_issue[issue_with_children] = Array.new(@range[:keys].size, 0)
     end
 
     rows.each do |row|
@@ -125,24 +139,31 @@ class ChartsBurndown2Controller < ChartsController
     end
 
     @range[:keys].each_with_index do |key,index|
+      estimated_count = 0
       issues.each do |issue|
         logged = logged_hours_per_issue[issue.id] ? logged_hours_per_issue[issue.id][index] : 0
-        estimated = estimated_hours_per_issue[issue.id] ? estimated_hours_per_issue[issue.id][index] : 0
         done_ratio = done_ratios_per_issue[issue.id] ? done_ratios_per_issue[issue.id][index] : 0
+        estimated = (done_ratio > 0 and logged > 0) ? (logged/done_ratio*100) : (estimated_hours_per_issue[issue.id] ? estimated_hours_per_issue[issue.id][index] : 0)
+        velocity = velocities_per_issue[issue.id] ? velocities_per_issue[issue.id][index] : 0
 
-        total_remaining_hours[index] += ((done_ratio > 0 and logged > 0) ? (logged/done_ratio) : (estimated/100)) * (100-done_ratio)
+        total_remaining_hours[index] += estimated * (100-done_ratio) / 100
 
         total_logged_hours[index] += logged
         total_estimated_hours[index] += estimated
-        total_done[index] += done_ratio
+        total_velocities[index] += velocity
+        if estimated > 0
+          estimated_count += 1
+        else
+          total_done[index] += done_ratio
+        end
       end
 
       total_logged_hours[index] += logged_hours_per_issue[0][index]
 
       if issues_per_date[index] > 0
-        total_done[index] = total_done[index].to_f / issues_per_date[index]
-      else
-        total_done[index] = 0
+        total_done[index] *= issues_per_date[index] - estimated_count
+        total_done[index] += (1 - (total_remaining_hours[index] / total_estimated_hours[index])) * issues_per_date[index]
+        total_done[index] /= issues_per_date[index] / 100.0
       end
 
       total_predicted_hours[index] = total_remaining_hours[index] + total_logged_hours[index]
@@ -152,9 +173,10 @@ class ChartsBurndown2Controller < ChartsController
       total_remaining_hours[index] = 0 if total_remaining_hours[index] < 0.01
       total_done[index] = 0 if total_done[index] < 0.01
       total_predicted_hours[index] = 0 if total_predicted_hours[index] < 0.01
+      total_velocities[index] = 0 if total_velocities[index] < 0.01
     end
 
-    [total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done]
+    [total_estimated_hours, total_logged_hours, total_remaining_hours, total_predicted_hours, total_done, total_velocities]
   end
 
   def get_title

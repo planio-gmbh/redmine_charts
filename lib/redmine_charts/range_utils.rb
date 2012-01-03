@@ -121,6 +121,17 @@ module RedmineCharts
       date.strftime('%Y%j')
     end
 
+    def self.format_date_with_unit(date, unit)
+      case unit
+      when :days
+        format_day(date)
+      when :weeks
+        format_week(date)
+      when :months
+        format_month(date)
+      end
+    end
+
     def self.current_week
       format_week(Time.now)
     end
@@ -134,21 +145,26 @@ module RedmineCharts
     end
 
     def self.date_from_week(year_and_week_of_year)
-      week_of_year = year_and_week_of_year.to_s[4...7].to_i
-      year = year_and_week_of_year.to_s[0...4].to_i
-      Time.mktime(year) + (week_of_year-1).weeks
+      Date.strptime(year_and_week_of_year, "%Y0%W")
     end
 
     def self.date_from_month(year_and_month)
-      month = year_and_month.to_s[4...7].to_i
-      year = year_and_month.to_s[0...4].to_i
-      Time.mktime(year,month)
+      Date.strptime(year_and_month, "%Y0%m")
     end
 
     def self.date_from_day(year_and_day_of_year)
-      day_of_year = year_and_day_of_year.to_s[4...7].to_i
-      year = year_and_day_of_year.to_s[0...4].to_i
-      Time.mktime(year) + (day_of_year-1).days
+      Date.strptime(year_and_day_of_year, "%Y%j")
+    end
+
+    def self.date_from_unit(date_string, unit)
+      case unit
+      when :days
+        date_from_day(date_string)
+      when :weeks
+        date_from_week(date_string)
+      when :months
+        date_from_month(date_string)
+      end
     end
 
     def self.diff(from, to, per_year)
