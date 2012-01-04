@@ -86,16 +86,16 @@ class ChartsBurndownControllerTest < ChartsControllerTest
       assert_equal 1, body['elements'][0]['values'].size
 
       assert_in_delta 12, body['elements'][0]['values'][0]['value'], 0.1
-      assert_equal "#{l(:charts_burndown_hint_estimated, :estimated_hours => 12.0)}<br>#{'1 - 7 Mar 10'}", body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_equal "#{l(:charts_burndown_hint_estimated, :estimated_hours => 12.0)}<br>#{'8 - 14 Mar 10'}", body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
       assert_in_delta 13.2, body['elements'][1]['values'][0]['value'], 0.1
-      assert_equal "#{l(:charts_burndown_hint_logged, :logged_hours => 13.2)}<br>#{'1 - 7 Mar 10'}", body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_equal "#{l(:charts_burndown_hint_logged, :logged_hours => 13.2)}<br>#{'8 - 14 Mar 10'}", body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
       assert_in_delta 12, body['elements'][2]['values'][0]['value'], 0.1
-      assert_equal "#{l(:charts_burndown_hint_remaining, :remaining_hours => 12.0, :work_done => 0)}<br>#{'1 - 7 Mar 10'}", body['elements'][2]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_equal "#{l(:charts_burndown_hint_remaining, :remaining_hours => 12.0, :work_done => 0)}<br>#{'8 - 14 Mar 10'}", body['elements'][2]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
 
       assert_in_delta 25.2, body['elements'][3]['values'][0]['value'], 0.1
-      assert_equal "#{l(:charts_burndown_hint_predicted_over_estimation, :predicted_hours => 25.2, :hours_over_estimation => 13.2)}<br>#{'1 - 7 Mar 10'}", body['elements'][3]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
+      assert_equal "#{l(:charts_burndown_hint_predicted_over_estimation, :predicted_hours => 25.2, :hours_over_estimation => 13.2)}<br>#{'8 - 14 Mar 10'}", body['elements'][3]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")
     end
   end
 
