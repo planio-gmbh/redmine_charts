@@ -161,9 +161,8 @@ class ChartsBurndown2Controller < ChartsController
       total_logged_hours[index] += logged_hours_per_issue[0][index]
 
       if issues_per_date[index] > 0
-        total_done[index] *= issues_per_date[index] - estimated_count
-        total_done[index] += (1 - (total_remaining_hours[index] / total_estimated_hours[index])) * issues_per_date[index]
-        total_done[index] /= issues_per_date[index] / 100.0
+        total_done[index] += (1 - (total_remaining_hours[index] / total_estimated_hours[index])) * 100 * estimated_count if total_estimated_hours[index] > 0
+        total_done[index] /= issues_per_date[index]
       end
 
       total_predicted_hours[index] = total_remaining_hours[index] + total_logged_hours[index]
