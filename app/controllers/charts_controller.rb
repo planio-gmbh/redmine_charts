@@ -35,7 +35,7 @@ class ChartsController < ApplicationController
     @textconditions_options = []
 
     unless get_conditions_options.empty?
-      @conditions_options = RedmineCharts::ConditionsUtils.to_options(get_conditions_options)
+      @conditions_options = RedmineCharts::ConditionsUtils.to_options(@project, get_conditions_options)
       @textconditions_options = @conditions_options.select { |c1,c2| c2.nil? }
       @conditions_options = @conditions_options.select { |c1,c2| not c2.nil? }
     else
@@ -43,7 +43,7 @@ class ChartsController < ApplicationController
     end
 
     unless get_multiconditions_options.empty?
-      @multiconditions_options = RedmineCharts::ConditionsUtils.to_options(get_multiconditions_options)
+      @multiconditions_options = RedmineCharts::ConditionsUtils.to_options(@project, get_multiconditions_options)
       @textconditions_options = @multiconditions_options.select { |c1,c2| c2.nil? }
       @multiconditions_options = @multiconditions_options.select { |c1,c2| not c2.nil? }
     else
