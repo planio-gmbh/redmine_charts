@@ -30,22 +30,38 @@ module RedmineCharts
       conditions
     end
 
-    def self.to_options(types)
+    def self.to_options(project, types)
       conditions = {}
-      members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+      
+      #members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+      members = project.members.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+
       types.each do |type|
         case type
-        when :user_ids then conditions[:user_ids] = members
-        when :assigned_to_ids then conditions[:assigned_to_ids] = members
-        when :author_ids then conditions[:author_ids] = members
-        when :issue_ids then conditions[:issue_ids] = nil
-        when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :category_ids then conditions[:category_ids] = IssueCategory.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :fixed_version_ids then conditions[:fixed_version_ids] = Version.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :priority_ids then conditions[:priority_ids] = IssuePriority.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-        when :status_ids then conditions[:status_ids] = IssueStatus.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :user_ids then conditions[:user_ids] = members unless members.size == 0
+          when :assigned_to_ids then conditions[:assigned_to_ids] = members unless members.size == 0
+          when :author_ids then conditions[:author_ids] = members unless members.size == 0
+          when :issue_ids then conditions[:issue_ids] = nil
+
+          #when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          #Gets Current project and sub projects (of current projects) to which user has access. Both arrays are merged using |
+          when :project_ids then conditions[:project_ids] = (project.to_a.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
+
+          when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all(:conditions => ["active=?",true]).collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+
+          #when :category_ids then conditions[:category_ids] = IssueCategory.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :category_ids then
+            categories = project.issue_categories.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+            conditions[:category_ids] = categories unless categories.size == 0
+
+          #when :fixed_version_ids then conditions[:fixed_version_ids] = Version.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :fixed_version_ids then
+            versions = project.versions.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+            conditions[:fixed_version_ids] = versions unless versions.size == 0
+
+          when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :priority_ids then conditions[:priority_ids] = IssuePriority.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :status_ids then conditions[:status_ids] = IssueStatus.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
         end
       end
       conditions
