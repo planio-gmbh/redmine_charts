@@ -5,7 +5,7 @@ class ChartsBurndown2Controller < ChartsController
   protected
 
   def get_data
-    @conditions[:fixed_version_ids] ||= get_current_fixed_version_in(@project.id)
+    @conditions[:fixed_version_ids] ||= get_current_fixed_version_in(@project)
 
     version = unless @conditions[:fixed_version_ids].empty?
       Version.first(:conditions => {:id => @conditions[:fixed_version_ids][0]})
@@ -183,15 +183,15 @@ class ChartsBurndown2Controller < ChartsController
 
   private
 
-  def get_current_fixed_version_in(project_id)
-    version = Version.all(:conditions => {:project_id => project_id}).detect do |version|
+  def get_current_fixed_version_in(project)
+    version = Version.all(:conditions => {:project_id => project.id}).detect do |version|
       version.created_on.to_date <= Date.current && !version.effective_date.nil? && version.effective_date >= Date.current
     end
     if version
       [version.id]
     else
-      versions = RedmineCharts::ConditionsUtils.to_options([:fixed_version_ids])[:fixed_version_ids]
-      unless versions.empty?
+      versions = RedmineCharts::ConditionsUtils.to_options(project, [:fixed_version_ids])[:fixed_version_ids]
+      unless versions.nil? || versions.empty?
         [versions.first[1]]
       else
         []
