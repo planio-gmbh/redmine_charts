@@ -64,13 +64,13 @@ de:
   charts_deviation_group_estimated: "geschätzte Stunden"
   charts_deviation_help: "Verhältnis von erfassten und verbleibende Stunden zu geschätzten Stunden pro erfasstem Eintrag. Das Verhältnis sollte klein oder gleich 100% sein. Angezeit werden nur die geschätzten Einträge. Der erste Balken zeigt die Mittelwerte für das Projekt." 
 
-  charts_earlier: "&laquo; Früher"
-  charts_later: "Später &raquo;"
+  charts_earlier: "<< Früher"
+  charts_later: "Später >>"
 
-  charts_previous: "&laquo; Vorherige Seite"
-  charts_next: "Naechste Seite &raquo;"
-  charts_deviation_group_logged_not_estimated: erfasste Stunden f&�uml;r nicht abgeschätzte Tickets
-  charts_deviation_hint_logged_not_estimated: "%{logged_hours} erfasste Stunden für nicht abgeschaetzte Tickets"
+  charts_previous: "<< Vorherige Seite"
+  charts_next: "Nächste Seite >>"
+  charts_deviation_group_logged_not_estimated: "unterschätzte Stunden"
+  charts_deviation_hint_logged_not_estimated: "%{logged_hours} unterschätzte Stunden"
   charts_condition_tracker_ids: "Tracker"
   charts_condition_priority_ids: "Priorität"
   charts_condition_fixed_version_ids: "Version"
