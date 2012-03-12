@@ -101,7 +101,7 @@ de:
   charts_link_burndown2: "Burndown mit Velocity"
   charts_burndown2_x: ""
   charts_burndown2_y: "hours"
-  charts_burndown2_group_velocity: "Vvelocity"
+  charts_burndown2_group_velocity: "Velocity"
   charts_burndown2_hint_velocity: "%{remaining_hours} bis zum Releasende(in Abhängigkeit zur Velocity)"
   charts_burndown2_group_burndown: "Burndown"
   charts_burndown2_hint_remaining: "%{remaining_hours}  bis zum Releasende (%{work_done}% erledigte Arbeit)"
