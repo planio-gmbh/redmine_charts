@@ -5,15 +5,18 @@ namespace :charts do
     ChartTimeEntry.delete_all
 
     Journal.all(:conditions => {:journalized_type => "Issue"}, :order => "id asc").each do |journal|
+	 @issue = Issue.find_by_id(journal.journalized_id)
+     if @issue
       journal.details.each do |detail|
         if detail.property == "attr"
           if detail.prop_key == "done_ratio"
-            RedmineCharts::IssuePatch.add_chart_done_ratio(journal.issue.project_id, journal.issue.id, journal.issue.status_id, detail.value.to_i, journal.created_on)
+   			RedmineCharts::IssuePatch.add_chart_done_ratio(@issue.project_id, @issue.id, journal.issue.status_id, detail.value.to_i, journal.created_on)
           elsif detail.prop_key == "status_id"
-            RedmineCharts::IssuePatch.add_chart_issue_status(journal.issue.project_id, journal.issue.id, detail.value.to_i, journal.created_on)
+            RedmineCharts::IssuePatch.add_chart_issue_status(@issue.project_id, @issue.id, detail.value.to_i, journal.created_on)
           end
         end
       end
+	 end
     end
 
     TimeEntry.all(:order => "id asc").each do |t|
