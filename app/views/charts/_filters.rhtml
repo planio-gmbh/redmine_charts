@@ -64,7 +64,7 @@ function toggle_filter(field) {
       <%= check_box_tag 'fields[]', condition[0], @conditions[condition[0].to_sym], :onclick => "toggle_filter('#{condition[0]}');", :id => "cb_#{condition[0]}" %>
       <label for="<%= "cb_#{condition[0]}" %>"><%= l("charts_condition_#{condition[0]}".gsub(".","_").to_sym) %></label>
     </td>
-    <td><% unless condition[1].nil? %>
+    <td><% unless condition[1].nil? or condition[1] == !!condition[1] %>
       <%= select_tag condition[0].to_sym, options_for_select(condition[1], @conditions[condition[0].to_sym]), {:multiple => true, :class => "select-small", :id => "values_#{condition[0]}"} %>
     <% end %></td></tr>
     <script type="text/javascript">toggle_filter('<%= condition[0] %>');</script>

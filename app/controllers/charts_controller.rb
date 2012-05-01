@@ -29,7 +29,7 @@ class ChartsController < ApplicationController
     unless get_grouping_options.empty?
       @grouping_options = RedmineCharts::GroupingUtils.to_options(get_grouping_options)
     else
-      @grouping_options = []
+      @grouping_options = Hash.new
     end
 
     @textconditions_options = []
@@ -39,7 +39,7 @@ class ChartsController < ApplicationController
       @textconditions_options = @conditions_options.select { |c1,c2| c2.nil? }
       @conditions_options = @conditions_options.select { |c1,c2| not c2.nil? }
     else
-      @conditions_options = []
+      @conditions_options = Hash.new
     end
 
     unless get_multiconditions_options.empty?
@@ -47,10 +47,10 @@ class ChartsController < ApplicationController
       @textconditions_options = @multiconditions_options.select { |c1,c2| c2.nil? }
       @multiconditions_options = @multiconditions_options.select { |c1,c2| not c2.nil? }
     else
-      @multiconditions_options = []
+      @multiconditions_options = Hash.new
     end
 
-    @all_conditions_options = @conditions_options + @multiconditions_options + @textconditions_options 
+    @all_conditions_options = @conditions_options.merge(@multiconditions_options).merge(@textconditions_options)
 
     unless get_help.blank?
       @help = get_help
