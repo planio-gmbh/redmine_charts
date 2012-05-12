@@ -2,7 +2,7 @@ module RedmineCharts
   module ConditionsUtils
 
     include Redmine::I18n
-    
+
     @@types = [ :issue_ids, :project_ids, :user_ids, :category_ids, :status_ids, :activity_ids, :fixed_version_ids, :tracker_ids, :priority_ids, :author_ids, :assigned_to_ids ]
 
     def self.types
@@ -20,7 +20,7 @@ module RedmineCharts
       end
 
       if conditions[:project_ids]
-        project_ids = Project.all.collect { |project| project.id } 
+        project_ids = Project.all.collect { |project| project.id }
         conditions[:project_ids] = conditions[:project_ids].select { |p| project_ids.include? p }
       end
 
@@ -32,7 +32,7 @@ module RedmineCharts
 
     def self.to_options(project, types)
       conditions = {}
-      
+
       #members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
       members = project.members.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
 
@@ -45,7 +45,7 @@ module RedmineCharts
 
           #when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
           #Gets Current project and sub projects (of current projects) to which user has access. Both arrays are merged using |
-          when :project_ids then conditions[:project_ids] = (project.to_a.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
+          when :project_ids then conditions[:project_ids] = (project.to_s.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
 
           when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all(:conditions => ["active=?",true]).collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
 
@@ -85,8 +85,8 @@ module RedmineCharts
       when :days then "#{table}.day"
       end
     end
-    
-    private 
+
+    private
 
     def self.project_and_its_children_ids(project_id)
       project_ids = []
@@ -98,7 +98,7 @@ module RedmineCharts
       end
       project_ids.flatten.uniq.sort
     end
-    
+
     def self.project_children_ids(project)
       project.children.collect { |child| [child.id, project_children_ids(child)] }
     end
