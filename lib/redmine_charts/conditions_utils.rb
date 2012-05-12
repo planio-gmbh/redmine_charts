@@ -45,7 +45,8 @@ module RedmineCharts
 
           #when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
           #Gets Current project and sub projects (of current projects) to which user has access. Both arrays are merged using |
-          when :project_ids then conditions[:project_ids] = (project.to_s.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
+          when :project_ids then conditions[:project_ids] =
+        (project.respond_to?(:to_a) ? (project.to_a.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) : nil) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
 
           when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all(:conditions => ["active=?",true]).collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
 

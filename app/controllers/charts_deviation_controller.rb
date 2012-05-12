@@ -1,8 +1,8 @@
 class ChartsDeviationController < ChartsController
 
   unloadable
-  
-  protected  
+
+  protected
 
   def get_data
     rows = ChartTimeEntry.get_aggregation(:issue_id, @conditions)
@@ -35,7 +35,7 @@ class ChartsDeviationController < ChartsController
     rows.each_with_index do |row,index|
       unless row.group_id == 0
         issues_tree[row.group_id] = { :logged_hours => row.logged_hours.to_f, :original_logged_hours => row.logged_hours.to_f, :parent_id => row.parent_id }
-        issues_roots += 1 if row.parent_id.nil? and row.estimated_hours.to_i > 0 
+        issues_roots += 1 if row.parent_id.nil? and row.estimated_hours.to_i > 0
       end
     end
 
@@ -99,7 +99,7 @@ class ChartsDeviationController < ChartsController
         labels.delete_at(index)
       end
     end
-    
+
     # Project logged and remaining ratio.
     if labels.size > 0
       issues_roots = 1 if issues_roots == 0
@@ -151,7 +151,7 @@ class ChartsDeviationController < ChartsController
         (labels.size - 1).times { values << nil }
         sets << [l(:charts_deviation_group_logged_not_estimated), values]
       end
-  
+
       {
         :labels => labels,
         :count => labels.size,
@@ -165,19 +165,19 @@ class ChartsDeviationController < ChartsController
   def get_title
     l(:charts_link_deviation)
   end
-  
+
   def get_help
     l(:charts_deviation_help)
   end
-  
+
   def get_type
     :stack
   end
-  
+
   def get_x_legend
     l(:charts_deviation_x)
   end
-  
+
   def get_y_legend
     l(:charts_deviation_y)
   end
@@ -201,16 +201,12 @@ class ChartsDeviationController < ChartsController
   private
 
   def add_logged_hours_to_parent_issue issues_tree, id, logged_hours
-    if issues_tree[id].nil?
-      issues_tree[id] = {}
-    end
-    if issues_tree[id][:logged_hours].nil?
-      issues_tree[id][:logged_hours] = 0
-    end
+    return if issues_tree.nil? or issues_tree[id].nil?
+
     issues_tree[id][:logged_hours] += logged_hours
 
     if issues_tree[id][:parent_id]
-      add_logged_hours_to_parent_issue(issues_tree, issues_tree[id][:parent_id], logged_hours)      
+      add_logged_hours_to_parent_issue(issues_tree, issues_tree[id][:parent_id], logged_hours)
     end
   end
 
@@ -235,9 +231,9 @@ class ChartsDeviationController < ChartsController
   # Remaining ratio: 20/40*(100-40) = 120 = 60
   #
   def get_remaining_ratio(logged_ratio, done_ratio)
-    if done_ratio.to_f == 0.0 
+    if done_ratio.to_f == 0.0
       100
-    else 
+    else
       logged_ratio.to_f/done_ratio.to_f*(100-done_ratio.to_f)
     end
   end
