@@ -79,7 +79,7 @@ class ChartsController < ApplicationController
     create_chart
 
     if @error and not flash[:error]
-      flash[:error] = l(@error)
+      flash.now[:error] = l(@error)
     end
 
     render :template => "charts/index"
@@ -89,7 +89,7 @@ class ChartsController < ApplicationController
     condition = ChartSavedCondition.first(:conditions => {:id => params[:id]})
 
     unless condition
-      flash[:error] = l(:charts_saved_condition_flash_not_found)
+      flash.now[:error] = l(:charts_saved_condition_flash_not_found)
     else
       condition.destroy
       flash[:notice] = l(:charts_saved_condition_flash_deleted)
@@ -259,7 +259,7 @@ class ChartsController < ApplicationController
     end
 
     unless condition
-      flash[:error] = l(:charts_saved_condition_flash_not_found)
+      flash.now[:error] = l(:charts_saved_condition_flash_not_found)
     else
       condition.name = params["saved_condition_#{action}_name".to_sym]
       condition.project_id = params["saved_condition_#{action}_project_id".to_sym]
@@ -270,16 +270,16 @@ class ChartsController < ApplicationController
       condition.conditions = conditions
 
       if condition.save
-        flash[:notice] = l("charts_saved_condition_flash_#{action}d".to_sym)
+        flash.now[:notice] = l("charts_saved_condition_flash_#{action}d".to_sym)
         condition
       else
         if condition.errors
           if condition.errors.on(:name) == 'can\'t be blank'
-            flash[:error] = l(:charts_saved_condition_flash_name_cannot_be_blank)
+            flash.now[:error] = l(:charts_saved_condition_flash_name_cannot_be_blank)
           elsif condition.errors.on(:name) == 'has already been taken'
-            flash[:error] = l(:charts_saved_condition_flash_name_exists)
+            flash.now[:error] = l(:charts_saved_condition_flash_name_exists)
           else
-            flash[:error] = condition.errors.full_messages.join("<br/>")
+            flash.now[:error] = condition.errors.full_messages.join("<br/>")
           end
         end
 
