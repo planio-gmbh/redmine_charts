@@ -32,10 +32,8 @@ module RedmineCharts
 
     def self.to_options(project, types)
       conditions = {}
-
-      #members = User.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+      projects = project.self_and_descendants.visible.all
       members = project.members.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-
       types.each do |type|
         case type
           when :user_ids then conditions[:user_ids] = members unless members.size == 0
@@ -43,21 +41,22 @@ module RedmineCharts
           when :author_ids then conditions[:author_ids] = members unless members.size == 0
           when :issue_ids then conditions[:issue_ids] = nil
 
-          #when :project_ids then conditions[:project_ids] = Project.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
-          #Gets Current project and sub projects (of current projects) to which user has access. Both arrays are merged using |
-          when :project_ids then conditions[:project_ids] =
-        (project.respond_to?(:to_a) ? (project.to_a.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }) : nil) | (project.children.visible.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase })
+          when :project_ids then conditions[:project_ids] = projects.collect { |a| [a.name, a.id] }
 
           when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all(:conditions => ["active=?",true]).collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
 
-          #when :category_ids then conditions[:category_ids] = IssueCategory.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
           when :category_ids then
-            categories = project.issue_categories.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+            categories = IssueCategory.find(:all,
+                                            :include => :project,
+                                            :conditions => "#{IssueCategory.table_name}.project_id IN (#{projects.collect{ |a| a.id }.join(",")})",
+                                            :order => "#{Project.table_name}.lft, #{IssueCategory.table_name}.name").collect {|a| ["#{a.project.name} - #{a.name}", a.id]}
             conditions[:category_ids] = categories unless categories.size == 0
 
-          #when :fixed_version_ids then conditions[:fixed_version_ids] = Version.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
           when :fixed_version_ids then
-            versions = project.versions.all.collect { |a| ["#{a.project.name} - #{a.name}", a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+            versions = Version.find(:all,
+                                    :include => :project,
+                                    :conditions => "#{Version.table_name}.project_id IN (#{projects.collect{ |a| a.id }.join(",")})",
+                                    :order => "#{Project.table_name}.lft, #{Version.table_name}.name").collect {|a| ["#{a.project.name} - #{a.name}", a.id]}
             conditions[:fixed_version_ids] = versions unless versions.size == 0
 
           when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
