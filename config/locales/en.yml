@@ -57,15 +57,6 @@ en:
   charts_burndown_help: "Timeline with estimated, logged and remaining hours for given group and conditions."
 
   charts_deviation_x: "issues"
-<<<<<<< HEAD
-  charts_deviation_y: "% ratio to estimated hours"
-  charts_deviation_hint_logged_over_estimation: "%{logged_hours} hours logged, %{hours_over_estimation} over estimation (%{over_estimation}%)"
-  charts_deviation_hint_logged: "%{logged_hours} hours logged"
-  charts_deviation_hint_remaining_over_estimation: "%{remaining_hours} hours to finish, %{hours_over_estimation} over estimation (%{over_estimation}%)"
-  charts_deviation_hint_remaining: "%{remaining_hours} hours to finish"
-  charts_deviation_hint_issue: "<br>%{estimated_hours} hours estimated, %{work_done}% work done"
-  charts_deviation_hint_label: "<br>issue #%{issue_id}, %{issue_name}"
-=======
   charts_deviation_y: "%% ratio to estimated hours"
   charts_deviation_hint_logged_over_estimation: "{{logged_hours}} hours logged, {{hours_over_estimation}} over estimation ({{over_estimation}}%%)"
   charts_deviation_hint_logged: "{{logged_hours}} hours logged"
@@ -73,7 +64,6 @@ en:
   charts_deviation_hint_remaining: "{{remaining_hours}} hours to finish"
   charts_deviation_hint_issue: "<br>{{estimated_hours}} hours estimated, {{work_done}}%% work done"
   charts_deviation_hint_label: "<br>issue #{{issue_id}}, {{issue_name}}"
->>>>>>> 13da62b7406bd73445b568df2516c8a5bfdd71f0
   charts_deviation_hint_project_label: "<br>average for project"
   charts_deviation_label: "#%{issue_id}"
   charts_deviation_project_label: "project"
