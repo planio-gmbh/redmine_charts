@@ -87,10 +87,17 @@ cp $TESTSPACE/Gemfile.local .
 
 # install gems
 mkdir -p vendor/bundle
-bundle install --path vendor/bundle
+bundle install --path vendor/bundle --without mysql
 
 # copy database.yml
 cp $TESTSPACE/database.yml config/
+
+if [[ `ruby -v | grep 1.9.3` != "" ]]
+then
+    rails scripts install git://github.com/pullmonkey/open_flash_chart.git
+else
+    ./script/plugin install git://github.com/pullmonkey/open_flash_chart.git
+fi
 
 # run redmine database migrations
 bundle exec rake db:migrate RAILS_ENV=test --trace
