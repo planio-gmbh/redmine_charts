@@ -37,19 +37,11 @@ en:
 
   charts_burndown_x: ""
   charts_burndown_y: "hours"
-<<<<<<< HEAD
-  charts_burndown_hint_estimated: "%{estimated_hours} hours estimated"
-  charts_burndown_hint_logged: "%{logged_hours} hours logged"
-  charts_burndown_hint_remaining: "%{remaining_hours} hours to finish (%{work_done}% work done)"
-  charts_burndown_hint_predicted: "total %{predicted_hours} hours (prediction)"
-  charts_burndown_hint_predicted_over_estimation: "total %{predicted_hours} hours (prediction), %{hours_over_estimation} over estimation"
-=======
   charts_burndown_hint_estimated: "{{estimated_hours}} hours estimated"
   charts_burndown_hint_logged: "{{logged_hours}} hours logged"
   charts_burndown_hint_remaining: "{{remaining_hours}} hours to finish ({{work_done}}%% work done)"
   charts_burndown_hint_predicted: "total {{predicted_hours}} hours (prediction)"
   charts_burndown_hint_predicted_over_estimation: "total {{predicted_hours}} hours (prediction), {{hours_over_estimation}} over estimation"
->>>>>>> 13da62b7406bd73445b568df2516c8a5bfdd71f0
   charts_burndown_group_estimated: "estimated hours"
   charts_burndown_group_logged: "logged hours"
   charts_burndown_group_remaining: "remaining hours"
@@ -97,13 +89,8 @@ en:
   charts_group_by_assigned_to_id: "owners"
 
   charts_link_issue: "Issues ratio"
-<<<<<<< HEAD
-  charts_issue_label: "%{label}"
-  charts_issue_hint: "%{label}<br>%{issues} (%{percent}%) of total %{total_issues} issues"
-=======
   charts_issue_label: "{{label}}"
   charts_issue_hint: "{{label}}<br>{{issues}} ({{percent}}%%) of total {{total_issues}} issues"
->>>>>>> 13da62b7406bd73445b568df2516c8a5bfdd71f0
   charts_issue_others: "Others"
   charts_issue_none: "None"
   charts_issue_help: "Number of issues for given group and conditions."
@@ -117,11 +104,7 @@ en:
   charts_burndown2_group_velocity: "velocity"
   charts_burndown2_hint_velocity: "%{remaining_hours} hours to finish (according to velocity)"
   charts_burndown2_group_burndown: "burndown"
-<<<<<<< HEAD
-  charts_burndown2_hint_remaining: "%{remaining_hours} hours to finish (%{work_done}% work done)"
-=======
   charts_burndown2_hint_remaining: "{{remaining_hours}} hours to finish ({{work_done}}%% work done)"
->>>>>>> 13da62b7406bd73445b568df2516c8a5bfdd71f0
   charts_burndown2_help: "Burndown (remaining hours) with velocity. Chart displays data for given version from version's creation date to version's effective date."
 
   charts_saved_conditions_label: "Saved conditions"
