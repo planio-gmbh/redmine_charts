@@ -45,7 +45,7 @@ export BUNDLE_GEMFILE=$PATH_TO_REDMINE/Gemfile
 clone_redmine()
 {
   set -e # exit if clone fails
-  git clone -b master --depth=2000 --quiet $REDMINE_GIT_REPO $PATH_TO_REDMINE
+  git clone -b master --depth=100 --quiet $REDMINE_GIT_REPO $PATH_TO_REDMINE
   cd $PATH_TO_REDMINE
   git checkout $REDMINE_GIT_TAG
 }
@@ -87,17 +87,12 @@ cp $TESTSPACE/Gemfile.local .
 
 # install gems
 mkdir -p vendor/bundle
-bundle install --path vendor/bundle --without mysql
+bundle install --path vendor/bundle
 
 # copy database.yml
 cp $TESTSPACE/database.yml config/
 
-if [[ $REDMINE_VER == 2 ]]
-then
-    bundle exec rails plugin install git://github.com/pullmonkey/open_flash_chart.git
-else
-    $PATH_TO_REDMINE/script/plugin install git://github.com/pullmonkey/open_flash_chart.git
-fi
+git clone git://github.com/pullmonkey/open_flash_chart.git $PATH_TO_INSTALL/open_flash_chart
 
 # run redmine database migrations
 bundle exec rake db:migrate RAILS_ENV=test --trace
