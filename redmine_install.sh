@@ -24,7 +24,7 @@ case $REDMINE_VER in
       export GENERATE_SECRET=generate_session_store
       export MIGRATE_PLUGINS=db:migrate_plugins
       export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
-      export REDMINE_GIT_TAG=1.4-stable
+      export REDMINE_GIT_TAG=1.4.4
       ;;
   2)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
       export GENERATE_SECRET=generate_secret_token
@@ -45,7 +45,7 @@ export BUNDLE_GEMFILE=$PATH_TO_REDMINE/Gemfile
 clone_redmine()
 {
   set -e # exit if clone fails
-  git clone  -b master --depth=100 --quiet $REDMINE_GIT_REPO $PATH_TO_REDMINE
+  git clone -b master --depth=2000 --quiet $REDMINE_GIT_REPO $PATH_TO_REDMINE
   cd $PATH_TO_REDMINE
   git checkout $REDMINE_GIT_TAG
 }
@@ -87,16 +87,16 @@ cp $TESTSPACE/Gemfile.local .
 
 # install gems
 mkdir -p vendor/bundle
-bundle install --path vendor/bundle --without mysql
+bundle install --path vendor/bundle
 
 # copy database.yml
 cp $TESTSPACE/database.yml config/
 
-if [[ `ruby -v | grep 1.9.3` != "" ]]
+if [[ $REDMINE_VER == 2 ]]
 then
-    rails scripts install git://github.com/pullmonkey/open_flash_chart.git
+    rails plugin install git://github.com/pullmonkey/open_flash_chart.git
 else
-    ./script/plugin install git://github.com/pullmonkey/open_flash_chart.git
+    $PATH_TO_REDMINE/script/plugin install git://github.com/pullmonkey/open_flash_chart.git
 fi
 
 # run redmine database migrations
