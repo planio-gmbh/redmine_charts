@@ -87,14 +87,14 @@ cp $TESTSPACE/Gemfile.local .
 
 # install gems
 mkdir -p vendor/bundle
-bundle install --path vendor/bundle
+bundle install --path vendor/bundle --without mysql
 
 # copy database.yml
 cp $TESTSPACE/database.yml config/
 
 if [[ $REDMINE_VER == 2 ]]
 then
-    rails plugin install git://github.com/pullmonkey/open_flash_chart.git
+    bundle exec rails plugin install git://github.com/pullmonkey/open_flash_chart.git
 else
     $PATH_TO_REDMINE/script/plugin install git://github.com/pullmonkey/open_flash_chart.git
 fi
