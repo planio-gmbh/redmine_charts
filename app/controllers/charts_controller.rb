@@ -274,9 +274,9 @@ class ChartsController < ApplicationController
         condition
       else
         if condition.errors
-          if condition.errors.on(:name) == 'can\'t be blank'
+          if condition.errors[:name] == 'can\'t be blank'
             flash.now[:error] = l(:charts_saved_condition_flash_name_cannot_be_blank)
-          elsif condition.errors.on(:name) == 'has already been taken'
+          elsif condition.errors[:name] == 'has already been taken'
             flash.now[:error] = l(:charts_saved_condition_flash_name_exists)
           else
             flash.now[:error] = condition.errors.full_messages.join("<br/>")
