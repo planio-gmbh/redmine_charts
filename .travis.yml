@@ -1,0 +1,35 @@
+language: ruby
+rvm:
+  - 1.8.7
+  - 1.9.3
+  - jruby-18mode
+env:
+  - REDMINE_VER=1
+  - REDMINE_VER=2
+  - REDMINE_VER=cp
+matrix:
+  allow_failures:
+    - rvm: jruby-18mode
+    - env: REDMINE_VER=cp
+  exclude:
+    - rvm: jruby-18mode
+      env: REDMINE_VER=2
+    - rvm: jruby-18mode
+      env: REDMINE_VER=cp
+
+install: "echo skip bundle install"
+
+script:
+  - export TESTSPACE=`pwd`/testspace
+  - export NAME_OF_PLUGIN=redmine_charts
+  - export PATH_TO_PLUGIN=`pwd`
+  - export PATH_TO_REDMINE=$TESTSPACE/redmine
+  - export PATH_TO_TESTER=`pwd`/redmine_tester.sh
+  - mkdir $TESTSPACE
+  - cp config/database.yml.travis $TESTSPACE/database.yml
+  - cp Gemfile.local $TESTSPACE/
+  - bash -x ./redmine_install.sh -c
+  - bash -x ./redmine_install.sh -i
+  - bash -x ./redmine_install.sh -t
+  - bash -x ./redmine_install.sh -u
+
