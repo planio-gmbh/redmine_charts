@@ -39,7 +39,7 @@ class ChartsDeviationController < ChartsController
       end
     end
 
-    issues_tree.each do |entry,id|
+    issues_tree.each do |id,entry|
       if entry[:parent_id]
         add_logged_hours_to_parent_issue(issues_tree, entry[:parent_id], entry[:original_logged_hours])
       end
