@@ -53,6 +53,12 @@ Thanks for the contribution.
 
 ## Changelog
 
+## 0.1.3
+- Corresponding to sub-projects. 
+
+## 0.1.2
+- Fix of error & notice message is also displayed on the next screen.
+
 ## 0.1.1
 - compatible with Redmine 1.1.2
 - Only list active projects, fix from Anton Kravchenko's fork. 
