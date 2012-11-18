@@ -11,7 +11,7 @@ ln -sf `pwd`/coverage $TESTSPACE
 #bundle exec rake redmine:backlogs:prepare_fixtures
 
 # run rspec
-bundle exec rake spec
+bundle exec rake rspec spec
 #bundle exec rake redmine:plugins:test
 
 # run cucumber
