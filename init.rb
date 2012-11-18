@@ -13,7 +13,7 @@ else
   # if redmine plugins were railties:
   # object_to_prepare = config
 end
-object_to_prepare.to_prepare :redmine_charts do
+object_to_prepare.to_prepare do
   require_dependency 'issue'
   require_dependency 'time_entry'
 
@@ -28,9 +28,9 @@ end
 
 Redmine::Plugin.register :redmine_charts do
   name 'Redmine Charts'
-  author 'Maciej Szczytowski'
+  author 'Daisuke Miura'
   description 'Plugin for Redmine which integrates some nice project charts.'
-  url 'http://github.com/mszczytowski/redmine_charts/'
+  url 'http://github.com/drakontia/redmine_charts/'
   version File.read(File.dirname(__FILE__) + '/VERSION').strip
 
   # Minimum version of Redmine.
