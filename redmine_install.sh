@@ -108,6 +108,10 @@ bundle install --path vendor/bundle
 # copy database.yml
 cp $TESTSPACE/database.yml config/
 
+git clone git://github.com/pullmonkey/open_flash_chart.git $PATH_TO_INSTALL/open_flash_chart
+mkdir -p public/plugin_assets/open_flash_chart
+cp -r $PATH_TO_INSTALL/open_flash_chart/assets/* public/plugin_assets/open_flash_chart/
+
 # run redmine database migrations
 bundle exec rake db:migrate
 
