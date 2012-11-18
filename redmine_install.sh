@@ -19,25 +19,42 @@ then
   exit 1;
 fi
 
+export RAILS_ENV=test
+
 case $REDMINE_VER in
-  1)  export PATH_TO_INSTALL=./vendor/plugins # for redmine < 2.0
-      export GENERATE_SECRET=generate_session_store
-      export MIGRATE_PLUGINS=db:migrate_plugins
-      export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
-      export REDMINE_GIT_TAG=1.4.4
-      ;;
-  2)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
-      export GENERATE_SECRET=generate_secret_token
-      export MIGRATE_PLUGINS=redmine:plugins:migrate
-      export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
-      export REDMINE_GIT_TAG=2.0.3
-      ;;
-  cp) export PATH_TO_INSTALL=./vendor/plugins
-      export GENERATE_SECRET=generate_session_store
-      export MIGRATE_PLUGINS=db:migrate:plugins
-      export REDMINE_GIT_REPO=http://github.com/chiliproject/chiliproject.git
-      export REDMINE_GIT_TAG=v3.1.0
-      ;;
+  1.4.4)  export PATH_TO_PLUGINS=./vendor/plugins # for redmine < 2.0
+          export GENERATE_SECRET=generate_session_store
+          export MIGRATE_PLUGINS=db:migrate_plugins
+          export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
+          export REDMINE_GIT_TAG=$REDMINE_VER
+          ;;
+  2.1.2)  export PATH_TO_PLUGINS=./plugins # for redmine 2.0
+          export GENERATE_SECRET=generate_secret_token
+          export MIGRATE_PLUGINS=redmine:plugins:migrate
+          export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
+          export REDMINE_GIT_TAG=$REDMINE_VER
+          ;;
+  2.0.4)  export PATH_TO_PLUGINS=./plugins # for redmine 2.0
+          export GENERATE_SECRET=generate_secret_token
+          export MIGRATE_PLUGINS=redmine:plugins:migrate
+          export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
+          export REDMINE_GIT_TAG=$REDMINE_VER
+          ;;
+  master) export PATH_TO_PLUGINS=./plugins # for redmine 2.0
+          export GENERATE_SECRET=generate_secret_token
+          export MIGRATE_PLUGINS=redmine:plugins:migrate
+          export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
+          export REDMINE_GIT_TAG=$REDMINE_VER
+          ;;
+  v3.3.0) export PATH_TO_PLUGINS=./vendor/plugins
+          export GENERATE_SECRET=generate_session_store
+          export MIGRATE_PLUGINS=db:migrate:plugins
+          export REDMINE_GIT_REPO=http://github.com/chiliproject/chiliproject.git
+          export REDMINE_GIT_TAG=$REDMINE_VER
+          ;;
+  *)      echo "Unsupported platform $REDMINE_VER"
+          exit 1
+          ;;
 esac
 
 export BUNDLE_GEMFILE=$PATH_TO_REDMINE/Gemfile
@@ -66,8 +83,7 @@ uninstall()
   set -e # exit if migrate fails
   cd $PATH_TO_REDMINE
   # clean up database
-  bundle exec rake $MIGRATE_PLUGINS NAME=$NAME_OF_PLUGIN VERSION=0 RAILS_ENV=test
-  bundle exec rake $MIGRATE_PLUGINS NAME=$NAME_OF_PLUGIN VERSION=0 RAILS_ENV=development
+  bundle exec rake $MIGRATE_PLUGINS NAME=$NAME_OF_PLUGIN VERSION=0
 }
 
 run_install()
@@ -92,21 +108,17 @@ bundle install --path vendor/bundle
 # copy database.yml
 cp $TESTSPACE/database.yml config/
 
-git clone git://github.com/pullmonkey/open_flash_chart.git $PATH_TO_INSTALL/open_flash_chart
-
 # run redmine database migrations
-bundle exec rake db:migrate RAILS_ENV=test --trace
-bundle exec rake db:migrate RAILS_ENV=development --trace
+bundle exec rake db:migrate
 
 # install redmine database
-bundle exec rake redmine:load_default_data REDMINE_LANG=en RAILS_ENV=development
+bundle exec rake redmine:load_default_data REDMINE_LANG=en
 
 # generate session store/secret token
 bundle exec rake $GENERATE_SECRET
 
 # run backlogs database migrations
-bundle exec rake $MIGRATE_PLUGINS RAILS_ENV=test
-bundle exec rake $MIGRATE_PLUGINS RAILS_ENV=development
+bundle exec rake $MIGRATE_PLUGINS
 }
 
 while getopts :ictu opt

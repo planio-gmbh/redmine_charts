@@ -2,20 +2,24 @@ language: ruby
 rvm:
   - 1.8.7
   - 1.9.3
-  - jruby-18mode
+#  - jruby-18mode
 env:
-  - REDMINE_VER=1
-  - REDMINE_VER=2
-  - REDMINE_VER=cp
+  - REDMINE_VER=1.4.4
+  - REDMINE_VER=2.0.4
+  - REDMINE_VER=2.1.2
+  - REDMINE_VER=master
 matrix:
   allow_failures:
-    - rvm: jruby-18mode
-    - env: REDMINE_VER=cp
-  exclude:
-    - rvm: jruby-18mode
-      env: REDMINE_VER=2
-    - rvm: jruby-18mode
-      env: REDMINE_VER=cp
+    - env: REDMINE_VER=1.4.4
+    - env: REDMINE_VER=master
+    - env: REDMINE_VER=v3.3.0
+  exclude: # anyone is free to adopt a build, until then, no builds that don't have a maintainer
+    - rvm: 1.9.3
+      env: REDMINE_VER=1.4.4
+    - rvm: 1.8.7
+      env: REDMINE_VER=2.1.2
+    - rvm: 1.8.7
+      env: REDMINE_VER=master
 
 install: "echo skip bundle install"
 
