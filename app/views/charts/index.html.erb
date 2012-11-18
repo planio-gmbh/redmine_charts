@@ -7,7 +7,7 @@
 
 <% content_for :sidebar do %>
   <h3><%= l(:charts_menu_label) %></h3>
-  <%= show_charts_menu %>
+  <%= show_charts_menu.html_safe %>
 
   <% unless @saved_conditions.empty? %>
     <h3><%= l(:charts_saved_conditions_label) %></h3>    
@@ -25,7 +25,7 @@
 
 <h2><%= @title %><%= " - #{@saved_condition.name}" if @saved_condition %></h2>
 
-<% form_tag '#', :method => :get, :id => 'chart_form' do %>
+<%=  form_tag '#', :method => :get, :id => 'chart_form' do %>
 
   <%= hidden_field_tag :page, @page %>
   <%= hidden_field_tag :project_id, @project.id %>
@@ -67,17 +67,17 @@
   <br/>
 
   <% unless @error %>
-    <%= show_graph(@data) %>
+    <%= show_graph(@data).html_safe %>
 
     <% if @show_pages %>
       <div style="text-align:center;padding-top:20px">
-        <%= show_pages(@page, @pages) %>
+        <%= show_pages(@page, @pages).html_safe %>
       </div>
     <% end %>
 
     <% if @date_condition %>
       <div style="text-align:center;padding-top:20px">
-        <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]) %>
+        <%= show_date_condition(@range[:limit], @range[:range], @range[:offset]).html_safe %>
       </div>
     <% end %>
 
