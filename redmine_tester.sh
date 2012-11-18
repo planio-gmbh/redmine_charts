@@ -5,8 +5,8 @@ mkdir -p public/plugin_assets/open_flash_chart
 cp -r $PATH_TO_INSTALL/open_flash_chart/assets/* public/plugin_assets/open_flash_chart/
 
 # create a link to cucumber features
-ln -sf $PATH_TO_PLUGIN/features/ .
-ln -sf $PATH_TO_PLUGIN/spec/ .
+#ln -sf $PATH_TO_INSTALL/$NAME_OF_PLUGIN/features/ .
+ln -sf $PATH_TO_INSTALL/$NAME_OF_PLUGIN/spec/ .
 
 mkdir -p coverage
 ln -sf `pwd`/coverage $TESTSPACE
@@ -16,7 +16,7 @@ ln -sf `pwd`/coverage $TESTSPACE
 
 # run rspec
 bundle exec rake spec
-bundle exec rake redmine:plugins:test
+#bundle exec rake redmine:plugins:test
 
 # run cucumber
 #if [ ! -n "${CUCUMBER_FLAGS}" ];
