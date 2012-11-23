@@ -25,9 +25,9 @@ describe ConditionsUtils do
 
     options[:issue_ids].should be_nil
     options[:project_ids].should == [["Project1", 15041], ["Project2", 15042]]
-    options[:user_ids].should == [["Redmine Admin", 15041]]
-    options[:assigned_to_ids].should == [["Redmine Admin", 15041]]
-    options[:author_ids].should == [["Redmine Admin", 15041]]
+    options[:user_ids].should == [["Dave Lopper", 15043], ["John Smith", 15042], ["Redmine Admin", 15041]]
+    options[:assigned_to_ids].should == [["Dave Lopper", 15043], ["John Smith", 15042], ["Redmine Admin", 15041]]
+    options[:author_ids].should == [["Dave Lopper", 15043], ["John Smith", 15042], ["Redmine Admin", 15041]]
     options[:activity_ids].should == [["Design", 8], ["Development", 9]]
     options[:category_ids].should == [["Project1 - Category1", 15041], ["Project1 - Category2", 15042], ["Project2 - Category3", 15043]]
     options[:fixed_version_ids].should == [["Project1 - 1.0", 15041], ["Project1 - 2.0", 15042]]
