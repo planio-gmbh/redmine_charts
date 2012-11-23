@@ -1,0 +1,28 @@
+---
+Admin:
+  id: 1
+  login: "admin"
+  firstname: "Redmine"
+  lastname: "Admin"
+  admin: 1
+  status: 1
+  language: "en"
+  type: "User"
+John:
+  id: 2
+  login: "john"
+  firstname: "John"
+  lastname: "Smith"
+  admin: 1
+  status: 1
+  language: "en"
+  type: "User"
+Dave:
+  id: 3
+  login: "dave"
+  firstname: "Dave"
+  lastname: "Lopper"
+  admin: 1
+  status: 1
+  language: "en"
+  type: "User"
