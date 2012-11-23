@@ -1,0 +1,61 @@
+---
+chart_done_ratio_15041_0:
+ id: 1
+ day: 0
+ week: 0
+ month: 0
+ project_id: 15041
+ issue_id: 15041
+ done_ratio: 100
+chart_done_ratio_15041_1:
+ id: 2
+ day: 2010030
+ week: 2010003
+ month: 2010001
+ project_id: 15041
+ issue_id: 15041
+ done_ratio: 0
+chart_done_ratio_15041_2:
+ id: 3
+ day: 2010030
+ week: 2010004
+ month: 2010001
+ project_id: 15041
+ issue_id: 15041
+ done_ratio: 30
+chart_done_ratio_15041_3:
+ id: 4
+ day: 2010031
+ week: 2010005
+ month: 2010001
+ project_id: 15041
+ issue_id: 15041
+ done_ratio: 100
+chart_done_ratio_15042:
+ day: 0
+ week: 0
+ month: 0
+ project_id: 15042
+ issue_id: 15042
+ done_ratio: 100
+chart_done_ratio_15043:
+ day: 0
+ week: 0
+ month: 0
+ project_id: 15041
+ issue_id: 15043
+ done_ratio: 60
+chart_done_ratio_15044:
+ day: 0
+ week: 0
+ month: 0
+ project_id: 15041
+ issue_id: 15044
+ done_ratio: 60
+chart_done_ratio_15045:
+ day: 0
+ week: 0
+ month: 0
+ project_id: 15041
+ issue_id: 15045
+ done_ratio: 60
