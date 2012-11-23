@@ -1,89 +1,91 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "RangeUtils" do
+module RedmineCharts
+describe RangeUtils do
 
   before do
     Time.set_current_date = Time.mktime(2010,3,3)
+    @utils = RedmineCharts::RangeUtils
   end
 
   it "should return_range_types" do
-    RedmineCharts::RangeUtils.types.should == [ :months, :weeks, :days ]
+    @utils.types.should == [ :months, :weeks, :days ]
   end
 
   it "should set_range_if_not_provided_in_params" do
-    RedmineCharts::RangeUtils.from_params({}).should be_nil
+    @utils.from_params({}).should be_nil
   end
 
   it "should read_range_type_from_params" do
-    RedmineCharts::RangeUtils.from_params({ :range => "days" }).should be_nil
+    @utils.from_params({ :range => "days" }).should be_nil
   end
 
   it "should read_range_offset_from_params" do
-    RedmineCharts::RangeUtils.from_params({ :offset => "1" }).should be_nil
+    @utils.from_params({ :offset => "1" }).should be_nil
   end
 
   it "should read_range_limit_from_params" do
-    RedmineCharts::RangeUtils.from_params({ :limit => "11" }).should be_nil
+    @utils.from_params({ :limit => "11" }).should be_nil
   end
 
   it "should read_range_from_params" do
-    range = RedmineCharts::RangeUtils.from_params({ :offset => "2", :range => "months", :limit => "11" })
+    range = @utils.from_params({ :offset => "2", :range => "months", :limit => "11" })
     range[:range].should == :months
     range[:offset].should == 2
     range[:limit].should == 11
   end
 
   it "should propose_range_for_today" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2010009", :month => "201003", :day => "2010062" })
+    range = @utils.propose_range({ :week => "2010009", :month => "201003", :day => "2010062" })
     range[:range].should == :days
     range[:offset].should == 0
     range[:limit].should == 11
   end
 
   it "should propose_range_for_10_days_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2010008", :month => "2010003", :day => "2010052" })
+    range = @utils.propose_range({ :week => "2010008", :month => "2010003", :day => "2010052" })
     range[:range].should == :days
     range[:offset].should == 0
     range[:limit].should == 11
   end
 
   it "should propose_range_for_20_days_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2010007", :month => "2010003", :day => "2010042" })
+    range = @utils.propose_range({ :week => "2010007", :month => "2010003", :day => "2010042" })
     range[:range].should == :days
     range[:offset].should == 0
     range[:limit].should == 21
   end
 
   it "should propose_range_for_21_days_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2010006", :month => "2010003", :day => "2010041" })
+    range = @utils.propose_range({ :week => "2010006", :month => "2010003", :day => "2010041" })
     range[:range].should == :weeks
     range[:offset].should == 0
     range[:limit].should == 11
   end
 
   it "should propose_range_for_20_weeks_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2009042", :month => "2009011", :day => "2009300" })
+    range = @utils.propose_range({ :week => "2009042", :month => "2009011", :day => "2009300" })
     range[:range].should == :weeks
     range[:offset].should == 0
     range[:limit].should == 21
   end
 
   it "should propose_range_for_21_weeks_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2009040", :month => "2009011", :day => "2009300" })
+    range = @utils.propose_range({ :week => "2009040", :month => "2009011", :day => "2009300" })
     range[:range].should == :months
     range[:offset].should == 0
     range[:limit].should == 11
   end
 
   it "should propose_range_for_21_months_ago" do
-    range = RedmineCharts::RangeUtils.propose_range({ :week => "2009039", :month => "2008001", :day => "2009300" })
+    range = @utils.propose_range({ :week => "2009039", :month => "2008001", :day => "2009300" })
     range[:range].should == :months
     range[:offset].should == 0
     range[:limit].should == 27
   end
 
   it "should prepare_range_for_days" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 10, :offset => 0 })
+    range = @utils.prepare_range({ :range => :days, :limit => 10, :offset => 0 })
     range[:range].should == :days
     range[:keys].size.should == 10
     range[:keys][0].should == "2010053"
@@ -113,14 +115,14 @@ describe "RangeUtils" do
   end
 
   it "should prepare_range_for_days_with_offset" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 10, :offset => 5 })
+    range = @utils.prepare_range({ :range => :days, :limit => 10, :offset => 5 })
     range[:range].should == :days
     range[:min].should == "2010048"
     range[:max].should == "2010057"
   end
 
   it "should prepare_range_for_days_with_year_difference" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 60, :offset => 5 })
+    range = @utils.prepare_range({ :range => :days, :limit => 60, :offset => 5 })
     range[:range].should == :days
     range[:min].should == "2009363" # 2009-12-29
     range[:max].should == "2010057"
@@ -131,21 +133,21 @@ describe "RangeUtils" do
 
 
   it "should prepare_range_for_weeks" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 5, :offset => 0 })
+    range = @utils.prepare_range({ :range => :weeks, :limit => 5, :offset => 0 })
     range[:range].should == :weeks
     range[:min].should == "2010005"
     range[:max].should == "2010009"
   end
 
   it "should prepare_range_for_weeks_with_offset" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 5, :offset => 1 })
+    range = @utils.prepare_range({ :range => :weeks, :limit => 5, :offset => 1 })
     range[:range].should == :weeks
     range[:min].should == "2010004"
     range[:max].should == "2010008"
   end
 
   it "should prepare_range_for_weeks_with_year_difference" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 15, :offset => 1 })
+    range = @utils.prepare_range({ :range => :weeks, :limit => 15, :offset => 1 })
     range[:range].should == :weeks
     range[:min].should == "2009046" # 2009-11-18
     range[:max].should == "2010008"
@@ -165,7 +167,7 @@ describe "RangeUtils" do
   end
 
   it "should prepare_range_for_months" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :months, :limit => 2, :offset => 0 })
+    range = @utils.prepare_range({ :range => :months, :limit => 2, :offset => 0 })
     range[:range].should == :months
     range[:min].should == "2010002"
     range[:max].should == "2010003"
@@ -178,14 +180,14 @@ describe "RangeUtils" do
   end
 
   it "should prepare_range_for_months_with_offset" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :months, :limit => 1, :offset => 1 })
+    range = @utils.prepare_range({ :range => :months, :limit => 1, :offset => 1 })
     range[:range].should == :months
     range[:min].should == "2010002"
     range[:max].should == "2010002"
   end
 
   it "should prepare_range_for_months_with_year_difference" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :months, :limit => 3, :offset => 1 })
+    range = @utils.prepare_range({ :range => :months, :limit => 3, :offset => 1 })
     range[:range].should == :months
     range[:min].should == "2009012"
     range[:max].should == "2010002"
@@ -194,7 +196,7 @@ describe "RangeUtils" do
   end
 
   it "should prepare_range_for_months_with_2_year_difference" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :months, :limit => 16, :offset => 1 })
+    range = @utils.prepare_range({ :range => :months, :limit => 16, :offset => 1 })
     range[:range].should == :months
     range[:min].should == "2008011"
     range[:max].should == "2010002"
@@ -205,24 +207,25 @@ describe "RangeUtils" do
   end
 
   it "should prepare_range_for_100_months" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :months, :limit => 100, :offset => 1 })
+    range = @utils.prepare_range({ :range => :months, :limit => 100, :offset => 1 })
     range[:range].should == :months
     range[:min].should == "2001011"
     range[:max].should == "2010002"
   end
 
   it "should prepare_range_for_100_weeks" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :weeks, :limit => 100, :offset => 1 })
+    range = @utils.prepare_range({ :range => :weeks, :limit => 100, :offset => 1 })
     range[:range].should == :weeks
     range[:min] # 2008-04-02.should == "2008013"
     range[:max].should == "2010008"
   end
 
   it "should prepare_range_for_100_days" do
-    range = RedmineCharts::RangeUtils.prepare_range({ :range => :days, :limit => 100, :offset => 1 })
+    range = @utils.prepare_range({ :range => :days, :limit => 100, :offset => 1 })
     range[:range].should == :days
     range[:min] # 2009-11-23.should == "2009327"
     range[:max].should == "2010061"
   end
 
+end
 end
