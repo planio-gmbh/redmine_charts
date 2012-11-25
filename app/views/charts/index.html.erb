@@ -1,8 +1,8 @@
 <% html_title(l(:charts_menu_label)) -%>
 
 <% content_for :header_tags do %>
-  <%= javascript_include_tag '/plugin_assets/open_flash_chart/javascripts/swfobject.js' %>
-  <%= javascript_include_tag '/plugin_assets/redmine_charts/javascripts/charts.js' %>
+  <%= javascript_include_tag('swfobject.js',:plugin=>'open_flash_chart') %>
+  <%= javascript_include_tag('charts.js', :plugin=>'redmine_charts') %>
 <% end %>
 
 <% content_for :sidebar do %>
