@@ -1,25 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require File.dirname(__FILE__) + '/charts_controller_spec'
-
-class ChartsRatioController
-
-  def rescue_action(e)
-    raise e
-  end
-
-  def authorize
-    true
-  end
-
-  def saved_conditions
-    @saved_conditions
-  end
-
-  def saved_condition
-    @saved_condition
-  end
-
-end
 
 describe ChartsRatioController do
 
@@ -27,9 +6,6 @@ describe ChartsRatioController do
 
   before do
     @controller = ChartsRatioController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    User.current = nil
   end
 
   it "should return_saved_conditions" do
@@ -39,10 +15,11 @@ describe ChartsRatioController do
     c.conditions = {:a => "b"}
     c.save
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041}
     response.should be_success
 
-    @controller.saved_conditions.size.should == 1
+    assigns[:saved_conditions].size.should == 1
   end
 
   it "should return_saved_conditions_for_all_projects" do
@@ -52,10 +29,11 @@ describe ChartsRatioController do
     c.conditions = {:a => "b"}
     c.save
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041}
     response.should be_success
 
-    @controller.saved_conditions.size.should == 1
+    assigns[:saved_conditions].size.should == 1
   end
 
   it "should not_return_saved_conditions_for_other_project" do
@@ -65,10 +43,11 @@ describe ChartsRatioController do
     c.conditions = {:a => "b"}
     c.save
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041}
     response.should be_success
 
-    @controller.saved_conditions.size.should == 0
+    assigns[:saved_conditions].size.should == 0
   end
 
   it "should destroy_saved_condition" do
@@ -80,8 +59,9 @@ describe ChartsRatioController do
 
     ChartSavedCondition.all.size.should == 1
 
+    @request.session[:user_id] = 1
     get :destroy_saved_condition, {:project_id => 15041, :id => c.id }
-    response.should be_success
+    response.should_not be_success
 
     ChartSavedCondition.all.size.should == 0
 
@@ -91,8 +71,9 @@ describe ChartsRatioController do
   it "should return_error_when_try_destroy_not_existed_saved_conditions" do
     ChartSavedCondition.destroy_all
 
+    @request.session[:user_id] = 1
     get :destroy_saved_condition, {:project_id => 15041, :id => 1 }
-    response.should be_success
+    response.should_not be_success
 
     flash[:error].should == l(:charts_saved_condition_flash_not_found)
   end
@@ -100,12 +81,13 @@ describe ChartsRatioController do
   it "should create_saved_conditions" do
     ChartSavedCondition.destroy_all
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041, :chart_form_action => 'saved_condition_create', :saved_condition_create_name => "Test", :saved_condition_create_project_id => 15041, :project_ids => [15041], :grouping => :activity_id, :priority_ids => [5, 6] }
     response.should be_success
 
     condition = ChartSavedCondition.first
 
-    assert_not_nil condition
+    condition.should_not be_nil
     condition.name.should == "Test"
     condition.chart.should == "ratio"
     condition.project_id.should == 15041
@@ -121,6 +103,7 @@ describe ChartsRatioController do
   it "should return_error_for_blank_name" do
     ChartSavedCondition.destroy_all
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041, :chart_form_action => 'saved_condition_create', :saved_condition_create_name => "", :saved_condition_create_project_id => 15041 }
     response.should be_success
 
@@ -134,6 +117,7 @@ describe ChartsRatioController do
     c.conditions = {:a => "b"}
     c.save
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041, :chart_form_action => 'saved_condition_create', :saved_condition_create_name => "Test", :saved_condition_create_project_id => 15041 }
     response.should be_success
 
@@ -147,15 +131,16 @@ describe ChartsRatioController do
     c.conditions = {:a => "b"}
     c.save
 
+    @request.session[:user_id] = 1
     get :index, {:project_id => 15041, :chart_form_action => 'saved_condition_update', :saved_condition_update_name => "Test", :saved_condition_update_project_id => nil, :saved_condition_id => c.id, :project_ids => [15041], :grouping => :activity_id, :priority_ids => [5, 6] }
     response.should be_success
 
     condition = ChartSavedCondition.first
 
-    assert_not_nil condition
+    condition.should_not be_nil
     condition.name.should == "Test"
     condition.chart.should == "ratio"
-    assert_nil condition.project_id
+    condition.project_id.should be_nil
 
     conditions = condition.conditions.split("&")
     conditions.size.should == 4

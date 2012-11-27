@@ -1,21 +1,23 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require File.dirname(__FILE__) + '/charts_controller_spec'
 
 describe ChartsTimelineController do
+
+  include Redmine::I18n
 
   before do
     Time.set_current_date = Time.mktime(2010,3,12)
     @controller = ChartsTimelineController.new
-    @request = ActionController::TestRequest.new
-    @response = ActionController::TestResponse.new
-    User.current = nil
+    @request    = ActionController::TestRequest.new
   end
 
-  it "should range" do
+  it "should range offset 0" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :limit => 10, :range => 'weeks', :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :limit => 10, :range => 'weeks', :offset => 0
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['x_axis']['min'].should == 0
     body['x_axis']['steps'].should == 1
     body['x_axis']['max'].should == 9
@@ -32,9 +34,14 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][7].should == ""
     body['x_axis']['labels']['labels'][8].should == '1 - 7 Mar 10'
     body['x_axis']['labels']['labels'][9].should == ""
+  end
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :offset => 10, :limit => 10, :range => 'weeks'
+  it "should have range with offset 10" do
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :offset => 10, :limit => 10, :range => 'weeks'
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['x_axis']['labels']['labels'].size.should == 10
     body['elements'][0]['values'].size.should == 10
 
@@ -48,9 +55,14 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][7].should == ""
     body['x_axis']['labels']['labels'][8].should == '21 - 27 Dec 09'
     body['x_axis']['labels']['labels'][9].should == ""
+  end
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :offset => 20, :limit => 20, :range => 'weeks'
+  it "should have range weeks offset 20" do
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :offset => 20, :limit => 20, :range => 'weeks'
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['x_axis']['labels']['labels'].size.should == 20
     body['elements'][0]['values'].size.should == 20
 
@@ -74,9 +86,14 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][17].should == ""
     body['x_axis']['labels']['labels'][18].should == ""
     body['x_axis']['labels']['labels'][19].should == ""
+  end
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'months', :limit => 10, :offset => 0
+  it "should have range months with offset 0" do
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'months', :limit => 10, :offset => 0
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['x_axis']['labels']['labels'].size.should == 10
     body['elements'][0]['values'].size.should == 10
 
@@ -90,9 +107,14 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][7].should == ""
     body['x_axis']['labels']['labels'][8].should == 'Feb 10'
     body['x_axis']['labels']['labels'][9].should == ""
+  end
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
+  it "should have range days with offset 0" do
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['x_axis']['labels']['labels'].size.should == 10
     body['elements'][0]['values'].size.should == 10
 
@@ -111,8 +133,11 @@ describe ChartsTimelineController do
   it "should without_grouping" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 1
     body['y_axis']['max'].should be_close(9, 1)
     body['y_legend']['text'].should == l(:charts_timeline_y)
@@ -120,7 +145,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
-    body['elements'][0]['values'][0]['value'].should be_close(7,6, 0.1)
+    body['elements'][0]['values'][0]['value'].should be_close(7.6, 0.1)
 
     tmp = ActiveRecord::Base.connection.adapter_name =~ /postgresql|sqlite/i ? 7.6 : 7.7
 
@@ -146,9 +171,14 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][8]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '11 Mar 10')
     body['elements'][0]['values'][9]['value'].should be_close(0, 0.1)
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
+  end
 
-    body = get_data :project_id => 15041, :project_ids => [15041, 15042], :range => 'days', :limit => 10, :offset => 0
+  it "should have range days with offset 0" do
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041, 15042], :range => 'days', :limit => 10, :offset => 0
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'][0]['value'].should be_close(14.9, 0.1)
 
     tmp = ActiveRecord::Base.connection.adapter_name =~ /postgresql|sqlite/i ? 14.9 : 15.0
@@ -180,8 +210,10 @@ describe ChartsTimelineController do
   it "should grouping_by_users" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'user_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'user_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 3
 
     body['elements'][1]['values'].size.should == 4
@@ -212,8 +244,10 @@ describe ChartsTimelineController do
   it "should grouping_by_priorities" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'priority_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'priority_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -236,8 +270,10 @@ describe ChartsTimelineController do
   it "should grouping_by_authors" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'author_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'author_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -260,8 +296,10 @@ describe ChartsTimelineController do
   it "should grouping_by_projects" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :grouping => 'project_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :grouping => 'project_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 1
 
     body['elements'][0]['values'].size.should == 4
@@ -276,8 +314,10 @@ describe ChartsTimelineController do
   it "should grouping_by_statuses" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'status_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'status_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -300,8 +340,10 @@ describe ChartsTimelineController do
   it "should grouping_by_trackers" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'tracker_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'tracker_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -324,8 +366,10 @@ describe ChartsTimelineController do
   it "should grouping_by_issues" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'issue_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'issue_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -348,8 +392,10 @@ describe ChartsTimelineController do
   it "should grouping_by_versions" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'fixed_version_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'fixed_version_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -372,8 +418,10 @@ describe ChartsTimelineController do
   it "should grouping_by_categories" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'category_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'category_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -396,8 +444,10 @@ describe ChartsTimelineController do
   it "should grouping_by_activities" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :grouping => 'activity_id', :range => 'days', :limit => 4, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'activity_id', :range => 'days', :limit => 4, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
@@ -420,8 +470,10 @@ describe ChartsTimelineController do
   it "should users_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :user_ids => 1, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :user_ids => 1, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -453,8 +505,10 @@ describe ChartsTimelineController do
   it "should issues_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :issue_ids => 15045, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :issue_ids => 15045, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -483,8 +537,10 @@ describe ChartsTimelineController do
   it "should activities_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 10, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 10, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -518,8 +574,10 @@ describe ChartsTimelineController do
   it "should priorities_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :priority_ids => 4, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :priority_ids => 4, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -551,8 +609,9 @@ describe ChartsTimelineController do
   it "should trackers_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :tracker_ids => 1, :limit => 10, :offset => 0
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :tracker_ids => 1, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -581,8 +640,10 @@ describe ChartsTimelineController do
   it "should versions_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :fixed_version_ids => 15042, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :fixed_version_ids => 15042, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -614,8 +675,10 @@ describe ChartsTimelineController do
   it "should categories_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :category_ids => 15042, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :category_ids => 15042, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -651,8 +714,10 @@ describe ChartsTimelineController do
   it "should status_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :status_ids => 2, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :status_ids => 2, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -687,8 +752,10 @@ describe ChartsTimelineController do
   it "should author_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => 15041, :range => 'days', :author_ids => 2, :limit => 10, :offset => 0
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :author_ids => 2, :limit => 10, :offset => 0
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
     body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -721,8 +788,10 @@ describe ChartsTimelineController do
     if RedmineCharts.has_sub_issues_functionality_active
       Setting.default_language = 'en'
 
-      body = get_data :project_id => 15044, :project_ids => 15044, :range => 'weeks', :limit => 10, :offset => 0
+      @request.session[:user_id] = 1
+      get :index, :project_id => 15044, :project_ids => 15044, :range => 'weeks', :limit => 10, :offset => 0
 
+      body = ActiveSupport::JSON.decode(assigns[:data])
       body['elements'][0]['values'].size.should == 10
       body['elements'][0]['text'].should == l(:charts_group_all)
 
@@ -733,7 +802,9 @@ describe ChartsTimelineController do
 
   it "should all_conditions" do
     Setting.default_language = 'en'
-    get_data :project_id => 15041, :category_ids => 15043, :tracker_ids => 15043, :fixed_version_ids => 15043, :fixed_version_ids => 15041, :user_ids => 15043, :issue_ids => 15043, :activity_ids => 15043, :author_ids => 1, :status_ids => 5
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :category_ids => 15043, :tracker_ids => 15043, :fixed_version_ids => 15043, :fixed_version_ids => 15041, :user_ids => 15043, :issue_ids => 15043, :activity_ids => 15043, :author_ids => 1, :status_ids => 5
+    response.should be_success
   end
 
   def get_label(hours, entries, date)

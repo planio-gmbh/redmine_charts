@@ -1,21 +1,23 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-#require File.dirname(__FILE__) + '/charts_controller_spec'
-#require 'charts_deviation_controller'
 
 describe ChartsDeviationController do
 
+  include Redmine::I18n
+
   before(:all) do
     @controller = ChartsDeviationController.new
-    @request = ActionController::TestRequest.new
-    @response = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.new
     User.current = nil
   end
 
   it "should get_data" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041]
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041]
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 4
 
     body['elements'][0]['values'][0][0]['val'].should be_close(74.0, 1)
@@ -80,24 +82,31 @@ describe ChartsDeviationController do
   it "should include_subprojects" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041, 15042]
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041, 15042]
+    response.should be_success
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 5
   end
 
   it "should pagination" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :per_page => 2
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :per_page => 2
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 2
+    get :index, :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 2
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 2
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 3
+    get :index, :project_id => 15041, :project_ids => [15041], :per_page => 2, :page => 3
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body.should be_nil
   end
 
@@ -105,12 +114,15 @@ describe ChartsDeviationController do
     if RedmineCharts.has_sub_issues_functionality_active
       Setting.default_language = 'en'
 
-      body = get_data :project_id => 15044, :project_ids => [15044]
+      @request.session[:user_id] = 1
+      get :index, :project_id => 15044, :project_ids => [15044]
+      response.should be_success
 
+      body = ActiveSupport::JSON.decode(assigns[:data])
       body['elements'][0]['values'].size.should == 5
 
       body['elements'][0]['values'][0][0]['val'].should be_close(110.0, 1)
-        body['elements'][0]['values'][0][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_deviation_hint_logged, :logged_hours => 13.2)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_project_label)}"
+      body['elements'][0]['values'][0][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_deviation_hint_logged, :logged_hours => 13.2)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_project_label)}"
       body['elements'][0]['values'][0][1]['val'].should be_close(100.0, 1)
       body['elements'][0]['values'][0][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 12.0, :hours_over_estimation => 13.2, :over_estimation => 110)}#{l(:charts_deviation_hint_issue, :estimated_hours => 12.0, :work_done => 0)}#{l(:charts_deviation_hint_project_label)}"
 
@@ -129,7 +141,7 @@ describe ChartsDeviationController do
       body['elements'][0]['values'][3][0]['val'].should be_close(94.3, 1)
       body['elements'][0]['values'][3][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_deviation_hint_logged, :logged_hours => 6.6)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15049, :issue_name => 'Issue Child 2')}"
       body['elements'][0]['values'][3][1]['val'].should be_close(100.0, 1)
-      body['elements'][0]['values'][3][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should ==" #{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 7.0, :hours_over_estimation => 6.6, :over_estimation => 94)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15049, :issue_name => 'Issue Child 2')}"
+      body['elements'][0]['values'][3][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_deviation_hint_remaining_over_estimation, :remaining_hours => 7.0, :hours_over_estimation => 6.6, :over_estimation => 94)}#{l(:charts_deviation_hint_issue, :estimated_hours => 7.0, :work_done => 0)}#{l(:charts_deviation_hint_label, :issue_id => 15049, :issue_name => 'Issue Child 2')}"
 
       tmp = ActiveRecord::Base.connection.adapter_name =~ /postgresql|sqlite/i ? 3.4 : 3.3
 

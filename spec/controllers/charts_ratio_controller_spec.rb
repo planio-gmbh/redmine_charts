@@ -1,65 +1,71 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require File.dirname(__FILE__) + '/charts_controller_spec'
 
 describe ChartsRatioController do
 
+  include Redmine::I18n
+
   before do
     @controller = ChartsRatioController.new
-    User.current = nil
+    @request    = ActionController::TestRequest.new
   end
 
   it "should grouping_by_users" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041]
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041]
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
     body['elements'][0]['values'][0]["label"].should == 'John Smith'
     body['elements'][0]['values'][0]["value"].should be_close(16.8, 1)
     body['elements'][0]['values'][0]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'John Smith', :hours => 16.8, :percent => 47, :total_hours => 36.1)}"
-    
 
-    body['elements'][0]['values'][1]["label"].should == 'redMine Admin'
+
+    body['elements'][0]['values'][1]["label"].should == 'Redmine Admin'
     body['elements'][0]['values'][1]["value"].should be_close(14.2, 1)
     body['elements'][0]['values'][1]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'redMine Admin', :hours => 14.2, :percent => 39, :total_hours => 36.1)}"
-    
+
 
     body['elements'][0]['values'][2]["label"].should == 'Dave Lopper'
     body['elements'][0]['values'][2]["value"].should be_close(5.1, 1)
     body['elements'][0]['values'][2]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'Dave Lopper', :hours => 5.1, :percent => 14, :total_hours => 36.1)}"
-      
+
   end
 
   it "should grouping_by_activities" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :activity_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :activity_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 2
 
     body['elements'][0]['values'][1]["label"].should == 'Design'
     body['elements'][0]['values'][1]["value"].should be_close(10.2, 1)
     body['elements'][0]['values'][1]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'Design', :hours => 10.2, :percent => 28, :total_hours => 36.1)}"
-      
 
     body['elements'][0]['values'][0]["label"].should == 'Development'
     body['elements'][0]['values'][0]["value"].should be_close(25.8, 1)
     body['elements'][0]['values'][0]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'Development', :hours => 25.9, :percent => 72, :total_hours => 36.1)}"
-      
+
   end
 
   it "should grouping_by_priorities" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :priority_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :priority_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
     body['elements'][0]['values'][1]["label"].should == 'Low'
     body['elements'][0]['values'][1]["value"].should be_close(13, 1)
     body['elements'][0]['values'][1]["tip"].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_ratio_hint, :label => 'Low', :hours => 13.2, :percent => 36, :total_hours => 36.1)}"
-      
+
 
     body['elements'][0]['values'][2]["label"].should == l(:charts_ratio_others)
     body['elements'][0]['values'][2]["value"].should be_close(5.1, 1)
@@ -69,8 +75,10 @@ describe ChartsRatioController do
   it "should grouping_by_trackers" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :tracker_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :tracker_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
     body['elements'][0]['values'][1]["label"].should == 'Bug'
@@ -85,8 +93,10 @@ describe ChartsRatioController do
   it "should grouping_by_issues" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :issue_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :issue_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 5
 
     body['elements'][0]['values'][1]["label"].should == '#15045 Issue5'
@@ -115,8 +125,10 @@ describe ChartsRatioController do
   it "should grouping_by_versions" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :fixed_version_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :fixed_version_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
     body['elements'][0]['values'][1]["label"].should == '1.0'
@@ -135,8 +147,10 @@ describe ChartsRatioController do
   it "should grouping_by_categories" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :category_id
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :category_id
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
 
     body['elements'][0]['values'][0]["label"].should == 'Category2'
@@ -155,18 +169,22 @@ describe ChartsRatioController do
   it "should users_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :user_id, :user_ids => 1
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :user_id, :user_ids => 1
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
-    body['elements'][0]['values'][0]["label"].should == 'redMine Admin'
+    body['elements'][0]['values'][0]["label"].should == 'Redmine Admin'
     body['elements'][0]['values'][0]["value"].should be_close(14, 1)
   end
 
   it "should issues_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => 'issue_id', :issue_ids => 15041
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => 'issue_id', :issue_ids => 15041
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == '#15041 Issue1'
     body['elements'][0]['values'][0]["value"].should be_close(6, 1)
@@ -175,8 +193,10 @@ describe ChartsRatioController do
   it "should activities_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => 'activity_id', :activity_ids => 10
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => 'activity_id', :activity_ids => 10
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'Development'
     body['elements'][0]['values'][0]["value"].should be_close(26, 1)
@@ -185,8 +205,10 @@ describe ChartsRatioController do
   it "should priorities_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :priority_id, :priority_ids => 5
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :priority_id, :priority_ids => 5
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'Normal'
     body['elements'][0]['values'][0]["value"].should be_close(17.8, 1)
@@ -195,8 +217,10 @@ describe ChartsRatioController do
   it "should trackers_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :tracker_id, :tracker_ids => 1
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :tracker_id, :tracker_ids => 1
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'Bug'
     body['elements'][0]['values'][0]["value"].should be_close(14, 1)
@@ -205,8 +229,10 @@ describe ChartsRatioController do
   it "should versions_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :fixed_version_id, :fixed_version_ids => 15041
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :fixed_version_id, :fixed_version_ids => 15041
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == '1.0'
     body['elements'][0]['values'][0]["value"].should be_close(14.5, 1)
@@ -215,8 +241,10 @@ describe ChartsRatioController do
   it "should categories_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :category_id, :category_ids => 15041
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :category_id, :category_ids => 15041
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'Category1'
     body['elements'][0]['values'][0]["value"].should be_close(5.55, 1)
@@ -225,8 +253,10 @@ describe ChartsRatioController do
   it "should authors_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :author_id, :author_ids => 2
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :author_id, :author_ids => 2
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'John Smith'
     body['elements'][0]['values'][0]["value"].should be_close(8.9, 1)
@@ -235,8 +265,10 @@ describe ChartsRatioController do
   it "should statuses_condition" do
     Setting.default_language = 'en'
 
-    body = get_data :project_id => 15041, :project_ids => [15041], :grouping => :status_id, :status_ids => 1
+    @request.session[:user_id] = 1
+    get :index, :project_id => 15041, :project_ids => [15041], :grouping => :status_id, :status_ids => 1
 
+    body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 1
     body['elements'][0]['values'][0]["label"].should == 'New'
     body['elements'][0]['values'][0]["value"].should be_close(8.9, 1)
@@ -245,6 +277,7 @@ describe ChartsRatioController do
   it "should all_conditions" do
     Setting.default_language = 'en'
 
+    @request.session[:user_id] = 1
     get :index, :project_id => 15041, :project_ids => [15041], :author_ids => 2, :status_ids => 1, :category_ids => 15043, :tracker_ids => 15043, :fixed_version_ids => 15043, :priority_ids => 15041, :user_ids => 15043, :issue_ids => 15043, :activity_ids => 15043
     response.should be_success
   end
@@ -252,6 +285,7 @@ describe ChartsRatioController do
   it "should empty" do
     Setting.default_language = 'en'
 
+    @request.session[:user_id] = 1
     get :index, :project_id => 15041, :project_ids => [15041], :category_ids => 15043, :fixed_version_ids => 15041
     response.should be_success
     
@@ -261,8 +295,10 @@ describe ChartsRatioController do
     if RedmineCharts.has_sub_issues_functionality_active
       Setting.default_language = 'en'
 
-      body = get_data :project_id => 15044, :project_ids => [15044]
+      @request.session[:user_id] = 1
+      get :index, :project_id => 15044, :project_ids => [15044]
 
+      body = ActiveSupport::JSON.decode(assigns[:data])
       body['elements'][0]['values'].size.should == 1
 
       body['elements'][0]['values'][0]["label"].should == 'John Smith'
