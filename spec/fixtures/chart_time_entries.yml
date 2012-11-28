@@ -8,7 +8,7 @@ chart_time_entries_1:
   entries: 1
   user_id: 1
   issue_id: 15041
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_2:
   id: 2
@@ -19,7 +19,7 @@ chart_time_entries_2:
   entries: 1
   user_id: 2
   issue_id: 15041
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_01:
   id: 3
@@ -30,7 +30,7 @@ chart_time_entries_01:
   entries: 1
   user_id: 1
   issue_id: 15041
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_02:
   id: 4
@@ -41,18 +41,18 @@ chart_time_entries_02:
   entries: 1
   user_id: 2
   issue_id: 15041
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_3:
   id: 5
-  day: 2010064
+  day: 2010062
   week: 2010009
   month: 2010003
   logged_hours: 7.3
   entries: 1
   user_id: 2
   issue_id: 15042
-  activity_id: 10
+  activity_id: 9
   project_id: 15042
 chart_time_entries_03:
   id: 6
@@ -63,7 +63,7 @@ chart_time_entries_03:
   entries: 1
   user_id: 2
   issue_id: 15042
-  activity_id: 10
+  activity_id: 9
   project_id: 15042
 chart_time_entries_15043_1:
   id: 7
@@ -74,7 +74,7 @@ chart_time_entries_15043_1:
   entries: 1
   user_id: 2
   issue_id: 15043
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_15043_2:
   id: 8
@@ -85,7 +85,7 @@ chart_time_entries_15043_2:
   entries: 1
   user_id: 1
   issue_id: 15043
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15043_01:
   id: 9
@@ -96,7 +96,7 @@ chart_time_entries_15043_01:
   entries: 1
   user_id: 2
   issue_id: 15043
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_15043_02:
   id: 10
@@ -107,7 +107,7 @@ chart_time_entries_15043_02:
   entries: 1
   user_id: 1
   issue_id: 15043
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15044_1:
   id: 11
@@ -118,7 +118,7 @@ chart_time_entries_15044_1:
   entries: 1
   user_id: 2
   issue_id: 15044
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15044_2:
   id: 34
@@ -129,7 +129,7 @@ chart_time_entries_15044_2:
   entries: 1
   user_id: 2
   issue_id: 15044
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15044_3:
   id: 12
@@ -151,7 +151,7 @@ chart_time_entries_15044_01:
   entries: 1
   user_id: 2
   issue_id: 15044
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15044_02:
   id: 35
@@ -162,7 +162,7 @@ chart_time_entries_15044_02:
   entries: 1
   user_id: 2
   issue_id: 15044
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15044_03:
   id: 14
@@ -173,7 +173,7 @@ chart_time_entries_15044_03:
   entries: 1
   user_id: 1
   issue_id: 15044
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_15045_1:
   id: 15
@@ -184,7 +184,7 @@ chart_time_entries_15045_1:
   entries: 1
   user_id: 1
   issue_id: 15045
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15045_2:
   id: 16
@@ -195,7 +195,7 @@ chart_time_entries_15045_2:
   entries: 1
   user_id: 2
   issue_id: 15045
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_15045_3:
   id: 36
@@ -206,7 +206,7 @@ chart_time_entries_15045_3:
   entries: 1
   user_id: 2
   issue_id: 15045
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_15045_01:
   id: 17
@@ -217,7 +217,7 @@ chart_time_entries_15045_01:
   entries: 1
   user_id: 1
   issue_id: 15045
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_15045_02:
   id: 18
@@ -228,7 +228,7 @@ chart_time_entries_15045_02:
   entries: 2
   user_id: 2
   issue_id: 15045
-  activity_id: 9
+  activity_id: 8
   project_id: 15041
 chart_time_entries_nil_1:
   id: 19
@@ -239,7 +239,7 @@ chart_time_entries_nil_1:
   entries: 1
   user_id: 3
   issue_id:
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_nil_2:
   id: 20
@@ -250,7 +250,7 @@ chart_time_entries_nil_2:
   entries: 1
   user_id: 3
   issue_id:
-  activity_id: 10
+  activity_id: 9
   project_id: 15043
 chart_time_entries_nil_01:
   id: 21
@@ -261,7 +261,7 @@ chart_time_entries_nil_01:
   entries: 1
   user_id: 3
   issue_id:
-  activity_id: 10
+  activity_id: 9
   project_id: 15041
 chart_time_entries_nil_02:
   id: 22
@@ -271,7 +271,7 @@ chart_time_entries_nil_02:
   logged_hours: 7
   entries: 1
   user_id: 3
-  activity_id: 10
+  activity_id: 9
   project_id: 15043
 chart_time_entries_15047_1:
   id: 23
@@ -282,7 +282,7 @@ chart_time_entries_15047_1:
   entries: 1
   user_id: 2
   issue_id: 15047
-  activity_id: 9
+  activity_id: 8
   project_id: 15044
 chart_time_entries_15047_0:
   id: 24
@@ -293,7 +293,7 @@ chart_time_entries_15047_0:
   entries: 1
   user_id: 2
   issue_id: 15047
-  activity_id: 9
+  activity_id: 8
   project_id: 15044
 chart_time_entries_15_1:
   id: 25
@@ -304,7 +304,7 @@ chart_time_entries_15_1:
   entries: 1
   user_id: 2
   issue_id: 15048
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
 chart_time_entries_15_0:
   id: 26
@@ -315,7 +315,7 @@ chart_time_entries_15_0:
   entries: 1
   user_id: 2
   issue_id: 15048
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
 chart_time_entries_16_1:
   id: 27
@@ -326,7 +326,7 @@ chart_time_entries_16_1:
   entries: 1
   user_id: 2
   issue_id: 15049
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
 chart_time_entries_16:
   id: 28
@@ -337,7 +337,7 @@ chart_time_entries_16:
   entries: 1
   user_id: 2
   issue_id: 15049
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
 chart_time_entries_17_1:
   id: 29
@@ -348,7 +348,7 @@ chart_time_entries_17_1:
   entries: 1
   user_id: 2
   issue_id: 15050
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
 chart_time_entries_17:
   id: 30
@@ -359,5 +359,5 @@ chart_time_entries_17:
   entries: 1
   user_id: 2
   issue_id: 15050
-  activity_id: 10
+  activity_id: 9
   project_id: 15044
