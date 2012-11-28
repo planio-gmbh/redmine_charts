@@ -9,7 +9,7 @@ RAILS_VERSION_IS_3 = rails3 =~ deps['rails']
 group :development do
   gem 'jeweler'
   if RAILS_VERSION_IS_3
-    gem 'capybara'
+    gem 'capybara', '2.0.0'
     gem "rspec"
     gem "rspec-rails"
   else
