@@ -1,27 +1,27 @@
 function charts_earlier() {
-    $('offset').value = parseInt($('offset').value) + parseInt($('limit').value);
-    $('offset').form.submit();
+    $('#offset').val(parseInt($('#offset').val()) + parseInt($('#limit').val()));
+    $('#chart_form').trigger("submit");
 }
 
 function charts_later() {
-    $('offset').value = parseInt($('offset').value) - parseInt($('limit').value);
-    if($('offset').value < 1) {
-        $('offset').value = 1;
+    $('#offset').val(parseInt($('#offset').val()) - parseInt($('#limit').val()));
+    if($('#offset').val() < 1) {
+        $('#offset').val() = 1;
     }
-    $('offset').form.submit();
+    $('#chart_form').trigger("submit");
 }
 
 function charts_previous() {
-    $('page').value = parseInt($('page').value) - 1;
-    if($('page').value < 1) {
-        $('page').value = 1;
+    $('#page').val(parseInt($('#page').val()) - 1);
+    if($('#page').val() < 1) {
+        $('#page').val() = 1;
     }
-    $('page').form.submit();
+    $('#chart_form').trigger("submit");
 }
 
 function charts_next() {
-    $('page').value = parseInt($('page').value) + 1;
-    $('page').form.submit();
+    $('#page').val(parseInt($('#page').value) + 1);
+    $('#chart_form').trigger("submit");
 }
 
 function save_image() { 
