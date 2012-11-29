@@ -32,7 +32,7 @@ describe ConditionsUtils do
     options[:category_ids].should == [["Project1 - Category1", 15041], ["Project1 - Category2", 15042], ["Project2 - Category3", 15043]]
     options[:fixed_version_ids].should == [["Project1 - 1.0", 15041], ["Project1 - 2.0", 15042]]
     options[:tracker_ids].should == [["Bug", 1], ["Feature", 2], ["Support", 3]]
-    options[:priority_ids].should == [["High", 5], ["Immediate", 7], ["Low", 3], ["Normal", 4], ["Urgent", 6]]
+    options[:priority_ids].should == [["High", 3], ["Immediate", 5], ["Low", 1], ["Normal", 2], ["Urgent", 4]]
     options[:status_ids].should == [["Assigned", 2], ["Closed", 5], ["Feedback", 4], ["New", 1], ["Rejected", 6], ["Resolved", 3]]
   end
 
