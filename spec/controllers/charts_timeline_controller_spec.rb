@@ -233,7 +233,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
 
     body['elements'][2]['values'].size.should == 4
-    body['elements'][2]['text'].should == 'redMine Admin'
+    body['elements'][2]['text'].should == 'Redmine Admin'
 
     body['elements'][2]['values'][0]['value'].should be_close(3.3, 0.1)
     body['elements'][2]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(3.3, 1, '09 Mar 10')
@@ -251,7 +251,7 @@ describe ChartsTimelineController do
     body['elements'].size.should == 2
 
     body['elements'][0]['values'].size.should == 4
-    body['elements'][0]['text'].should == 'Normal'
+    body['elements'][0]['text'].should == 'High'
 
     body['elements'][0]['values'][0]['value'].should be_close(6.6, 0.1)
     body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(6.6, 2, '09 Mar 10')
@@ -276,21 +276,21 @@ describe ChartsTimelineController do
     body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'].size.should == 2
 
-    body['elements'][0]['values'].size.should == 4
-    body['elements'][0]['text'].should ==  l(:charts_group_none)
-
-    body['elements'][0]['values'][0]['value'].should be_close(0, 0.1)
-    body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '09 Mar 10')
-    body['elements'][0]['values'][1]['value'].should be_close(5.1, 0.1)
-    body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
-
     body['elements'][1]['values'].size.should == 4
-    body['elements'][1]['text'].should == 'redMine Admin'
+    body['elements'][1]['text'].should ==  l(:charts_group_none)
 
-    body['elements'][1]['values'][0]['value'].should be_close(6.6, 0.1)
-    body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(6.6, 2, '09 Mar 10')
-    body['elements'][1]['values'][1]['value'].should be_close(2.3, 0.1)
-    body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(2.3, 1, '10 Mar 10')
+    body['elements'][1]['values'][0]['value'].should be_close(0, 0.1)
+    body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '09 Mar 10')
+    body['elements'][1]['values'][1]['value'].should be_close(5.1, 0.1)
+    body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
+
+    body['elements'][0]['values'].size.should == 4
+    body['elements'][0]['text'].should == 'Redmine Admin'
+
+    body['elements'][0]['values'][0]['value'].should be_close(6.6, 0.1)
+    body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(6.6, 2, '09 Mar 10')
+    body['elements'][0]['values'][1]['value'].should be_close(2.3, 0.1)
+    body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(2.3, 1, '10 Mar 10')
   end
 
   it "should grouping_by_projects" do
@@ -538,7 +538,7 @@ describe ChartsTimelineController do
     Setting.default_language = 'en'
 
     @request.session[:user_id] = 1
-    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 10, :limit => 10, :offset => 0
+    get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 9, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 10
@@ -609,6 +609,7 @@ describe ChartsTimelineController do
   it "should trackers_condition" do
     Setting.default_language = 'en'
 
+    @request.session[:user_id] = 1
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :tracker_ids => 1, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
