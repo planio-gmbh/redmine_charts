@@ -5,6 +5,7 @@ module TimeEntryPatch
 describe "TimeEntryPatch" do
 
   before do
+    Time.set_current_date = Time.mktime(2010,4,16)
     @issue = Issue.new(:project_id => 15041, :tracker_id => 1, :author_id => 1, :status_id => 1, :priority => IssuePriority.all.first, :subject => 'test_create', :description => 'IssueTest#test_create')
 
     @issue.save
