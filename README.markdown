@@ -53,6 +53,9 @@ Thanks for the contribution.
 
 ## Changelog
 
+## 0.2.0
+- Redmine 2.1.x support. (not support Redmine 2.0 or earlier)
+
 ## 0.1.4
 - compatible with Redmine 1.4.x and Ruby 1.9.x (not support Ruby 1.8.7 )
 - fix about bugs on charts_deviations.
