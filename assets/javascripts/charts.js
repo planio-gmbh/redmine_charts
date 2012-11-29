@@ -6,7 +6,7 @@ function charts_earlier() {
 function charts_later() {
     $('#offset').val(parseInt($('#offset').val()) - parseInt($('#limit').val()));
     if($('#offset').val() < 1) {
-        $('#offset').val() = 1;
+        $('#offset').val(1);
     }
     $('#chart_form').trigger("submit");
 }
@@ -14,7 +14,7 @@ function charts_later() {
 function charts_previous() {
     $('#page').val(parseInt($('#page').val()) - 1);
     if($('#page').val() < 1) {
-        $('#page').val() = 1;
+        $('#page').val(1);
     }
     $('#chart_form').trigger("submit");
 }
