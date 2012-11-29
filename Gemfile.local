@@ -17,11 +17,10 @@ group :development do
     gem "rspec", "=1.3.1"
     gem "rspec-rails", "=1.3.3"
   end
-  platforms [:mri_19, :mingw_19] do
+  if RUBY_VERSION >= "1.9"
     gem "simplecov", "~>0.6"
     gem "simplecov-rcov"
-  end
-  platforms [:mri_18, :mingw_18] do
+  else
     gem "rcov", "=0.9.11"
   end
   gem 'timecop'
