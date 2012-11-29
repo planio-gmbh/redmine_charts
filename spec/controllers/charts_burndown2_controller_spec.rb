@@ -4,16 +4,15 @@ describe ChartsBurndown2Controller do
 
   include Redmine::I18n
 
-  before(:all) do
+  before do
     Time.set_current_date = Time.mktime(2010,4,16)
     @controller = ChartsBurndown2Controller.new
     @request    = ActionController::TestRequest.new
+    @request.session[:user_id] = 1
+    Setting.default_language = 'en'
   end
 
-  it "should get_data" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping by fixed version" do
     get :index, :project_id => 15041, :fixed_version_ids => [15042]
     response.should be_success
 
@@ -49,17 +48,14 @@ describe ChartsBurndown2Controller do
 
   end
 
-  it "should sub_tasks" do
+  it "should return data if it has sub tasks" do
     if RedmineCharts.has_sub_issues_functionality_active
-      Setting.default_language = 'en'
-
-      @request.session[:user_id] = 1
       get :index, :project_id => 15044, :fixed_version_ids => [15043]
       response.should be_success
 
       body = ActiveSupport::JSON.decode(assigns[:data])
-      #body['elements'][0]['values'][0]['value'].should be_close(12,0.1)
-      #body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown2_hint_velocity, :remaining_hours => 12.0)}<br>#{'20 Mar 10'}"
+      body['elements'][0]['values'][0]['value'].should be_close(12,0.1)
+      body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown2_hint_velocity, :remaining_hours => 12.0)}<br>#{'20 Mar 10'}"
 
       body['elements'][1]['values'][0]['value'].should be_close(12.0,0.1)
       body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_remaining, :remaining_hours => 12.0, :work_done => 0)}<br>#{'20 Mar 10'}"

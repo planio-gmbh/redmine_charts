@@ -4,16 +4,13 @@ describe ChartsDeviationController do
 
   include Redmine::I18n
 
-  before(:all) do
+  before do
     @controller = ChartsDeviationController.new
     @request    = ActionController::TestRequest.new
-    User.current = nil
+    @request.session[:user_id] = 1
   end
 
-  it "should get_data" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping project_id" do
     get :index, :project_id => 15041, :project_ids => [15041]
     response.should be_success
 
@@ -80,9 +77,6 @@ describe ChartsDeviationController do
   end
 
   it "should include_subprojects" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
     get :index, :project_id => 15041, :project_ids => [15041, 15042]
     response.should be_success
 
@@ -90,10 +84,7 @@ describe ChartsDeviationController do
     body['elements'][0]['values'].size.should == 5
   end
 
-  it "should pagination" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with pagination" do
     get :index, :project_id => 15041, :project_ids => [15041], :per_page => 2
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -110,11 +101,8 @@ describe ChartsDeviationController do
     body.should be_nil
   end
 
-  it "should sub_tasks" do
+  it "should return data if it has sub_tasks" do
     if RedmineCharts.has_sub_issues_functionality_active
-      Setting.default_language = 'en'
-
-      @request.session[:user_id] = 1
       get :index, :project_id => 15044, :project_ids => [15044]
       response.should be_success
 

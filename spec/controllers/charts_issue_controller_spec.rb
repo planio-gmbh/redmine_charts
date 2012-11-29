@@ -7,13 +7,13 @@ describe ChartsIssueController do
   before do
     @controller = ChartsIssueController.new
     @request    = ActionController::TestRequest.new
+    @request.session[:user_id] = 1
+    Setting.default_language = 'en'
   end
 
-  it "should range" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping issue_id" do
     get :index, :project_id => 15041, :project_ids => [15041, 15042]
+    response.should be_success
 
     body = ActiveSupport::JSON.decode(assigns[:data])
     body['elements'][0]['values'].size.should == 3
@@ -34,11 +34,8 @@ describe ChartsIssueController do
 
   end
 
-  it "should sub_tasks" do
+  it "should return data with grouping issue_id if it has sub tasks" do
     if RedmineCharts.has_sub_issues_functionality_active
-      Setting.default_language = 'en'
-
-      @request.session[:user_id] = 1
       get :index, :project_id => 15044, :project_ids => [15044]
       response.should be_success
 

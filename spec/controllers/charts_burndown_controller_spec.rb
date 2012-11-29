@@ -9,19 +9,18 @@ describe ChartsBurndownController do
     @controller = ChartsBurndownController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    Setting.default_language = 'en'
+    @request.session['user_id'] = 1
   end
 
-  it "test_get_data" do
-    Setting.default_language = 'en'
-
-    @request.session['user_id'] = 1
+  it "should return data with range days limit 4 offset 1" do
     get :index, :project_id => 15041, :project_ids => [15041, 15042], :limit => '4', :range => 'days', :offset => '1'
     response.should be_success
 
     body = ActiveSupport::JSON.decode(assigns[:data])
     body['y_legend']['text'].should == l(:charts_burndown_y)
     body['x_legend']['text'].should == l(:charts_burndown_x)
-    #body['y_axis']['max'].should be_close(81, 1)
+    body['y_axis']['max'].should be_close(81, 1)
     body['y_axis']['min'].should == 0
     body['x_axis']['max'].should be_close(4, 1)
     body['x_axis']['min'].should == 0
@@ -41,8 +40,8 @@ describe ChartsBurndownController do
     body['elements'][3]['values'].size.should == 4
     body['elements'][3]['text'].should == l(:charts_burndown_group_predicted)
 
-    #body['elements'][0]['values'][0]['value'].should be_close(23,0.1)
-    #body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_estimated, :estimated_hours => 23.0)}<br>#{'08 Mar 10'}"
+    body['elements'][0]['values'][0]['value'].should be_close(23,0.1)
+    body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_estimated, :estimated_hours => 23.0)}<br>#{'08 Mar 10'}"
     body['elements'][0]['values'][1]['value'].should be_close(35,0.1)
     body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_estimated, :estimated_hours => 35.0)}<br>#{'09 Mar 10'}"
     body['elements'][0]['values'][2]['value'].should be_close(35,0.1)
@@ -50,14 +49,14 @@ describe ChartsBurndownController do
     body['elements'][0]['values'][3]['value'].should be_close(35,0.1)
     body['elements'][0]['values'][3]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_estimated, :estimated_hours => 35.0)}<br>#{'11 Mar 10'}"
 
-    #body['elements'][1]['values'][0]['value'].should be_close(29.35,0.1)
-    #body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 29.4)}<br>#{'08 Mar 10'}"
-    #body['elements'][1]['values'][1]['value'].should be_close(35.95,0.1)
-    #body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 36.0)}<br>#{'09 Mar 10'}"
-    #body['elements'][1]['values'][2]['value'].should be_close(43.35,0.1)
-    #body['elements'][1]['values'][2]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 43.4)}<br>#{'10 Mar 10'}"
-    #body['elements'][1]['values'][3]['value'].should be_close(43.35,0.1)
-    #body['elements'][1]['values'][3]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 43.4)}<br>#{'11 Mar 10'}"
+    body['elements'][1]['values'][0]['value'].should be_close(29.35,0.1)
+    body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 29.4)}<br>#{'08 Mar 10'}"
+    body['elements'][1]['values'][1]['value'].should be_close(35.95,0.1)
+    body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 36.0)}<br>#{'09 Mar 10'}"
+    body['elements'][1]['values'][2]['value'].should be_close(43.35,0.1)
+    body['elements'][1]['values'][2]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 43.4)}<br>#{'10 Mar 10'}"
+    body['elements'][1]['values'][3]['value'].should be_close(43.35,0.1)
+    body['elements'][1]['values'][3]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 43.4)}<br>#{'11 Mar 10'}"
 
     body['elements'][2]['values'][0]['value'].should be_close(5.1,0.1)
     body['elements'][2]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_remaining, :remaining_hours => 5.1, :work_done => 90)}<br>#{'08 Mar 10'}"
@@ -79,11 +78,8 @@ describe ChartsBurndownController do
 
   end
 
-  it "should sub_tasks" do
+  it "should return data with range weeks limit 1 if it has sub_tasks" do
     if RedmineCharts.has_sub_issues_functionality_active
-      Setting.default_language = 'en'
-
-      @request.session['user_id'] = 1
       get :index, :project_id => 15044, :project_ids => [15044], :limit => '1', :range => 'weeks', :offset => '0'
       response.should be_success
 
@@ -93,14 +89,14 @@ describe ChartsBurndownController do
       body['elements'][0]['values'][0]['value'].should be_close(12,0.1)
       body['elements'][0]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_estimated, :estimated_hours => 12.0)}<br>#{'8 - 14 Mar 10'}"
 
-      #body['elements'][1]['values'][0]['value'].should be_close(13.2,0.1)
-      #body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 13.2)}<br>#{'8 - 14 Mar 10'}"
+      body['elements'][1]['values'][0]['value'].should be_close(13.2,0.1)
+      body['elements'][1]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_logged, :logged_hours => 13.2)}<br>#{'8 - 14 Mar 10'}"
 
       body['elements'][2]['values'][0]['value'].should be_close(12,0.1)
       body['elements'][2]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_remaining, :remaining_hours => 12.0, :work_done => 0)}<br>#{'8 - 14 Mar 10'}"
 
-      #body['elements'][3]['values'][0]['value'].should be_close(25.2,0.1)
-      #body['elements'][3]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_predicted_over_estimation, :predicted_hours => 25.2, :hours_over_estimation => 13.2)}<br>#{'8 - 14 Mar 10'}"
+      body['elements'][3]['values'][0]['value'].should be_close(25.2,0.1)
+      body['elements'][3]['values'][0]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == "#{l(:charts_burndown_hint_predicted_over_estimation, :predicted_hours => 25.2, :hours_over_estimation => 13.2)}<br>#{'8 - 14 Mar 10'}"
     end
   end
 

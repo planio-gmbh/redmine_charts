@@ -6,14 +6,13 @@ describe ChartsTimelineController do
 
   before do
     Time.set_current_date = Time.mktime(2010,3,12)
+    Setting.default_language = 'en'
     @controller = ChartsTimelineController.new
     @request    = ActionController::TestRequest.new
+    @request.session[:user_id] = 1
   end
 
-  it "should range offset 0" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with range weeks offset 0" do
     get :index, :project_id => 15041, :project_ids => 15041, :limit => 10, :range => 'weeks', :offset => 0
     response.should be_success
 
@@ -36,8 +35,7 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][9].should == ""
   end
 
-  it "should have range with offset 10" do
-    @request.session[:user_id] = 1
+  it "should return data with range weeks offset 10" do
     get :index, :project_id => 15041, :project_ids => 15041, :offset => 10, :limit => 10, :range => 'weeks'
     response.should be_success
 
@@ -57,8 +55,7 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][9].should == ""
   end
 
-  it "should have range weeks offset 20" do
-    @request.session[:user_id] = 1
+  it "should return data with range weeks offset 20" do
     get :index, :project_id => 15041, :project_ids => 15041, :offset => 20, :limit => 20, :range => 'weeks'
     response.should be_success
 
@@ -88,8 +85,7 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][19].should == ""
   end
 
-  it "should have range months with offset 0" do
-    @request.session[:user_id] = 1
+  it "should return data with range months with offset 0" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'months', :limit => 10, :offset => 0
     response.should be_success
 
@@ -109,8 +105,7 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][9].should == ""
   end
 
-  it "should have range days with offset 0" do
-    @request.session[:user_id] = 1
+  it "should return data with range days with offset 0" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
     response.should be_success
 
@@ -130,10 +125,7 @@ describe ChartsTimelineController do
     body['x_axis']['labels']['labels'][9].should == ""
   end
 
-  it "should without_grouping" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data without grouping" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :offset => 0
     response.should be_success
 
@@ -173,8 +165,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should have range days with offset 0" do
-    @request.session[:user_id] = 1
+  it "should return data with range days with offset 0" do
     get :index, :project_id => 15041, :project_ids => [15041, 15042], :range => 'days', :limit => 10, :offset => 0
     response.should be_success
 
@@ -207,10 +198,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should grouping_by_users" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping by users" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'user_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -241,10 +229,7 @@ describe ChartsTimelineController do
     body['elements'][2]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '10 Mar 10')
   end
 
-  it "should grouping_by_priorities" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_priorities" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'priority_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -267,10 +252,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_authors" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_authors" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'author_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -293,10 +275,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(2.3, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_projects" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_projects" do
     get :index, :project_id => 15041, :grouping => 'project_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -311,10 +290,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(7.4, 2, '10 Mar 10')
   end
 
-  it "should grouping_by_statuses" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_statuses" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'status_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -337,10 +313,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_trackers" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_trackers" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'tracker_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -363,10 +336,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_issues" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_issues" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'issue_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -389,10 +359,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_versions" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_versions" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'fixed_version_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -415,10 +382,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_categories" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_categories" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'category_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -441,10 +405,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should grouping_by_activities" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with grouping_by_activities" do
     get :index, :project_id => 15041, :project_ids => 15041, :grouping => 'activity_id', :range => 'days', :limit => 4, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -467,10 +428,7 @@ describe ChartsTimelineController do
     body['elements'][1]['values'][1]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(5.1, 1, '10 Mar 10')
   end
 
-  it "should users_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with users_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :user_ids => 1, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -502,10 +460,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should issues_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with issues_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :issue_ids => 15045, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -534,10 +489,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "")    .should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should activities_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with activities_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :activity_ids => 9, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -571,10 +523,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should priorities_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with priorities_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :priority_ids => 4, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -606,10 +555,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should trackers_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with trackers_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :tracker_ids => 1, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -638,10 +584,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should versions_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with versions_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :limit => 10, :fixed_version_ids => 15042, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -673,10 +616,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should categories_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with categories_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :category_ids => 15042, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -712,10 +652,7 @@ describe ChartsTimelineController do
   end
 
 
-  it "should status_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with status_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :status_ids => 2, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -750,10 +687,7 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should author_condition" do
-    Setting.default_language = 'en'
-
-    @request.session[:user_id] = 1
+  it "should return data with author_condition" do
     get :index, :project_id => 15041, :project_ids => 15041, :range => 'days', :author_ids => 2, :limit => 10, :offset => 0
 
     body = ActiveSupport::JSON.decode(assigns[:data])
@@ -785,11 +719,8 @@ describe ChartsTimelineController do
     body['elements'][0]['values'][9]['tip'].gsub("\\u003C", "<").gsub("\\u003E", ">").gsub("\000", "").should == get_label(0, 0, '12 Mar 10')
   end
 
-  it "should sub_tasks" do
+  it "should return data with sub_tasks" do
     if RedmineCharts.has_sub_issues_functionality_active
-      Setting.default_language = 'en'
-
-      @request.session[:user_id] = 1
       get :index, :project_id => 15044, :project_ids => 15044, :range => 'weeks', :limit => 10, :offset => 0
 
       body = ActiveSupport::JSON.decode(assigns[:data])
@@ -801,9 +732,7 @@ describe ChartsTimelineController do
     end
   end
 
-  it "should all_conditions" do
-    Setting.default_language = 'en'
-    @request.session[:user_id] = 1
+  it "should return data with all_conditions" do
     get :index, :project_id => 15041, :category_ids => 15043, :tracker_ids => 15043, :fixed_version_ids => 15043, :fixed_version_ids => 15041, :user_ids => 15043, :issue_ids => 15043, :activity_ids => 15043, :author_ids => 1, :status_ids => 5
     response.should be_success
   end
