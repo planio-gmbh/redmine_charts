@@ -20,8 +20,9 @@ group :development do
   platforms [:mri_19, :mingw_19] do
     gem "simplecov", "~>0.6"
     gem "simplecov-rcov"
-  else
-    gem "rcov",  "=0.9.11"
+  end
+  platforms [:mri_18, :mingw_18] do
+    gem "rcov", "=0.9.11"
   end
   gem 'timecop'
   gem "spork"
