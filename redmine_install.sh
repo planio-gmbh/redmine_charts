@@ -22,13 +22,13 @@ fi
 export RAILS_ENV=test
 
 case $REDMINE_VER in
-  1.4.4)  export PATH_TO_INSTALL=./vendor/plugins # for redmine < 2.0
+  1.4.5)  export PATH_TO_INSTALL=./vendor/plugins # for redmine < 2.0
           export GENERATE_SECRET=generate_session_store
           export MIGRATE_PLUGINS=db:migrate_plugins
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
           export REDMINE_GIT_TAG=$REDMINE_VER
           ;;
-  2.1.2)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
+  2.1.5)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
           export GENERATE_SECRET=generate_secret_token
           export MIGRATE_PLUGINS=redmine:plugins:migrate
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
@@ -97,9 +97,6 @@ echo current directory is `pwd`
 
 # create a link to the backlogs plugin
 ln -sf $PATH_TO_PLUGIN $PATH_TO_INSTALL/$NAME_OF_PLUGIN
-
-# copy Gemfile.local for development & test
-cp $TESTSPACE/Gemfile.local .
 
 # install gems
 mkdir -p vendor/bundle
