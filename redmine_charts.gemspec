@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Maciej Szczytowski"]
+  s.authors = ["Daisuke Miura"]
   s.date = "2012-11-30"
   s.description = "Plugin for Redmine which integrates some nice project charts."
-  s.email = "mszczytowski@gmail.com"
+  s.email = "mhden@drakontia.com"
   s.extra_rdoc_files = [
     "LICENSE",
     "README.markdown"
@@ -143,7 +143,7 @@ Gem::Specification.new do |s|
     "test/unit/time_entry_patch_test.rb",
     "test/unit/utils_test.rb"
   ]
-  s.homepage = "http://github.com/mszczytowski/redmine_charts/"
+  s.homepage = "http://github.com/drakontia/redmine_charts/"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
   s.summary = "Plugin for Redmine which integrates some nice project charts."
