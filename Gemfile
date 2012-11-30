@@ -1,7 +1,6 @@
-chiliproject_file = File.dirname(__FILE__) + "/lib/chili_project.rb"
-chiliproject = File.file?(chiliproject_file)
-
-deps = Hash.new
-@dependencies.map{|dep| deps[dep.name] = dep }
-rails3 = Gem::Dependency.new('rails', '~>3.0')
-RAILS_VERSION_IS_3 = rails3 =~ deps['rails']
+group :development do
+  Dir.glob File.expand_path("../plugins/*/Gemfile.local", __FILE__) do |file|
+    puts "Loading #{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
+    instance_eval File.read(file)
+  end
+end

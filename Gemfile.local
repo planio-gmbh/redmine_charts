@@ -6,36 +6,35 @@ deps = Hash.new
 rails3 = Gem::Dependency.new('rails', '~>3.0')
 RAILS_VERSION_IS_3 = rails3 =~ deps['rails']
 
-group :development do
-  gem 'jeweler'
-  if RAILS_VERSION_IS_3
-    gem 'capybara', '2.0.0'
-    gem "rspec"
-    gem "rspec-rails"
-  else
-    gem 'capybara', '~> 1'
-    gem "rspec", "=1.3.1"
-    gem "rspec-rails", "=1.3.3"
-  end
-  if RUBY_VERSION >= "1.9"
-    gem "simplecov", "~>0.6"
-    gem "simplecov-rcov"
-  else
-    gem "rcov", "=0.9.11"
-  end
-  gem 'timecop'
-  gem "spork"
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-spork'
-  platforms :mri do
-    gem 'rb-fsevent', '~> 0.9.1'
-    gem 'terminal-notifier-guard'
-  end
-  platforms :mingw do
-    gem 'rb-fchange'
-    gem 'wdm'
-    gem 'win32console'
-    gem 'rb-notifu'
-  end
+gem 'jeweler'
+if RAILS_VERSION_IS_3
+  gem 'capybara', '2.0.0'
+  gem "rspec"
+  gem "rspec-rails"
+else
+  gem 'capybara', '~> 1'
+  gem "rspec", "=1.3.1"
+  gem "rspec-rails", "=1.3.3"
+end
+platforms :mri_19, :mingw_19 do
+  gem "simplecov"
+  gem "simplecov-rcov"
+end
+platforms :mri_18, :mingw_18 do
+  gem "rcov", "=0.9.11"
+end
+gem 'timecop'
+gem "spork"
+gem 'guard'
+gem 'guard-rspec'
+gem 'guard-spork'
+platforms :mri do
+  gem 'rb-fsevent', '~> 0.9.1'
+  gem 'terminal-notifier-guard'
+end
+platforms :mingw do
+  gem 'rb-fchange'
+  gem 'wdm'
+  gem 'win32console'
+  gem 'rb-notifu'
 end
