@@ -82,6 +82,9 @@ Thanks for the contribution.
 - lib tests is all green.
 - update Readme for Redmine 2.0.x
 
+### 0.1.5
+- compatible with Ruby 1.8.7 (for RM1.4.x branch)
+
 ### 0.1.4
 - compatible with Redmine 1.4.x and Ruby 1.9.x (not support Ruby 1.8.7 )
 - fix about bugs on charts\_deviations.
