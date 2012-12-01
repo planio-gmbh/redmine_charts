@@ -49,14 +49,13 @@ module ChartsHelper
 
     # Pagination.
 
-    res << link_to_function(l(:charts_earlier), :onclick => 'charts_earlier();') << " - "
+    res << link_to_function(l(:charts_earlier), 'charts_earlier();') << " - "
 
     if offset.to_i == 1
       res << l(:charts_later)
     else
-      res << link_to_function(l(:charts_later), :onclick => 'charts_later();')
+      res << link_to_function(l(:charts_later), 'charts_later();')
     end
-
     res
   end
 
@@ -68,7 +67,7 @@ module ChartsHelper
       if page == 1
         res << l(:charts_previous)
       else
-        res << link_to_function(l(:charts_previous), :onclick => 'charts_previous();')
+        res << link_to_function(l(:charts_previous), 'charts_previous();')
       end
 
       res << ' - '
@@ -76,7 +75,7 @@ module ChartsHelper
       if page == pages
         res << l(:charts_next)
       else
-        res << link_to_function(l(:charts_next), :onclick => 'charts_next();')
+        res << link_to_function(l(:charts_next), 'charts_next();')
       end
     end
 

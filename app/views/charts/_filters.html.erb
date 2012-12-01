@@ -1,36 +1,36 @@
 <script type="text/javascript">
 //<![CDATA[
 function add_filter() {
-    select = $('add_filter_select');
-    field = select.value
-    Element.show('tr_' +  field);
-    check_box = $('cb_' + field);
-    check_box.checked = true;
+    select = $('#add_filter_select');
+    field = select.val();
+    $('#tr_' +  field).show();
+    check_box = $('#cb_' + field);
+    check_box.attr('checked', 'checked');
     toggle_filter(field);
     select.selectedIndex = 0;
+    $.each(select.find("option"), function(e) {
+      if (this.value == field) {
+        $(this).attr('disabled', true);
+      }
+    });
 
-    for (i=0; i<select.options.length; i++) {
-        if (select.options[i].value == field) {
-            select.options[i].disabled = true;
-        }
-    }
 }
 
 function toggle_filter(field) {
-    check_box = $('cb_' + field);
-    values = $('values_' + field);
-    if (check_box.checked) {
-      Element.show('tr_' + field)
-      values.enable();
+    check_box = $('#cb_' + field);
+    values = $('#values_' + field);
+    if (check_box.is(':checked')) {
+      $('#tr_' + field).show();
+      values.attr('disabled', false);
     } else {
-      Element.hide('tr_' + field)
-      values.disable();
-      select = $('add_filter_select'); //gets the drop down list element
-      for (i=0; i<select.options.length; i++) { //iterating through the options in drop down list
-        if (select.options[i].value == field) { //If de-seclected element found
-            select.options[i].disabled = false; //set disabled = false
+      $('#tr_' + field).hide();
+      values.attr('disabled', true);
+      select = $('#add_filter_select'); //gets the drop down list element
+      $.each(select.find("option"), function(e) {
+        if (this.value == field) {
+          $(this).attr('disabled', false);
         }
-      }
+      });
     }
 }
 //]]>
