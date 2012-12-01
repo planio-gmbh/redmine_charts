@@ -3,6 +3,8 @@ Redmine Charts
 
 Plugin which integrates with Redmine following charts: burndown, burndown with progress, timeline, ratios of logged hours and issues, deviations of logged hours.
 
+[![Build Status](https://travis-ci.org/drakontia/redmine_charts.png)](https://travis-ci.org/drakontia/redmine_charts)
+
 ## Instalation
 
 *If you use bundler, please add prefix `bundle exec` when you execute ruby commands.*
