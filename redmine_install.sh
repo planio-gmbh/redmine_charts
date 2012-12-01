@@ -28,7 +28,7 @@ case $REDMINE_VER in
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
           export REDMINE_GIT_TAG=$REDMINE_VER
           ;;
-  2.1.5)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
+  2.1.4)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
           export GENERATE_SECRET=generate_secret_token
           export MIGRATE_PLUGINS=redmine:plugins:migrate
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
