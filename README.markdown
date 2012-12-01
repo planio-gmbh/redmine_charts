@@ -5,36 +5,36 @@ Plugin which integrates with Redmine following charts: burndown, burndown with p
 
 ## Instalation
 
-*If you use bundler, please add prefix 'bundle exec' when you execute ruby commands.*
+*If you use bundler, please add prefix `bundle exec` when you execute ruby commands.*
 
 Download the sources and put them to your Plugins folder.
 
     $ cd {REDMINE_ROOT}
 
-    _for Redmine 2.x_
+    #for Redmine 2.x
     $ git clone git://github.com/drakontia/redmine_charts.git plugins/redmine_charts
 
-    _for Redmine 1.4.x_
+    #for Redmine 1.4.x
     $ git clone git://github.com/drakontia/redmine_charts.git vendor/plugins/redmine_charts
 
 Install OpenFlashChart plugin.
 
-    _for Redmine 2.x_
-    $ rails g plugin install git://github.com/pullmonkey/open_flash_chart.git
+    #for Redmine 2.x
+    $ rails g plugin git://github.com/pullmonkey/open_flash_chart.git
     mkdir -p public/plugin\_assets/open\_flash\_chart
     cp -r plugins/open\_flash\_chart/assets/* public/plugin\_assets/open_flash_chart/
 
-    _for Redmine 1.4.x_
+    #for Redmine 1.4.x
     $ ./script/plugin install git://github.com/pullmonkey/open_flash_chart.git
     mkdir -p public/plugin\_assets/open\_flash\_chart
     cp -r vendor/plugins/open\_flash\_chart/assets/* public/plugin\_assets/open_flash_chart/
 
 Migrate database.
 
-    _for Redmine 2.x_
+    #for Redmine 2.x
     $ rake redmine:plugins:migrate RAILS_ENV=production
 
-    _for Redmine 1.4.x_
+    #for Redmine 1.4.x
     $ rake db:migrate:plugins RAILS_ENV=production
 
 Populate tables with old data.
@@ -55,6 +55,12 @@ Add permission to Your user.
 
 ## Contributor
 
+### Developments
+
+- [alminium](https://github.com/alminium)
+- [basyura](https://github.com/basyura)
+- [cforce](https://github.com/cforce)
+
 ### Translations
 
 - ja by In Dow
@@ -73,6 +79,9 @@ Add permission to Your user.
 Thanks for the contribution.
 
 ## Changelog
+
+### 0.2.1
+- copatible with Redmine 2.1.x (alminium)
 
 ### 0.2.0
 - compatible with Redmine 2.0.x
