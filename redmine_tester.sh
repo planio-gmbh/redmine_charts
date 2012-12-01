@@ -12,9 +12,9 @@ ln -sf `pwd`/coverage $TESTSPACE
 
 # run rspec
 if [ ${REDMINE_VER} = "1.4.5" ]; then
-    bundle exec rake spec:rcov -cfs
+    bundle exec spec:rcov --color --format nested
 else
-    bundle exec rspec spec --color --drb
+    bundle exec rspec spec --color --format doc
 fi
 #bundle exec rake redmine:plugins:test
 
