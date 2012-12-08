@@ -28,6 +28,7 @@ matrix:
 install: "echo skip bundle install"
 
 script:
+  - export RAILS_ENV=test
   - export TESTSPACE=`pwd`/testspace
   - export NAME_OF_PLUGIN=redmine_charts
   - export PATH_TO_PLUGIN=`pwd`
@@ -39,4 +40,3 @@ script:
   - bash -x ./redmine_install.sh -i
   - bash -x ./redmine_install.sh -t
   - bash -x ./redmine_install.sh -u
-
