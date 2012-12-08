@@ -100,7 +100,7 @@ ln -sf $PATH_TO_PLUGIN $PATH_TO_INSTALL/$NAME_OF_PLUGIN
 
 # install gems
 mkdir -p vendor/bundle
-bundle install --path vendor/bundle
+bundle install --path vendor/bundle --without development
 
 # copy database.yml
 cp $TESTSPACE/database.yml config/

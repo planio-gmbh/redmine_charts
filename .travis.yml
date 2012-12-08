@@ -35,7 +35,6 @@ script:
   - export PATH_TO_TESTER=`pwd`/redmine_tester.sh
   - mkdir $TESTSPACE
   - cp config/database.yml.travis $TESTSPACE/database.yml
-  - cp Gemfile.local $TESTSPACE/
   - bash -x ./redmine_install.sh -c
   - bash -x ./redmine_install.sh -i
   - bash -x ./redmine_install.sh -t
