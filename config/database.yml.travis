@@ -1,8 +1,30 @@
-development:
+sqlite: &sqlite
   adapter: sqlite3
-  database: db/redmine_development.sqlite3
+  database: db/charts.sqlite3
+
+mysql: &mysql
+  adapter: mysql2
+  username: root
+  password:
+  database: charts
+
+postgresql: &postgresql
+  adapter: postgresql
+  username: postgres
+  password:
+  database: charts
+  min_messages: ERROR
+
+defaults: &defaults
+  pool: 5
+  timeout: 5000
+  <<: *<%= ENV['DB'] || "unspecified" %>
+
+development:
+  <<: *defaults
 
 test:
-  adapter: sqlite3
-  database: db/redmine_development.sqlite3
+  <<: *defaults
 
+production:
+  <<: *defaults

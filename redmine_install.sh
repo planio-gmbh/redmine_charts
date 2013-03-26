@@ -22,19 +22,13 @@ fi
 export RAILS_ENV=test
 
 case $REDMINE_VER in
-  1.4.5)  export PATH_TO_INSTALL=./vendor/plugins # for redmine < 2.0
+  1.4.*)  export PATH_TO_INSTALL=./vendor/plugins # for redmine < 2.0
           export GENERATE_SECRET=generate_session_store
           export MIGRATE_PLUGINS=db:migrate_plugins
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
           export REDMINE_GIT_TAG=$REDMINE_VER
           ;;
-  2.1.4)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
-          export GENERATE_SECRET=generate_secret_token
-          export MIGRATE_PLUGINS=redmine:plugins:migrate
-          export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
-          export REDMINE_GIT_TAG=$REDMINE_VER
-          ;;
-  2.0.4)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
+  2.*)  export PATH_TO_INSTALL=./plugins # for redmine 2.0
           export GENERATE_SECRET=generate_secret_token
           export MIGRATE_PLUGINS=redmine:plugins:migrate
           export REDMINE_GIT_REPO=git://github.com/edavis10/redmine.git
@@ -124,8 +118,8 @@ bundle exec rake $MIGRATE_PLUGINS
 
 while getopts :ictu opt
 do case "$opt" in
-  i)  run_install;  exit 0;;
   c)  clone_redmine; exit 0;;
+  i)  run_install;  exit 0;;
   t)  run_tests;  exit 0;;
   u)  uninstall;  exit 0;;
   [?]) echo "i: install; c: clone redmine; t: run tests; u: uninstall";;
