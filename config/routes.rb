@@ -11,7 +11,8 @@ if Rails::VERSION::MAJOR < 3
 else
   RedmineApp::Application.routes.draw do
     RedmineCharts::Utils.controllers_for_routing do |name, controller|
-      match "projects/:project_id/charts/#{name}/:action", :to => controller, :via => [:get]
+      match "projects/:project_id/charts/#{name}/index", :to => "#{controller}#index", :via => :get
+      match "projects/:project_id/charts/#{name}/destroy_saved_condition", :to => "#{controller}#destroy_saved_condition", :via => :post
     end
   end
 end

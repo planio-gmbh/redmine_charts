@@ -49,12 +49,12 @@ module ChartsHelper
 
     # Pagination.
 
-    res << link_to_function(l(:charts_earlier), 'charts_earlier();') << " - "
+    res << link_to_function(l(:charts_earlier).html_safe, 'charts_earlier();') << " - "
 
     if offset.to_i == 1
       res << l(:charts_later)
     else
-      res << link_to_function(l(:charts_later), 'charts_later();')
+      res << link_to_function(l(:charts_later).html_safe, 'charts_later();')
     end
     res
   end

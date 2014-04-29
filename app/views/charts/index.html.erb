@@ -46,16 +46,16 @@
     </fieldset>
 
   <p class="buttons">
-    <%= submit_tag l(:button_apply), :class => 'button-small', :onclick => "$('chart_form_action').value = ''; $('page') = '1'; $('chart_form').submit(); return false;" %>
+    <%= submit_tag l(:button_apply), :class => 'button-small', :onclick => "$('#chart_form_action').attr('value', ''); $('#page').attr('value', '1'); $('#chart_form').submit(); return false;" %>
 
     <%= link_to l(:button_clear), {}, :class => 'icon icon-reload' %>
 
     <% if User.current.allowed_to?(:save_charts, @project, :global => true) %>
       <% if @saved_condition %>
-        <%= link_to l(:button_save_condition), {}, :onclick => "$('saved_condition_create').hide(); $('saved_condition_update').show(); return false;", :class => 'icon icon-save' %>
-        <%= link_to l(:button_save_condition_as_new), {}, :onclick => "$('saved_condition_update').hide(); $('saved_condition_create').show(); return false;", :class => 'icon icon-save' %>
+        <%= link_to l(:button_save_condition), {}, :onclick => "$('#saved_condition_create').hide(); $('#saved_condition_update').show(); return false;", :class => 'icon icon-save' %>
+        <%= link_to l(:button_save_condition_as_new), {}, :onclick => "$('#saved_condition_update').hide(); $('#saved_condition_create').show(); return false;", :class => 'icon icon-save' %>
       <% else %>
-        <%= link_to l(:button_save_condition), {}, :onclick => "$('saved_condition_create').show(); return false;", :class => 'icon icon-save' %>
+        <%= link_to l(:button_save_condition), {}, :onclick => "$('#saved_condition_create').show(); return false;", :class => 'icon icon-save' %>
       <% end %>
     <% end %>
   </p>
