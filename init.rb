@@ -3,12 +3,12 @@ require 'redmine'
 require 'redmine_charts'
 
 if Rails::VERSION::MAJOR < 3
-  RAILS_DEFAULT_LOGGER.info 'Starting Charts Plugin for RedMine'
+  #RAILS_DEFAULT_LOGGER.info 'Starting Charts Plugin for RedMine'
 
   require 'dispatcher'
   object_to_prepare = Dispatcher
 else
-  Rails.logger.info 'Starting Charts Plugin for RedMine'
+  #Rails.logger.info 'Starting Charts Plugin for RedMine'
   object_to_prepare = Rails.configuration
   # if redmine plugins were railties:
   # object_to_prepare = config
