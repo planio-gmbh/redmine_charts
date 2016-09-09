@@ -43,20 +43,26 @@ module RedmineCharts
 
           when :project_ids then conditions[:project_ids] = projects.collect { |a| [a.name, a.id] }
 
-          when :activity_ids then conditions[:activity_ids] = TimeEntryActivity.all(:conditions => ["active=?",true]).collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }
+          when :activity_ids
+            conditions[:activity_ids] = TimeEntryActivity.
+              where(active: true).to_a.
+              map{ |a| [a.name, a.id]}.
+              sort{ |a,b| a[0].upcase <=> b[0].upcase }
 
-          when :category_ids then
-            categories = IssueCategory.find(:all,
-                                            :include => :project,
-                                            :conditions => "#{IssueCategory.table_name}.project_id IN (#{projects.collect{ |a| a.id }.join(",")})",
-                                            :order => "#{Project.table_name}.lft, #{IssueCategory.table_name}.name").collect {|a| ["#{a.project.name} - #{a.name}", a.id]}
+          when :category_ids
+            categories = IssueCategory.
+              eager_load(:project).
+              where("#{IssueCategory.table_name}.project_id IN (#{projects.map(&:id).join(",")})").
+              order("#{Project.table_name}.lft, #{IssueCategory.table_name}.name").to_a.
+              collect{ |a| ["#{a.project.name} - #{a.name}", a.id] }
             conditions[:category_ids] = categories unless categories.size == 0
 
-          when :fixed_version_ids then
-            versions = Version.find(:all,
-                                    :include => :project,
-                                    :conditions => "#{Version.table_name}.project_id IN (#{projects.collect{ |a| a.id }.join(",")})",
-                                    :order => "#{Project.table_name}.lft, #{Version.table_name}.name").collect {|a| ["#{a.project.name} - #{a.name}", a.id]}
+          when :fixed_version_ids
+            versions = Version.
+              eager_load(:project).
+              where("#{Version.table_name}.project_id IN (#{projects.collect{ |a| a.id }.join(",")})").
+              order("#{Project.table_name}.lft, #{Version.table_name}.name").to_a.
+              collect{ |a| ["#{a.project.name} - #{a.name}", a.id] }
             conditions[:fixed_version_ids] = versions unless versions.size == 0
 
           when :tracker_ids then conditions[:tracker_ids] = Tracker.all.collect { |a| [a.name, a.id] }.sort { |a,b| a[0].upcase <=> b[0].upcase }

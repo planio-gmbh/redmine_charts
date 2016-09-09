@@ -1,11 +1,7 @@
 class ChartsController < ApplicationController
-
-  unloadable
-
   menu_item :charts
 
   before_filter :find_project
-
   before_filter :authorize, :only => [:index]
 
   def controller_name
@@ -71,10 +67,10 @@ class ChartsController < ApplicationController
     end
 
     unless @saved_condition
-      @saved_condition = ChartSavedCondition.first(:conditions => {:id => params[:saved_condition_id]}) if not params[:saved_condition_id].blank?
+      @saved_condition = ChartSavedCondition.where(id: params[:saved_condition_id]).first if not params[:saved_condition_id].blank?
     end
 
-    @saved_conditions = ChartSavedCondition.all(:conditions => ["project_id is null or project_id = ?", @project.id])
+    @saved_conditions = ChartSavedCondition.where(["project_id is null or project_id = ?", @project.id])
 
     create_chart
 

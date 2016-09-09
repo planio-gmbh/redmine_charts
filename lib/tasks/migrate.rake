@@ -4,7 +4,7 @@ namespace :charts do
     ChartIssueStatus.delete_all
     ChartTimeEntry.delete_all
 
-    Journal.all(:conditions => {:journalized_type => "Issue"}, :order => "id asc").each do |journal|
+    Journal.where(journalized_type: "Issue").order("id asc").each do |journal|
 	 @issue = Issue.find_by_id(journal.journalized_id)
      if @issue
       journal.details.each do |detail|
